@@ -474,7 +474,11 @@ if (load_executable_path() == 0)
 		
 	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
 	{
-
+		if (jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions, &gFullyDebugged) == 0) 
+		{
+			//consume_tokenized_sandbox_extensions(JB_SandboxExtensions);
+		}
+		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
 
 		// Unset DYLD_INSERT_LIBRARIES attempt at making jailbreak detection harder
