@@ -314,6 +314,16 @@ __attribute__((constructor)) static void initializer(void)
 	roothide_init();
 /***** roothide specific ****/
 
+	if (load_executable_path() == 0) 
+	{
+		
+		if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) {
+
+			NSLog(@"小罪ADD: DeltaForceClient 启动！：%s", gExecutablePath);
+			return;
+		}
+	}
+
 
 	// Under normal circumstances, dyldhook will have already handled the check-in, so get the check-in information from the __jbinfo section
 	// For more information on the check-in process, check the comments in dyldhook
