@@ -24,6 +24,8 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 
+#include <substrate.h>
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
