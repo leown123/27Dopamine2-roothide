@@ -336,7 +336,7 @@ static BOOL (*orig_canOpenURL)(id, SEL, NSURL *);
 
 static BOOL (*now_fileExistsAtPath)(id, SEL, NSString *);
 static BOOL (*now_fileExistsAtPath_isDirectory)(id, SEL, NSString *, BOOL *);
-static BOOL (*nowg_canOpenURL)(id, SEL, NSURL *);
+static BOOL (*now_canOpenURL)(id, SEL, NSURL *);
 
 // ---------- 辅助函数：检查路径是否在黑名单中 ----------
 static BOOL isJailbreakPath(const char *path) {
