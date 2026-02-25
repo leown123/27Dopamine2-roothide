@@ -619,11 +619,13 @@ if (ret != 0) {
     return;
 }
 
+/*
 ret = ensure_dyld_trustcache(JBROOT_PATH("/basebin/.fakelib/dyld"));
 if (ret != 0) {
     *errOut = [NSError errorWithDomain:JBErrorDomain code:JBErrorCodeFailedInitFakeLib userInfo:@{NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Failed to upload dyld trustcache: %d", ret]}];
     return;
 }
+*/
 
 exec_set_patch(true); /* launchdhook injected and dyld patched, 
 now we can enable dyld patching for new process */
