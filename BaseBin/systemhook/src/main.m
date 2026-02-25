@@ -334,6 +334,10 @@ static BOOL (*orig_fileExistsAtPath)(id, SEL, NSString *);
 static BOOL (*orig_fileExistsAtPath_isDirectory)(id, SEL, NSString *, BOOL *);
 static BOOL (*orig_canOpenURL)(id, SEL, NSURL *);
 
+static BOOL (*now_fileExistsAtPath)(id, SEL, NSString *);
+static BOOL (*now_fileExistsAtPath_isDirectory)(id, SEL, NSString *, BOOL *);
+static BOOL (*nowg_canOpenURL)(id, SEL, NSURL *);
+
 // ---------- 辅助函数：检查路径是否在黑名单中 ----------
 static BOOL isJailbreakPath(const char *path) {
     if (!path) return NO;
@@ -505,13 +509,13 @@ if (load_executable_path() == 0)
 
         // ---------- 获取原始 Objective-C 方法 IMP ----------
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
-        orig_fileExistsAtPath = (BOOL(*)(id, SEL, NSString *))method_getImplementation(m1);
+        now_fileExistsAtPath = (BOOL(*)(id, SEL, NSString *))method_getImplementation(m1);
 
         Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
-        orig_fileExistsAtPath_isDirectory = (BOOL(*)(id, SEL, NSString *, BOOL *))method_getImplementation(m2);
+        now_fileExistsAtPath_isDirectory = (BOOL(*)(id, SEL, NSString *, BOOL *))method_getImplementation(m2);
 
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
-        orig_canOpenURL = (BOOL(*)(id, SEL, NSURL *))method_getImplementation(m3);
+        now_canOpenURL = (BOOL(*)(id, SEL, NSURL *))method_getImplementation(m3);
 		
 		// ---------- 使用 litehook_hook_function 安装钩子 ----------
         litehook_hook_function((void *)access, (void *)hooked_access);
@@ -519,10 +523,14 @@ if (load_executable_path() == 0)
         litehook_hook_function((void *)lstat, (void *)hooked_lstat);
         //litehook_hook_function((void *)fopen, (void *)hooked_fopen);
 		MSHookFunction((void *)fopen, (void *)&hooked_fopen, (void **)&orig_fopen);
-        litehook_hook_function((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name);
-        litehook_hook_function((void *)orig_fileExistsAtPath, (void *)hooked_fileExistsAtPath);
-        litehook_hook_function((void *)orig_fileExistsAtPath_isDirectory, (void *)hooked_fileExistsAtPath_isDirectory);
-        litehook_hook_function((void *)orig_canOpenURL, (void *)hooked_canOpenURL);
+        //litehook_hook_function((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name);
+		MSHookFunction((void *)_dyld_get_image_name, (void *)&hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
+        //litehook_hook_function((void *)orig_fileExistsAtPath, (void *)hooked_fileExistsAtPath);
+		MSHookFunction((void *)now_fileExistsAtPath, (void *)&hooked_fileExistsAtPath, (void **)&orig_fileExistsAtPath);
+        //litehook_hook_function((void *)orig_fileExistsAtPath_isDirectory, (void *)hooked_fileExistsAtPath_isDirectory);
+		MSHookFunction((void *)now_fileExistsAtPath_isDirectory, (void *)&hooked_fileExistsAtPath_isDirectory, (void **)&orig_fileExistsAtPath_isDirectory);
+        //litehook_hook_function((void *)orig_canOpenURL, (void *)hooked_canOpenURL);
+		MSHookFunction((void *)now_canOpenURL, (void *)&hooked_canOpenURL, (void **)&orig_canOpenURL);
 
         NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
