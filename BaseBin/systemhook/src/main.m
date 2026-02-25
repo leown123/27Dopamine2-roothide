@@ -328,11 +328,8 @@ if (load_executable_path() == 0)
 		const char *dyldInsertLibraries = getenv("DYLD_INSERT_LIBRARIES");
 		if (dyldInsertLibraries) 
 		{
-			if (!strcmp(dyldInsertLibraries, HOOK_DYLIB_PATH)) 
-			{
-				unsetenv("DYLD_INSERT_LIBRARIES");
-				NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success");
-			}
+			unsetenv("DYLD_INSERT_LIBRARIES");
+			NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success");
 		}
 			
 		litehook_hook_function(ptrace, ptrace_hook);	
