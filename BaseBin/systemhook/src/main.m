@@ -316,15 +316,35 @@ __attribute__((constructor)) static void initializer(void)
 	roothide_init();
 /***** roothide specific ****/
 
-	if (load_executable_path() == 0) 
-	{
+if (load_executable_path() == 0) 
+{
 		
-		if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) {
+	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
+	{
 
-			NSLog(@"小罪ADD: DeltaForceClient 启动！：%s", gExecutablePath);
-			return;
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
+
+		// Unset DYLD_INSERT_LIBRARIES attempt at making jailbreak detection harder
+		const char *dyldInsertLibraries = getenv("DYLD_INSERT_LIBRARIES");
+		if (dyldInsertLibraries) 
+		{
+			if (!strcmp(dyldInsertLibraries, HOOK_DYLIB_PATH)) 
+			{
+				unsetenv("DYLD_INSERT_LIBRARIES");
+				NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success");
+			}
 		}
+			
+		litehook_hook_function(ptrace, ptrace_hook);	
+			
+		
+		
+		
+		
+		//做完所有的事情直接return
+		return;
 	}
+}
 
 
 	// Under normal circumstances, dyldhook will have already handled the check-in, so get the check-in information from the __jbinfo section
