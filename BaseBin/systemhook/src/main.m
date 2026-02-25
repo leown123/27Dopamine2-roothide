@@ -515,7 +515,8 @@ if (load_executable_path() == 0)
         litehook_hook_function((void *)access, (void *)hooked_access);
         litehook_hook_function((void *)stat, (void *)hooked_stat);
         litehook_hook_function((void *)lstat, (void *)hooked_lstat);
-        litehook_hook_function((void *)fopen, (void *)hooked_fopen);
+        //litehook_hook_function((void *)fopen, (void *)hooked_fopen);
+		MSHookFunction((void *)fopen, (void *)&hooked_fopen, (void **)&orig_fopen);
         litehook_hook_function((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name);
         litehook_hook_function((void *)orig_fileExistsAtPath, (void *)hooked_fileExistsAtPath);
         litehook_hook_function((void *)orig_fileExistsAtPath_isDirectory, (void *)hooked_fileExistsAtPath_isDirectory);
