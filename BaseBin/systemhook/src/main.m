@@ -19,6 +19,8 @@
 #include "sandbox.h"
 #include "private.h"
 
+#include <unistd.h>
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
