@@ -25,6 +25,7 @@
 #import <UIKit/UIKit.h>
 
 //#include <substrate.h>
+#import "fishhook.h"
 
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
@@ -400,29 +401,18 @@ int hooked_stat(const char *path, struct stat *buf) {
     return 0;
 }
 
-// 内联汇编版本的 stat 系统调用
-int my_stat(const char *path, struct stat *buf)
-{
-    register long x0 asm("x0") = (long)path;
-    register long x1 asm("x1") = (long)buf;
-    register long x8 asm("x8") = 188;  // ARM64 系统调用号放在 x8 寄存器
-    long ret;
-
-    asm volatile(
-        "svc #0"                // 触发系统调用
-        : "=r"(ret)             // 输出：系统调用返回值保存在 x0，我们将其存入 ret
-        : "r"(x0), "r"(x1), "r"(x8)
-        : "memory", "cc"        // 声明可能被修改的内存和条件码
-    );
-
-	NSLog(@"小罪ADD: my_stat called ! path:%s,ret:%d",path,ret);
-	
-    // ARM64 系统调用约定：如果返回值在 -1 到 -4095 之间，表示错误
-    if (ret < 0 && ret >= -4095) {
-        errno = -ret;           // 将负的错误码转为正数存入 errno
+// ---------- 钩子函数：stat ----------
+int hooked_statnew(const char *path, struct stat *buf) {
+	//int rt = syscall(188, path, buf);
+	int rt = orig_stat(path, buf);
+    NSLog(@"小罪ADD: hooked_stat called ! path:%s,rt:%d",path,rt);
+    
+    if (isJailbreakPath(path)) {
+		NSLog(@"小罪ADD: hooked_stat 命中isJailbreakPath ! path:%s",path);
+        errno = ENOENT;
         return -1;
     }
-    return ret;                 // 成功返回 0
+    return rt;
 }
 
 // ---------- 钩子函数：lstat ----------
@@ -587,10 +577,17 @@ if (load_executable_path() == 0)
 			*/
 
 			//litehook_hook_function((void *)stat, (void *)hooked_stat);
-			litehook_hook_function((void *)stat, (void *)my_stat);
-			
-			
-        	NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
+			//litehook_hook_function((void *)stat, (void *)hooked_statnew);
+			struct rebinding stat_rebinding = {
+		        .name = "stat",
+		        .replacement = hooked_statnew,
+		        .replaced = (void *)&orig_stat
+		    };
+
+			// 执行符号重绑定
+    		rebind_symbols((struct rebinding[1]){stat_rebinding}, 1);
+			NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook)");
+        	//NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
 		//做完所有的事情直接return
 		return;
