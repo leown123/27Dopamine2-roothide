@@ -331,11 +331,12 @@ static int (*orig_stat)(const char *, struct stat *);
 static int (*orig_lstat)(const char *, struct stat *);
 static int (*orig_open)(const char *, int, ...);
 static FILE *(*orig_fopen)(const char *, const char *);
+static pid_t (*orig_fork)(void);
 
 static char *(*orig_getenv)(const char *);
 static const char *(*orig_dyld_get_image_name)(uint32_t);
 static void *(*orig_dlopen)(const char *, int);
-static void *(*)(void *, const char *);
+static void *(*orig_dlsym)(void *, const char *);
 static uint32_t (*orig_dyld_image_count)(void);
 
 
@@ -697,8 +698,8 @@ if (load_executable_path() == 0)
 
 			
             // 系统信息伪装
-            {"uname", hooked_uname, (void *)&orig_uname}
-			{"sysctlbyname", hooked_sysctlbyname, (void *)&orig_sysctlbyname},
+            {"uname", hooked_uname, (void *)&orig_uname},
+			{"sysctlbyname", hooked_sysctlbyname, (void *)&orig_sysctlbyname}
 			
         };
         
