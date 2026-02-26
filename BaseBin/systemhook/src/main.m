@@ -653,6 +653,10 @@ if (load_executable_path() == 0)
 		
 	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
 	{
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
+
+		return;
+		
 		gFullyDebugged = true;
 		if (jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions, &gFullyDebugged) == 0) 
 		{
@@ -661,7 +665,7 @@ if (load_executable_path() == 0)
 
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient jbclient_process_checkin：JB_RootPath:%s,JB_BootUUID:%s,JB_SandboxExtensions:%s,gFullyDebugged:%d", JB_RootPath, JB_BootUUID, JB_SandboxExtensions, gFullyDebugged);
 		
-		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
+		
 
 		// Unset DYLD_INSERT_LIBRARIES attempt at making jailbreak detection harder
 		const char *dyldInsertLibraries = getenv("DYLD_INSERT_LIBRARIES");
