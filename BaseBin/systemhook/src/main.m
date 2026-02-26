@@ -506,9 +506,6 @@ if (load_executable_path() == 0)
 		if (dyldInsertLibraries) 
 		{
 			unsetenv("DYLD_INSERT_LIBRARIES");
-			unsetenv("_SafeMode");
-			unsetenv("_MSSafeMode");
-			unsetenv("DISABLE_TWEAKS");
 			NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success");
 		}
 
