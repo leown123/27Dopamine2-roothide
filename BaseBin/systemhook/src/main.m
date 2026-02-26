@@ -367,6 +367,9 @@ static BOOL isJailbreakPath(const char *path) {
                     @"systemhook",
                     @"roothide",
 					@"basebin",
+					@"Troll",
+					@"troll",
+					@"sign",
                 ];
     }
     
@@ -467,7 +470,8 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
 	NSLog(@"小罪ADD: hooked_dyld_get_image_name called ! name:%s",name);
     if (name) {
         NSString *nsName = [NSString stringWithUTF8String:name];
-        NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide"];
+        NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide", @"hook",@"Troll",
+@"troll",@"sign"];
         for (NSString *lib in blacklistedLibs) {
             if ([nsName containsString:lib]) {
                 return "/usr/lib/libSystem.B.dylib";
@@ -482,7 +486,8 @@ void *hooked_dlsym(void *handle, const char *symbol) {
 	NSLog(@"小罪ADD: hooked_dlsym called ! symbol:%s",symbol);
     if (symbol) {
         NSString *nsSymbol = [NSString stringWithUTF8String:symbol];
-        NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root",@"fish",@"systemhook"];
+        NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root",@"fish",@"systemhook",@"Troll",
+@"troll",@"sign"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
                 return NULL;
@@ -768,6 +773,12 @@ if (load_executable_path() == 0)
 		size_t len = sizeof(osver);
 		sysctlbyname("kern.osversion", osver, &len, NULL, 0);
 		NSLog(@"小罪ADD: kern.osversion: %s", osver);
+
+		char version[256];
+		size_t len1 = sizeof(version);
+		sysctlbyname("kern.osproductversion", version, &len1, NULL, 0);
+		NSLog(@"小罪ADD: kern.osproductversion: %s", version);
+		
 		
 		//做完所有的事情直接return
 		return;
