@@ -370,6 +370,8 @@ static BOOL isJailbreakPath(const char *path) {
 					@"Troll",
 					@"troll",
 					@"sign",
+					@"jb",
+					@"libjail",
                 ];
     }
     
@@ -471,7 +473,7 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
     if (name) {
         NSString *nsName = [NSString stringWithUTF8String:name];
         NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide", @"hook",@"Troll",
-@"troll",@"sign"];
+@"troll",@"sign",@"jb",@"libjail"];
         for (NSString *lib in blacklistedLibs) {
             if ([nsName containsString:lib]) {
                 return "/usr/lib/libSystem.B.dylib";
@@ -487,7 +489,7 @@ void *hooked_dlsym(void *handle, const char *symbol) {
     if (symbol) {
         NSString *nsSymbol = [NSString stringWithUTF8String:symbol];
         NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root",@"fish",@"systemhook",@"Troll",
-@"troll",@"sign"];
+@"troll",@"sign",@"jb",@"libjail"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
                 return NULL;
