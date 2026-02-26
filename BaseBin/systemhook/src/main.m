@@ -390,14 +390,14 @@ int hooked_access(const char *path, int amode) {
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
 	int rt = syscall(188, path, buf);
-    NSLog(@"小罪ADD: hooked_stat called ! path:%s",path);
+    NSLog(@"小罪ADD: hooked_stat called ! path:%s,rt:%d",path,rt);
     
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_stat 命中isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
-    return rt;
+    return 0;
 }
 
 // ---------- 钩子函数：lstat ----------
