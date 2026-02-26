@@ -511,6 +511,27 @@ if (load_executable_path() == 0)
 			unsetenv("DISABLE_TWEAKS");
 			NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success");
 		}
+
+		const char *SafeModestr = getenv("_SafeMode");
+		if (SafeModestr) 
+		{
+			unsetenv("_SafeMode");
+			NSLog(@"小罪ADD: systemhook: unsetenv _SafeMode success");
+		}
+
+		const char *MSSafeModestr = getenv("_MSSafeMode");
+		if (MSSafeModestr) 
+		{
+			unsetenv("_MSSafeMode");
+			NSLog(@"小罪ADD: systemhook: unsetenv MSSafeModestr success");
+		}
+
+		const char *DISABLE_TWEAKSstr = getenv("DISABLE_TWEAKS");
+		if (DISABLE_TWEAKSstr) 
+		{
+			unsetenv("DISABLE_TWEAKS");
+			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
+		}
 			
 		//litehook_hook_function(ptrace, ptrace_hook);	
 
@@ -540,7 +561,7 @@ if (load_executable_path() == 0)
             litehook_hook_function((void *)method_getImplementation(m3), (void *)hooked_canOpenURL);
 			*/
 
-			litehook_hook_function((void *)stat, (void *)hooked_stat);
+			//litehook_hook_function((void *)stat, (void *)hooked_stat);
 			
         	NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
