@@ -494,10 +494,13 @@ if (load_executable_path() == 0)
 		
 	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
 	{
+		gFullyDebugged = true;
 		if (jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions, &gFullyDebugged) == 0) 
 		{
 			//consume_tokenized_sandbox_extensions(JB_SandboxExtensions);
 		}
+
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient jbclient_process_checkin：JB_RootPath:%s,JB_BootUUID:%s,JB_SandboxExtensions:%s,gFullyDebugged:%d", JB_RootPath, JB_BootUUID, JB_SandboxExtensions, gFullyDebugged);
 		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
 
@@ -530,7 +533,7 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 			
-		litehook_hook_function(ptrace, ptrace_hook);	
+		//litehook_hook_function(ptrace, ptrace_hook);	
 
 			/*
 		orig_access = dlsym(RTLD_DEFAULT, "access");
@@ -558,7 +561,7 @@ if (load_executable_path() == 0)
             litehook_hook_function((void *)method_getImplementation(m3), (void *)hooked_canOpenURL);
 			*/
 
-			//litehook_hook_function((void *)stat, (void *)hooked_stat);
+			litehook_hook_function((void *)stat, (void *)hooked_stat);
 			
         	NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
