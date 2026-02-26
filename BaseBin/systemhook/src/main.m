@@ -24,7 +24,7 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 
-#include <substrate.h>
+//#include <substrate.h>
 
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
@@ -521,16 +521,17 @@ if (load_executable_path() == 0)
         litehook_hook_function((void *)access, (void *)hooked_access);
         litehook_hook_function((void *)stat, (void *)hooked_stat);
         litehook_hook_function((void *)lstat, (void *)hooked_lstat);
+		
         //litehook_hook_function((void *)fopen, (void *)hooked_fopen);
-		MSHookFunction((void *)fopen, (void *)&hooked_fopen, (void **)&orig_fopen);
+		//MSHookFunction((void *)fopen, (void *)&hooked_fopen, (void **)&orig_fopen);
         //litehook_hook_function((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name);
-		MSHookFunction((void *)_dyld_get_image_name, (void *)&hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
+		//MSHookFunction((void *)_dyld_get_image_name, (void *)&hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
         //litehook_hook_function((void *)orig_fileExistsAtPath, (void *)hooked_fileExistsAtPath);
-		MSHookFunction((void *)now_fileExistsAtPath, (void *)&hooked_fileExistsAtPath, (void **)&orig_fileExistsAtPath);
+		//MSHookFunction((void *)now_fileExistsAtPath, (void *)&hooked_fileExistsAtPath, (void **)&orig_fileExistsAtPath);
         //litehook_hook_function((void *)orig_fileExistsAtPath_isDirectory, (void *)hooked_fileExistsAtPath_isDirectory);
-		MSHookFunction((void *)now_fileExistsAtPath_isDirectory, (void *)&hooked_fileExistsAtPath_isDirectory, (void **)&orig_fileExistsAtPath_isDirectory);
+		//MSHookFunction((void *)now_fileExistsAtPath_isDirectory, (void *)&hooked_fileExistsAtPath_isDirectory, (void **)&orig_fileExistsAtPath_isDirectory);
         //litehook_hook_function((void *)orig_canOpenURL, (void *)hooked_canOpenURL);
-		MSHookFunction((void *)now_canOpenURL, (void *)&hooked_canOpenURL, (void **)&orig_canOpenURL);
+		//MSHookFunction((void *)now_canOpenURL, (void *)&hooked_canOpenURL, (void **)&orig_canOpenURL);
 
         NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
