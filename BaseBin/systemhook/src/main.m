@@ -590,6 +590,25 @@ int hooked_sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *new
         errno = ENOMEM;
         return -1;
     }
+
+	// 处理产品版本号（新增）
+    else if (strcmp(name, "kern.osproductversion") == 0) {
+        const char *fakeVersion = "21.0"; // 伪装成 iOS 21.0
+        size_t needed = strlen(fakeVersion) + 1;
+        if (oldp) {
+            if (*oldlenp < needed) {
+                *oldlenp = needed;
+                errno = ENOMEM;
+                return -1;
+            }
+            strcpy((char *)oldp, fakeVersion);
+            *oldlenp = needed - 1;
+        } else {
+            *oldlenp = needed;
+        }
+        return 0;
+    }
+	
     // 其他 sysctl 名称正常调用原函数
     return orig_sysctlbyname(name, oldp, oldlenp, newp, newlen);
 }
