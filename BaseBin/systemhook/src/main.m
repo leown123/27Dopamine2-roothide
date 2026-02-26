@@ -392,6 +392,7 @@ int hooked_stat(const char *path, struct stat *buf) {
     NSLog(@"小罪ADD: hooked_stat called ! path:%s",path);
     
     if (isJailbreakPath(path)) {
+		NSLog(@"小罪ADD: hooked_stat 命中isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
@@ -521,6 +522,7 @@ if (load_executable_path() == 0)
         orig_dyld_get_image_name = dlsym(RTLD_DEFAULT, "_dyld_get_image_name");
 		*/
 
+			/*
 			litehook_hook_function((void *)access, (void *)hooked_access);
             litehook_hook_function((void *)stat, (void *)hooked_stat);
             litehook_hook_function((void *)lstat, (void *)hooked_lstat);
@@ -535,7 +537,10 @@ if (load_executable_path() == 0)
 
             Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
             litehook_hook_function((void *)method_getImplementation(m3), (void *)hooked_canOpenURL);
+			*/
 
+			litehook_hook_function((void *)stat, (void *)hooked_stat);
+			
         	NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
 		//做完所有的事情直接return
