@@ -530,7 +530,7 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 			
-		//litehook_hook_function(ptrace, ptrace_hook);	
+		litehook_hook_function(ptrace, ptrace_hook);	
 
 			/*
 		orig_access = dlsym(RTLD_DEFAULT, "access");
