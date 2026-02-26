@@ -586,7 +586,9 @@ if (load_executable_path() == 0)
             litehook_hook_function((void *)method_getImplementation(m3), (void *)hooked_canOpenURL);
 			*/
 
-			litehook_hook_function((void *)stat, (void *)hooked_stat);
+			//litehook_hook_function((void *)stat, (void *)hooked_stat);
+			litehook_hook_function((void *)stat, (void *)my_stat);
+			
 			
         	NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
