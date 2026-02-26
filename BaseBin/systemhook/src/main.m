@@ -326,18 +326,16 @@ static NSArray *jailbreakPaths = nil;
 static int (*orig_access)(const char *, int);
 static int (*orig_stat)(const char *, struct stat *);
 static int (*orig_lstat)(const char *, struct stat *);
+static int (*orig_open)(const char *, int, ...);
 static FILE *(*orig_fopen)(const char *, const char *);
+
 static char *(*orig_getenv)(const char *);
 static const char *(*orig_dyld_get_image_name)(uint32_t);
+static void *(*orig_dlopen)(const char *, int);
+static void *(*orig_dlsym)(void *, const char *);
+static uint32_t (*orig_dyld_image_count)(void);
 
-// 对于 Objective-C 方法，保存原始 IMP
-static BOOL (*orig_fileExistsAtPath)(id, SEL, NSString *);
-static BOOL (*orig_fileExistsAtPath_isDirectory)(id, SEL, NSString *, BOOL *);
-static BOOL (*orig_canOpenURL)(id, SEL, NSURL *);
 
-static BOOL (*now_fileExistsAtPath)(id, SEL, NSString *);
-static BOOL (*now_fileExistsAtPath_isDirectory)(id, SEL, NSString *, BOOL *);
-static BOOL (*now_canOpenURL)(id, SEL, NSURL *);
 
 // ---------- 辅助函数：检查路径是否在黑名单中 ----------
 static BOOL isJailbreakPath(const char *path) {
@@ -363,7 +361,8 @@ static BOOL isJailbreakPath(const char *path) {
                     @"/private/var/lib/apt",
                     @"/private/var/stash",
                     @"systemhook",
-                    @"roothide"
+                    @"roothide",
+					@"basebin",
                 ];
     }
     
@@ -376,34 +375,23 @@ static BOOL isJailbreakPath(const char *path) {
     return NO;
 }
 
-// ---------- 钩子函数：access ----------
-int hooked_access(const char *path, int amode) {
-    NSLog(@"小罪ADD: hooked_access called ! path:%s",path);
+// ---------- 辅助函数：检查路径是否在反作弊文件中 ----------
+static BOOL isdocPath(const char *path) {
+    if (!path) return NO;
     
-    if (isJailbreakPath(path)) {
-        errno = ENOENT;
-        return -1;
+    NSString *nsPath = [NSString stringWithUTF8String:path];
+    
+    if ([nsPath hasPrefix:@"/Documents/"] || [nsPath hasPrefix:@"ano"]|| [nsPath hasPrefix:@"dylib"])
+    {
+        return YES;
     }
-    // 使用 syscall 直接调用系统调用，绕过钩子
-    return syscall(33, path, amode);
+   
+    return NO;
 }
+
 
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
-	int rt = syscall(188, path, buf);
-    NSLog(@"小罪ADD: hooked_stat called ! path:%s,rt:%d",path,rt);
-    
-    if (isJailbreakPath(path)) {
-		NSLog(@"小罪ADD: hooked_stat 命中isJailbreakPath ! path:%s",path);
-        errno = ENOENT;
-        return -1;
-    }
-    return 0;
-}
-
-// ---------- 钩子函数：stat ----------
-int hooked_statnew(const char *path, struct stat *buf) {
-	//int rt = syscall(188, path, buf);
 	int rt = orig_stat(path, buf);
     NSLog(@"小罪ADD: hooked_stat called ! path:%s,rt:%d",path,rt);
     
@@ -423,79 +411,97 @@ int hooked_lstat(const char *path, struct stat *buf) {
         errno = ENOENT;
         return -1;
     }
-    return syscall(190, path, buf);
+
+	return orig_lstat(path, buf);
+    //return syscall(190, path, buf);
 }
 
+int hooked_open(const char *path, int flags, ...) {
+	NSLog(@"小罪ADD: hooked_open called ! path:%s",path);
+	
+    if (isJailbreakPath(path)) {
+        errno = ENOENT;
+        return -1;
+    }
+    // 处理可变参数
+    mode_t mode = 0;
+    if (flags & O_CREAT) {
+        va_list ap;
+        va_start(ap, flags);
+        mode = va_arg(ap, int);
+        va_end(ap);
+        return orig_open(path, flags, mode);
+    }
+    return orig_open(path, flags, mode);
+}
 
-// ---------- 钩子函数：_dyld_get_image_name ----------
+// ---------- 2. 环境变量检测 ----------
+char *hooked_getenv(const char *name) {
+
+	NSLog(@"小罪ADD: hooked_getenv called ! name:%s",name);
+	
+    if (strcmp(name, "DYLD_INSERT_LIBRARIES") == 0) {
+        return NULL;
+    }
+    return orig_getenv(name);
+}
+
+// ---------- 3. 动态库检测 ----------
 const char *hooked_dyld_get_image_name(uint32_t index) {
-    const struct mach_header *header = _dyld_get_image_header(index);
-    if (!header) return NULL;
-
-    Dl_info info;
-    if (dladdr(header, &info) && info.dli_fname) {
-        NSString *name = [NSString stringWithUTF8String:info.dli_fname];
-        NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"systemhook", @"roothide"];
+    const char *name = orig_dyld_get_image_name(index);
+    if (name) {
+        NSString *nsName = [NSString stringWithUTF8String:name];
+        NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide"];
         for (NSString *lib in blacklistedLibs) {
-            if ([name containsString:lib]) {
-                return "/usr/lib/libSystem.B.dylib"; // 伪装成系统库
+            if ([nsName containsString:lib]) {
+                return "/usr/lib/libSystem.B.dylib";
             }
         }
-        return info.dli_fname;
     }
-    return NULL;
+    return name;
 }
 
+pid_t hooked_fork(void) {
+    // 某些检测会尝试fork，可返回错误
+    errno = EPERM;
+    return -1;
+}
 
-// ---------- 钩子函数：[NSFileManager fileExistsAtPath:] ----------
+// ========== Objective-C 方法 Hook ==========
+// 注意：fishhook 只能 hook C 函数，OC 方法需要用 runtime
+static IMP orig_fileExistsAtPath;
+static IMP orig_fileExistsAtPath_isDirectory;
+static IMP orig_canOpenURL;
+
 BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
-    NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
-    // 检查黑名单
+
+	NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
             return NO;
         }
     }
-    // 使用 stat 系统调用检查文件是否存在
-    struct stat st;
-    const char *cpath = [path fileSystemRepresentation];
-    if (syscall(188, cpath, &st) == 0) {
-        return YES;
-    } else {
-        return NO;
-    }
+    return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 }
 
-// ---------- 钩子函数：[NSFileManager fileExistsAtPath:isDirectory:] ----------
 BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL *isDirectory) {
-    // 检查黑名单
+NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
             return NO;
         }
     }
-    // 使用 lstat 系统调用获取文件信息
-    struct stat st;
-    const char *cpath = [path fileSystemRepresentation];
-    if (syscall(190, cpath, &st) == 0) {
-        if (isDirectory) {
-            *isDirectory = S_ISDIR(st.st_mode);
-        }
-        return YES;
-    } else {
-        return NO;
-    }
+    return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
 }
 
-// ---------- 钩子函数：[UIApplication canOpenURL:] ----------
 BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     NSString *scheme = [url scheme];
-    NSLog(@"小罪ADD: hooked_canOpenURL called ! scheme:%@",scheme);
-    if ([scheme isEqualToString:@"cydia"] || [scheme isEqualToString:@"sileo"] || [scheme isEqualToString:@"zebra"]) {
+	NSLog(@"小罪ADD: scheme called ! scheme:%@",scheme);
+    if ([scheme isEqualToString:@"cydia"] || [scheme isEqualToString:@"sileo"] || 
+        [scheme isEqualToString:@"zebra"] || [scheme isEqualToString:@"filza"]) {
         return NO;
     }
-    //return orig_canOpenURL(self, _cmd, url);
-    return NO;
+    return ((BOOL(*)(id, SEL, NSURL *))orig_canOpenURL)(self, _cmd, url);
 }
 
 __attribute__((constructor)) static void initializer(void)
@@ -550,43 +556,55 @@ if (load_executable_path() == 0)
 			
 		//litehook_hook_function(ptrace, ptrace_hook);	
 
-			/*
-		orig_access = dlsym(RTLD_DEFAULT, "access");
-        orig_stat = dlsym(RTLD_DEFAULT, "stat");
-        orig_lstat = dlsym(RTLD_DEFAULT, "lstat");
-        orig_fopen = dlsym(RTLD_DEFAULT, "fopen");
-        orig_getenv = dlsym(RTLD_DEFAULT, "getenv");
-        orig_dyld_get_image_name = dlsym(RTLD_DEFAULT, "_dyld_get_image_name");
-		*/
+		
+ 		// ---------- 使用 fishhook 绑定 C 函数 ----------
+        struct rebinding bindings[] = {
+            // 文件操作类
+            {"access", hooked_access, (void *)&orig_access},
+            {"stat", hooked_stat, (void *)&orig_stat},
+            {"lstat", hooked_lstat, (void *)&orig_lstat},
+            {"open", hooked_open, (void *)&orig_open},
+            //{"fstat", hooked_fstat, (void *)&orig_fstat},
+            
+            // 环境变量
+            {"getenv", hooked_getenv, (void *)&orig_getenv},
 
 			/*
-			litehook_hook_function((void *)access, (void *)hooked_access);
-            litehook_hook_function((void *)stat, (void *)hooked_stat);
-            litehook_hook_function((void *)lstat, (void *)hooked_lstat);
-            litehook_hook_function((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name);
-        
-            // Hook Objective-C 方法（直接替换 IMP）
-            Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
-            litehook_hook_function((void *)method_getImplementation(m1), (void *)hooked_fileExistsAtPath);
-
-            Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
-            litehook_hook_function((void *)method_getImplementation(m2), (void *)hooked_fileExistsAtPath_isDirectory);
-
-            Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
-            litehook_hook_function((void *)method_getImplementation(m3), (void *)hooked_canOpenURL);
+            // 动态库检测
+            {"_dyld_get_image_name", hooked_dyld_get_image_name, (void *)&orig_dyld_get_image_name},
+            {"_dyld_image_count", hooked_dyld_image_count, (void *)&orig_dyld_image_count},
+            {"dlopen", hooked_dlopen, (void *)&orig_dlopen},
+            {"dlsym", hooked_dlsym, (void *)&orig_dlsym},
+            
+            // 进程/调试检测
+            {"sysctl", hooked_sysctl, (void *)&orig_sysctl},
+            {"sysctlbyname", hooked_sysctlbyname, (void *)&orig_sysctlbyname},
+            {"proc_pidpath", hooked_proc_pidpath, (void *)&orig_proc_pidpath},
+            {"ptrace", hooked_ptrace, (void *)&orig_ptrace},
+            {"fork", hooked_fork, (void *)&orig_fork},
+            
+            // 系统信息
+            {"uname", hooked_uname, (void *)&orig_uname}
 			*/
+			
+        };
+        
+        rebind_symbols(bindings, sizeof(bindings) / sizeof(struct rebinding));
 
-			//litehook_hook_function((void *)stat, (void *)hooked_stat);
-			//litehook_hook_function((void *)stat, (void *)hooked_statnew);
-			struct rebinding stat_rebinding = {
-		        .name = "stat",
-		        .replacement = hooked_statnew,
-		        .replaced = (void *)&orig_stat
-		    };
-
-			// 执行符号重绑定
-    		rebind_symbols((struct rebinding[1]){stat_rebinding}, 1);
-			NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook)");
+		// ---------- 使用 runtime Hook Objective-C 方法 ----------
+        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
+        orig_fileExistsAtPath = method_getImplementation(m1);
+        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
+        
+        Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
+        orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
+        method_setImplementation(m2, (IMP)hooked_fileExistsAtPath_isDirectory);
+        
+        Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
+        orig_canOpenURL = method_getImplementation(m3);
+        method_setImplementation(m3, (IMP)hooked_canOpenURL);
+		
+			NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook+runtime Hook)");
         	//NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 		
 		//做完所有的事情直接return
