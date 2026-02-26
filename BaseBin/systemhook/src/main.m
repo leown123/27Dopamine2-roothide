@@ -400,6 +400,31 @@ int hooked_stat(const char *path, struct stat *buf) {
     return 0;
 }
 
+// 内联汇编版本的 stat 系统调用
+int my_stat(const char *path, struct stat *buf)
+{
+    register long x0 asm("x0") = (long)path;
+    register long x1 asm("x1") = (long)buf;
+    register long x8 asm("x8") = 188;  // ARM64 系统调用号放在 x8 寄存器
+    long ret;
+
+    asm volatile(
+        "svc #0"                // 触发系统调用
+        : "=r"(ret)             // 输出：系统调用返回值保存在 x0，我们将其存入 ret
+        : "r"(x0), "r"(x1), "r"(x8)
+        : "memory", "cc"        // 声明可能被修改的内存和条件码
+    );
+
+	NSLog(@"小罪ADD: my_stat called ! path:%s,ret:%d",path,ret);
+	
+    // ARM64 系统调用约定：如果返回值在 -1 到 -4095 之间，表示错误
+    if (ret < 0 && ret >= -4095) {
+        errno = -ret;           // 将负的错误码转为正数存入 errno
+        return -1;
+    }
+    return ret;                 // 成功返回 0
+}
+
 // ---------- 钩子函数：lstat ----------
 int hooked_lstat(const char *path, struct stat *buf) {
     NSLog(@"小罪ADD: hooked_lstat called ! path:%s",path);
