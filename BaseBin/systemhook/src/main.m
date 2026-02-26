@@ -27,6 +27,9 @@
 //#include <substrate.h>
 #import "fishhook.h"
 
+#import <sys/utsname.h>
+#import <sys/sysctl.h>
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
