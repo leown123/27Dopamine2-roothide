@@ -332,7 +332,7 @@ static FILE *(*orig_fopen)(const char *, const char *);
 static char *(*orig_getenv)(const char *);
 static const char *(*orig_dyld_get_image_name)(uint32_t);
 static void *(*orig_dlopen)(const char *, int);
-static void *(*orig_dlsym)(void *, const char *);
+static void *(*)(void *, const char *);
 static uint32_t (*orig_dyld_image_count)(void);
 
 
@@ -460,6 +460,7 @@ char *hooked_getenv(const char *name) {
 // ---------- 3. 动态库检测 ----------
 const char *hooked_dyld_get_image_name(uint32_t index) {
     const char *name = orig_dyld_get_image_name(index);
+	NSLog(@"小罪ADD: hooked_dyld_get_image_name called ! name:%s",name);
     if (name) {
         NSString *nsName = [NSString stringWithUTF8String:name];
         NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide"];
@@ -470,6 +471,21 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
         }
     }
     return name;
+}
+
+void *hooked_dlsym(void *handle, const char *symbol) {
+
+	NSLog(@"小罪ADD: hooked_dlsym called ! symbol:%s",symbol);
+    if (symbol) {
+        NSString *nsSymbol = [NSString stringWithUTF8String:symbol];
+        NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root",@"fish",@"systemhook"];
+        for (NSString *sym in blacklistedSymbols) {
+            if ([nsSymbol containsString:sym]) {
+                return NULL;
+            }
+        }
+    }
+    return orig_dlsym(handle, symbol);
 }
 
 pid_t hooked_fork(void) {
@@ -514,6 +530,87 @@ BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     }
     return ((BOOL(*)(id, SEL, NSURL *))orig_canOpenURL)(self, _cmd, url);
 }
+
+// ---------- 原始函数指针 ----------
+static int (*orig_uname)(struct utsname *);
+static int (*orig_sysctlbyname)(const char *, void *, size_t *, void *, size_t);
+
+// ---------- Hook: uname ----------
+int hooked_uname(struct utsname *buf) {
+
+    int ret = orig_uname(buf);
+    if (ret == 0 && buf) {
+        // 修改系统版本相关字段
+        // release: 内核版本，如 "21.0.0"（对应 iOS 21.0）
+        strcpy(buf->release, "21.0.0");
+        // version: 详细版本信息，可伪造
+        strcpy(buf->version, "Darwin Kernel Version 21.0.0: Mon Jan 1 00:00:00 PDT 2024; root:xnu-7192.0.0~1/RELEASE_ARM64_T8101");
+        // 其他字段（sysname、machine等）可根据需要保持原样或修改
+    }
+	NSLog(@"小罪ADD: hooked_uname called ! buf->release:%s",buf->release);
+    return ret;
+}
+
+// ---------- Hook: sysctlbyname ----------
+int hooked_sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen) 
+{
+	NSLog(@"小罪ADD: hooked_sysctlbyname called ! name:%s",name);
+	
+    // 拦截系统版本相关的 sysctl 名称
+    if (strcmp(name, "kern.osversion") == 0) {
+        // 返回伪造的构建号（例如 iOS 21.0 的构建号）
+        const char *fakeBuild = "21A123";
+        if (oldp && oldlenp) {
+            size_t needed = strlen(fakeBuild) + 1;
+            if (*oldlenp >= needed) {
+                strcpy((char *)oldp, fakeBuild);
+                *oldlenp = needed - 1; // 不包含终止符的长度
+                return 0;
+            }
+        }
+        // 如果缓冲区不足，返回错误
+        errno = ENOMEM;
+        return -1;
+    }
+    else if (strcmp(name, "kern.version") == 0) {
+        // 返回伪造的内核版本信息
+        const char *fakeKernVer = "Darwin Kernel Version 21.0.0: root:xnu-7192.0.0~1/RELEASE_ARM64_T8101";
+        if (oldp && oldlenp) {
+            size_t needed = strlen(fakeKernVer) + 1;
+            if (*oldlenp >= needed) {
+                strcpy((char *)oldp, fakeKernVer);
+                *oldlenp = needed - 1;
+                return 0;
+            }
+        }
+        errno = ENOMEM;
+        return -1;
+    }
+    // 其他 sysctl 名称正常调用原函数
+    return orig_sysctlbyname(name, oldp, oldlenp, newp, newlen);
+}
+
+// ---------- Objective-C Runtime Hooks ----------
+static IMP orig_UIDevice_systemVersion;
+static IMP orig_NSProcessInfo_operatingSystemVersion;
+static IMP orig_NSProcessInfo_operatingSystemVersionString;
+
+// Hook [UIDevice systemVersion]
+NSString *hooked_UIDevice_systemVersion(id self, SEL _cmd) {
+    return @"21.0"; // 直接返回固定版本字符串
+}
+
+// Hook [NSProcessInfo operatingSystemVersion]
+NSOperatingSystemVersion hooked_NSProcessInfo_operatingSystemVersion(id self, SEL _cmd) {
+    NSOperatingSystemVersion version = {21, 0, 0}; // major, minor, patch
+    return version;
+}
+
+// Hook [NSProcessInfo operatingSystemVersionString]
+NSString *hooked_NSProcessInfo_operatingSystemVersionString(id self, SEL _cmd) {
+    return @"Version 21.0 (Build 21A123)";
+}
+
 
 __attribute__((constructor)) static void initializer(void)
 {	
@@ -580,23 +677,25 @@ if (load_executable_path() == 0)
             // 环境变量
             {"getenv", hooked_getenv, (void *)&orig_getenv},
 
-			/*
+			
             // 动态库检测
             {"_dyld_get_image_name", hooked_dyld_get_image_name, (void *)&orig_dyld_get_image_name},
-            {"_dyld_image_count", hooked_dyld_image_count, (void *)&orig_dyld_image_count},
-            {"dlopen", hooked_dlopen, (void *)&orig_dlopen},
+            //{"_dyld_image_count", hooked_dyld_image_count, (void *)&orig_dyld_image_count},
+            //{"dlopen", hooked_dlopen, (void *)&orig_dlopen},
             {"dlsym", hooked_dlsym, (void *)&orig_dlsym},
-            
+
+			
             // 进程/调试检测
-            {"sysctl", hooked_sysctl, (void *)&orig_sysctl},
-            {"sysctlbyname", hooked_sysctlbyname, (void *)&orig_sysctlbyname},
-            {"proc_pidpath", hooked_proc_pidpath, (void *)&orig_proc_pidpath},
-            {"ptrace", hooked_ptrace, (void *)&orig_ptrace},
-            {"fork", hooked_fork, (void *)&orig_fork},
+            //{"sysctl", hooked_sysctl, (void *)&orig_sysctl},
             
-            // 系统信息
+            //{"proc_pidpath", hooked_proc_pidpath, (void *)&orig_proc_pidpath},
+            //{"ptrace", hooked_ptrace, (void *)&orig_ptrace},
+            {"fork", hooked_fork, (void *)&orig_fork},
+
+			
+            // 系统信息伪装
             {"uname", hooked_uname, (void *)&orig_uname}
-			*/
+			{"sysctlbyname", hooked_sysctlbyname, (void *)&orig_sysctlbyname},
 			
         };
         
@@ -615,9 +714,37 @@ if (load_executable_path() == 0)
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
+
+		// 使用 runtime hook Objective-C 方法
+        // UIDevice systemVersion
+        Method m4 = class_getInstanceMethod([UIDevice class], @selector(systemVersion));
+        orig_UIDevice_systemVersion = method_getImplementation(m4);
+        method_setImplementation(m4, (IMP)hooked_UIDevice_systemVersion);
+
+        // NSProcessInfo operatingSystemVersion
+        Method m5 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersion));
+        orig_NSProcessInfo_operatingSystemVersion = method_getImplementation(m5);
+        method_setImplementation(m5, (IMP)hooked_NSProcessInfo_operatingSystemVersion);
+
+        // NSProcessInfo operatingSystemVersionString
+        Method m6 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersionString));
+        orig_NSProcessInfo_operatingSystemVersionString = method_getImplementation(m6);
+        method_setImplementation(m6, (IMP)hooked_NSProcessInfo_operatingSystemVersionString);
 		
-			NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook+runtime Hook)");
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook+runtime Hook)");
         	//NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
+
+		NSLog(@"小罪ADD: UIDevice systemVersion: %@", [UIDevice currentDevice].systemVersion);
+		NSProcessInfo *pinfo = [NSProcessInfo processInfo];
+		NSLog(@"小罪ADD: operatingSystemVersion: %ld.%ld.%ld", pinfo.operatingSystemVersion.majorVersion, pinfo.operatingSystemVersion.minorVersion, pinfo.operatingSystemVersion.patchVersion);
+		NSLog(@"小罪ADD: operatingSystemVersionString: %@", pinfo.operatingSystemVersionString);
+		struct utsname u;
+		uname(&u);
+		NSLog(@"小罪ADD: uname release: %s", u.release);
+		char osver[256];
+		size_t len = sizeof(osver);
+		sysctlbyname("kern.osversion", osver, &len, NULL, 0);
+		NSLog(@"小罪ADD: kern.osversion: %s", osver);
 		
 		//做完所有的事情直接return
 		return;
