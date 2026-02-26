@@ -389,6 +389,17 @@ static BOOL isdocPath(const char *path) {
     return NO;
 }
 
+// ---------- 1. 文件操作类 ----------
+int hooked_access(const char *path, int amode) {
+	NSLog(@"小罪ADD: hooked_access called ! path:%s",path);
+	
+    if (isJailbreakPath(path)) {
+        errno = ENOENT;
+        return -1;
+    }
+    return orig_access(path, amode);
+}
+
 
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
@@ -589,7 +600,8 @@ if (load_executable_path() == 0)
 			
         };
         
-        rebind_symbols(bindings, sizeof(bindings) / sizeof(struct rebinding));
+        //rebind_symbols(bindings, sizeof(bindings) / sizeof(struct rebinding));
+		rebind_symbols(bindings, sizeof(bindings) / sizeof(bindings[0]));
 
 		// ---------- 使用 runtime Hook Objective-C 方法 ----------
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
