@@ -512,7 +512,7 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
 @"troll",@"sign",@"jb",@"libjail"];
         for (NSString *lib in blacklistedLibs) {
             if ([nsName containsString:lib]) {
-			NSLog(@"小罪ADD: hooked_dyld_get_image_name called 命中 blacklistedLibs! name:%s",name);
+			NSLog(@"小罪ADD: hooked_dyld_get_image_name called 命中 blacklistedLibs! lib:%@ ,name:%s",lib,name);
                 return "/usr/lib/libSystem.B.dylib";
             }
         }
@@ -522,14 +522,14 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
 
 void *hooked_dlsym(void *handle, const char *symbol) {
 
-	NSLog(@"小罪ADD: hooked_dlsym called ! symbol:%s",symbol);
+	//NSLog(@"小罪ADD: hooked_dlsym called ! symbol:%s",symbol);
     if (symbol) {
         NSString *nsSymbol = [NSString stringWithUTF8String:symbol];
         NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root",@"fish",@"systemhook",@"Troll",
 @"troll",@"sign",@"jb",@"libjail"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
-			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! sym:%s",sym);
+			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! symbol:%s,sym:%s",symbol,sym);
                 return NULL;
             }
         }
