@@ -580,7 +580,7 @@ BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     NSString *scheme = [url scheme];
 	NSLog(@"小罪ADD: scheme called ! scheme:%@",scheme);
     if ([scheme isEqualToString:@"cydia"] || [scheme isEqualToString:@"sileo"] || 
-        [scheme isEqualToString:@"zebra"] || [scheme isEqualToString:@"filza"]) {
+        [scheme isEqualToString:@"zebra"] || [scheme isEqualToString:@"filza"] || [scheme isEqualToString:@"Dopamine"]) {
 		NSLog(@"小罪ADD: hooked_canOpenURL called 命中 jailbreakPaths! scheme:%@",scheme);
         return NO;
     }
