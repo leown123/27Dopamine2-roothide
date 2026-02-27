@@ -370,7 +370,6 @@ static BOOL isJailbreakPath(const char *path) {
                     @"roothide",
 					@"basebin",
 					@"Troll",
-					@"troll",
 					@"sign",
 					@"jb",
 					@"libjail",
@@ -508,8 +507,7 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
 	
     if (name) {
         NSString *nsName = [NSString stringWithUTF8String:name];
-        NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide", @"hook",@"Troll",
-@"troll",@"sign",@"jb",@"libjail"];
+        NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide", @"hook",@"Troll",@"sign",@"jb",@"libjail"];
         for (NSString *lib in blacklistedLibs) {
             if ([nsName containsString:lib]) {
 			NSLog(@"小罪ADD: hooked_dyld_get_image_name called 命中 blacklistedLibs! lib:%@ ,name:%s",lib,name);
@@ -525,8 +523,8 @@ void *hooked_dlsym(void *handle, const char *symbol) {
 	//NSLog(@"小罪ADD: hooked_dlsym called ! symbol:%s",symbol);
     if (symbol) {
         NSString *nsSymbol = [NSString stringWithUTF8String:symbol];
-        NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root",@"fish",@"systemhook",@"Troll",
-@"troll",@"sign",@"jb",@"libjail"];
+        NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root", @"Root",@"fish",@"systemhook",@"Troll",
+@"sign",@"jb",@"libjail"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
 			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! symbol:%s,sym:%s",symbol,sym);
