@@ -499,6 +499,7 @@ char *hooked_getenv(const char *name) {
     if (strcmp(name, "DYLD_INSERT_LIBRARIES") == 0) {
         return NULL;
     }
+	
     return orig_getenv(name);
 }
 
@@ -828,6 +829,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: kern.osproductversion: %s", version);
 		*/
 
+		
+		// 环境变量
+        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
+        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
+
 		// 文件操作类
         int ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
         NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
@@ -840,10 +846,6 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
-
-		// 环境变量
-        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
-        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
