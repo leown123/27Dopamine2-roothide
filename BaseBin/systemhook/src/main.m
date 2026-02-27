@@ -32,6 +32,9 @@
 
 #import "dobby.h"
 
+#import <sys/fcntl.h>
+#import <libproc.h>          // proc_pidinfo, proc_pidfdinfo 所需头文件
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
@@ -492,14 +495,50 @@ int hooked_open(const char *path, int flags, ...) {
     return orig_open(path, flags, mode);
 }
 
-// 辅助函数：通过文件描述符获取路径（仅示例，实际需确认 iOS 支持）
+// 使用 proc_pidfdinfo 获取指定 fd 的路径
 static NSString *get_path_for_fd(int fd) {
-    char pathbuf[PATH_MAX] = {0};
-    // F_GETPATH 在 iOS 中可能可用（源自 Darwin）
-    if (fcntl(fd, F_GETPATH, pathbuf) == 0) {
-        return [NSString stringWithUTF8String:pathbuf];
+    pid_t pid = getpid();
+    
+    // 第一步：枚举当前进程的所有 fd
+    int fileCount = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, NULL, 0);
+    if (fileCount <= 0) {
+        return nil;
     }
-    return nil;
+    
+    // 分配内存存储 fd 列表
+    int fdInfoSize = sizeof(struct proc_fdinfo);
+    int bufferSize = fileCount * fdInfoSize;
+    struct proc_fdinfo *fdinfos = malloc(bufferSize);
+    if (!fdinfos) {
+        return nil;
+    }
+    
+    // 获取 fd 列表
+    int ret = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, fdinfos, bufferSize);
+    if (ret <= 0) {
+        free(fdinfos);
+        return nil;
+    }
+    
+    // 第二步：在列表中找到目标 fd，获取其路径
+    NSString *result = nil;
+    int actualCount = ret / fdInfoSize;
+    
+    for (int i = 0; i < actualCount; i++) {
+        if (fdinfos[i].proc_fd == fd) {
+            // 使用 PROC_PIDFDVNODEPATHINFO 获取路径
+            struct vnode_fdinfo_withpath vinfo;
+            int size = proc_pidfdinfo(pid, fd, PROC_PIDFDVNODEPATHINFO, &vinfo, sizeof(vinfo));
+            
+            if (size > 0 && vinfo.path[0] != '\0') {
+                result = [NSString stringWithUTF8String:vinfo.path];
+            }
+            break;
+        }
+    }
+    
+    free(fdinfos);
+    return result;
 }
 
 int hooked_fstat(int fd, struct stat *buf) {
