@@ -787,36 +787,9 @@ if (load_executable_path() == 0)
         //rebind_symbols(bindings, sizeof(bindings) / sizeof(struct rebinding));
 		rebind_symbols(bindings, sizeof(bindings) / sizeof(bindings[0]));
 
-		// ---------- 使用 runtime Hook Objective-C 方法 ----------
-        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
-        orig_fileExistsAtPath = method_getImplementation(m1);
-        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-        
-        Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
-        orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
-        method_setImplementation(m2, (IMP)hooked_fileExistsAtPath_isDirectory);
-        
-        Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
-        orig_canOpenURL = method_getImplementation(m3);
-        method_setImplementation(m3, (IMP)hooked_canOpenURL);
-
-		// 使用 runtime hook Objective-C 方法
-        // UIDevice systemVersion
-        Method m4 = class_getInstanceMethod([UIDevice class], @selector(systemVersion));
-        orig_UIDevice_systemVersion = method_getImplementation(m4);
-        method_setImplementation(m4, (IMP)hooked_UIDevice_systemVersion);
-
-        // NSProcessInfo operatingSystemVersion
-        Method m5 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersion));
-        orig_NSProcessInfo_operatingSystemVersion = method_getImplementation(m5);
-        method_setImplementation(m5, (IMP)hooked_NSProcessInfo_operatingSystemVersion);
-
-        // NSProcessInfo operatingSystemVersionString
-        Method m6 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersionString));
-        orig_NSProcessInfo_operatingSystemVersionString = method_getImplementation(m6);
-        method_setImplementation(m6, (IMP)hooked_NSProcessInfo_operatingSystemVersionString);
 		
-		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook+runtime Hook)");
+		
+		
         //NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 
 		NSLog(@"小罪ADD: UIDevice systemVersion: %@", [UIDevice currentDevice].systemVersion);
@@ -865,10 +838,54 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
         NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
 
-		//ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname);
+		//ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname); //这个会直接三方
         //NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
 
+		// ---------- 使用 runtime Hook Objective-C 方法 ----------
+		// NSFileManager fileExistsAtPath
+        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
+        orig_fileExistsAtPath = method_getImplementation(m1);
+        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
 
+		//NSFileManager fileExistsAtPath:isDirectory
+        Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
+        orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
+        method_setImplementation(m2, (IMP)hooked_fileExistsAtPath_isDirectory);
+
+		//UIApplication canOpenURL
+        Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
+        orig_canOpenURL = method_getImplementation(m3);
+        method_setImplementation(m3, (IMP)hooked_canOpenURL);
+
+        // UIDevice systemVersion
+        Method m4 = class_getInstanceMethod([UIDevice class], @selector(systemVersion));
+        orig_UIDevice_systemVersion = method_getImplementation(m4);
+        method_setImplementation(m4, (IMP)hooked_UIDevice_systemVersion);
+
+        // NSProcessInfo operatingSystemVersion
+        Method m5 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersion));
+        orig_NSProcessInfo_operatingSystemVersion = method_getImplementation(m5);
+        method_setImplementation(m5, (IMP)hooked_NSProcessInfo_operatingSystemVersion);
+
+        // NSProcessInfo operatingSystemVersionString
+        Method m6 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersionString));
+        orig_NSProcessInfo_operatingSystemVersionString = method_getImplementation(m6);
+        method_setImplementation(m6, (IMP)hooked_NSProcessInfo_operatingSystemVersionString);
+
+		//测试版本
+		NSLog(@"小罪ADD: UIDevice systemVersion: %@", [UIDevice currentDevice].systemVersion);
+		NSProcessInfo *pinfo = [NSProcessInfo processInfo];
+		NSLog(@"小罪ADD: operatingSystemVersion: %ld.%ld.%ld", pinfo.operatingSystemVersion.majorVersion, pinfo.operatingSystemVersion.minorVersion, pinfo.operatingSystemVersion.patchVersion);
+		NSLog(@"小罪ADD: operatingSystemVersionString: %@", pinfo.operatingSystemVersionString);
+		struct utsname u;
+		uname(&u);
+		NSLog(@"小罪ADD: uname release: %s", u.release);
+		char osver[256];
+		size_t len = sizeof(osver);
+		sysctlbyname("kern.osversion", osver, &len, NULL, 0);
+		NSLog(@"小罪ADD: kern.osversion: %s", osver);
+
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 Dobby+runtime Hook)");
 		//做完所有的事情直接return
 		return;
 	}
