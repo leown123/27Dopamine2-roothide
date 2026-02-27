@@ -831,11 +831,11 @@ if (load_executable_path() == 0)
 
 		
 		// 环境变量
-        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
+        int ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
         NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
 
 		// 文件操作类
-        int ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
+        ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
         NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
 
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
