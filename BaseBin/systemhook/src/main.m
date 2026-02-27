@@ -529,7 +529,7 @@ void *hooked_dlsym(void *handle, const char *symbol) {
 @"troll",@"sign",@"jb",@"libjail"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
-			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! name:%s",name);
+			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! sym:%s",sym);
                 return NULL;
             }
         }
