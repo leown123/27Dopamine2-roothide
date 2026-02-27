@@ -562,6 +562,20 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
             return NO;
         }
     }
+
+	NSString *pathstr = [NSString stringWithUTF8String:path];
+
+	if (isJailbreakPath(pathstr)) {
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! path:%s",path);
+        return NO;
+    }
+
+	if (isdocPath(pathstr)) 
+	{
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! path:%s",path);
+        return YES;
+    }
+	
     return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 }
 
@@ -573,14 +587,28 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
             return NO;
         }
     }
+
+	NSString *pathstr = [NSString stringWithUTF8String:path];
+
+	if (isJailbreakPath(pathstr)) {
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isJailbreakPath ! path:%s",path);
+        return NO;
+    }
+
+	if (isdocPath(pathstr)) 
+	{
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isdocPath ! path:%s",path);
+        return YES;
+    }
+	
     return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
 }
 
 BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     NSString *scheme = [url scheme];
 	NSLog(@"小罪ADD: scheme called ! scheme:%@",scheme);
-    if ([scheme isEqualToString:@"cydia"] || [scheme isEqualToString:@"sileo"] || 
-        [scheme isEqualToString:@"zebra"] || [scheme isEqualToString:@"filza"] || [scheme isEqualToString:@"Dopamine"]) {
+    if ([scheme hasPrefix:@"cydia"] || [scheme hasPrefix:@"sileo"] || 
+        [scheme hasPrefix:@"zebra"] || [scheme hasPrefix:@"filza"] || [scheme hasPrefix:@"Dopamine"]) {
 		NSLog(@"小罪ADD: hooked_canOpenURL called 命中 jailbreakPaths! scheme:%@",scheme);
         return NO;
     }
