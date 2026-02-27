@@ -494,52 +494,6 @@ int hooked_open(const char *path, int flags, ...) {
     return orig_open(path, flags, mode);
 }
 
-// 使用 proc_pidfdinfo 获取指定 fd 的路径
-static NSString *get_path_for_fd(int fd) {
-    pid_t pid = getpid();
-    
-    // 第一步：枚举当前进程的所有 fd
-    int fileCount = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, NULL, 0);
-    if (fileCount <= 0) {
-        return nil;
-    }
-    
-    // 分配内存存储 fd 列表
-    int fdInfoSize = sizeof(struct proc_fdinfo);
-    int bufferSize = fileCount * fdInfoSize;
-    struct proc_fdinfo *fdinfos = malloc(bufferSize);
-    if (!fdinfos) {
-        return nil;
-    }
-    
-    // 获取 fd 列表
-    int ret = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, fdinfos, bufferSize);
-    if (ret <= 0) {
-        free(fdinfos);
-        return nil;
-    }
-    
-    // 第二步：在列表中找到目标 fd，获取其路径
-    NSString *result = nil;
-    int actualCount = ret / fdInfoSize;
-    
-    for (int i = 0; i < actualCount; i++) {
-        if (fdinfos[i].proc_fd == fd) {
-            // 使用 PROC_PIDFDVNODEPATHINFO 获取路径
-            struct vnode_fdinfo_withpath vinfo;
-            int size = proc_pidfdinfo(pid, fd, PROC_PIDFDVNODEPATHINFO, &vinfo, sizeof(vinfo));
-            
-            if (size > 0 && vinfo.path[0] != '\0') {
-                result = [NSString stringWithUTF8String:vinfo.path];
-            }
-            break;
-        }
-    }
-    
-    free(fdinfos);
-    return result;
-}
-
 
 // ---------- 2. 环境变量检测 ----------
 static __thread int in_hook = 0;  // 线程局部变量
