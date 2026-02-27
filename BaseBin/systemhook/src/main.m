@@ -865,8 +865,8 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
         NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname);
-        NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
+		//ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname);
+        //NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
 
 
 		//做完所有的事情直接return
