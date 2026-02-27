@@ -657,7 +657,7 @@ if (load_executable_path() == 0)
 	{
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
 
-		return;
+		//return;
 		
 		gFullyDebugged = true;
 		if (jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions, &gFullyDebugged) == 0) 
