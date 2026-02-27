@@ -541,32 +541,6 @@ static NSString *get_path_for_fd(int fd) {
     return result;
 }
 
-int hooked_fstat(int fd, struct stat *buf) {
-    // 先调用原始函数获取真实信息
-    int ret = orig_fstat(fd, buf);
-    if (ret != 0) {
-        return ret; // 原函数已失败，直接返回
-    }
-
-    // 获取该 fd 对应的路径
-    NSString *path = get_path_for_fd(fd);
-    if (path) {
-
-		if (isJailbreakPath(path)) {
-		NSLog(@"小罪ADD: hooked_fstat 命中 isJailbreakPath ! path:%s",path);
-        errno = ENOENT;
-        return -1;
-   		 }
-
-		if (isdocPath(path)) 
-		{
-			NSLog(@"小罪ADD: hooked_fstat 命中 isJailbreakPath ! path:%s",path);
-	        return ret;
-	    }
-        
-    }
-    return ret;
-}
 
 // ---------- 2. 环境变量检测 ----------
 static __thread int in_hook = 0;  // 线程局部变量
@@ -927,9 +901,6 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
-
-		ret = DobbyHook(fstat, (void *)hooked_fstat, (void **)&orig_fstat);
-       NSLog(@"小罪ADD: [Dobby] hook hooked_fstat: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
