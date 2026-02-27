@@ -563,19 +563,21 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
         }
     }
 
-	NSString *pathstr = [NSString stringWithUTF8String:path];
-
-	if (isJailbreakPath(pathstr)) {
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! path:%s",path);
-        return NO;
-    }
-
-	if (isdocPath(pathstr)) 
+	if(path)
 	{
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! path:%s",path);
-        return YES;
-    }
+		NSString *pathstr = [NSString stringWithUTF8String:path];
 	
+		if (isJailbreakPath(pathstr)) {
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
+	        return NO;
+	    }
+	
+		if (isdocPath(pathstr)) 
+		{
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! pathstr:%s",pathstr);
+	        return YES;
+	    }
+	}
     return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 }
 
@@ -588,18 +590,21 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
         }
     }
 
-	NSString *pathstr = [NSString stringWithUTF8String:path];
-
-	if (isJailbreakPath(pathstr)) {
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isJailbreakPath ! path:%s",path);
-        return NO;
-    }
-
-	if (isdocPath(pathstr)) 
+	if(path)
 	{
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isdocPath ! path:%s",path);
-        return YES;
-    }
+		NSString *pathstr = [NSString stringWithUTF8String:path];
+	
+		if (isJailbreakPath(pathstr)) {
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isJailbreakPath ! pathstr:%s",pathstr);
+	        return NO;
+	    }
+	
+		if (isdocPath(pathstr)) 
+		{
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isdocPath ! pathstr:%s",pathstr);
+	        return YES;
+	    }
+	}
 	
     return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
 }
