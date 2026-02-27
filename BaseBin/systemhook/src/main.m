@@ -30,6 +30,8 @@
 #import <sys/utsname.h>
 #import <sys/sysctl.h>
 
+#import "dobby.h"
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
@@ -698,7 +700,7 @@ if (load_executable_path() == 0)
 			
 		//litehook_hook_function(ptrace, ptrace_hook);	
 
-		
+		/*
  		// ---------- 使用 fishhook 绑定 C 函数 ----------
         struct rebinding bindings[] = {
             // 文件操作类
@@ -766,7 +768,7 @@ if (load_executable_path() == 0)
         method_setImplementation(m6, (IMP)hooked_NSProcessInfo_operatingSystemVersionString);
 		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 fishhook+runtime Hook)");
-        	//NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
+        //NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 litehook + syscall)");
 
 		NSLog(@"小罪ADD: UIDevice systemVersion: %@", [UIDevice currentDevice].systemVersion);
 		NSProcessInfo *pinfo = [NSProcessInfo processInfo];
@@ -784,8 +786,14 @@ if (load_executable_path() == 0)
 		size_t len1 = sizeof(version);
 		sysctlbyname("kern.osproductversion", version, &len1, NULL, 0);
 		NSLog(@"小罪ADD: kern.osproductversion: %s", version);
-		
-		
+		*/
+
+		int ret = DobbyHook(stat, (void *)hooked_stat, (void **)&orig_stat);
+		if (ret == 0) { // RS_SUCCESS 通常定义为 0
+            NSLog(@"小罪ADD: [Dobby] Successfully hooked stat at %p", stat);
+        } else {
+            NSLog(@"小罪ADD: [Dobby] Failed to hook stat, error: %d", ret);
+        }
 		//做完所有的事情直接return
 		return;
 	}
