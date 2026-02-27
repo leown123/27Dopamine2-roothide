@@ -496,17 +496,6 @@ static __thread int in_hook = 0;  // 线程局部变量
 
 char *hooked_getenv(const char *name) {
 
-	
-
-	if (strcmp(name, "OS_ACTIVITY_DT_MODE") == 0) {
-        return orig_getenv(name);
-    }
-	
-    if (!in_hook) {
-        in_hook = 1;
-        NSLog(@"小罪ADD: hooked_getenv called ! name:%s",name);
-        in_hook = 0;
-    }
     if (strcmp(name, "DYLD_INSERT_LIBRARIES") == 0) {
         return NULL;
     }
