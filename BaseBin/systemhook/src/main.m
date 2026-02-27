@@ -334,6 +334,8 @@ static int (*orig_lstat)(const char *, struct stat *);
 static int (*orig_open)(const char *, int, ...);
 static FILE *(*orig_fopen)(const char *, const char *);
 static pid_t (*orig_fork)(void);
+// 保存原始函数指针
+static int (*orig_fstat)(int fd, struct stat *buf);
 
 static char *(*orig_getenv)(const char *);
 static const char *(*orig_dyld_get_image_name)(uint32_t);
@@ -490,6 +492,43 @@ int hooked_open(const char *path, int flags, ...) {
     return orig_open(path, flags, mode);
 }
 
+// 辅助函数：通过文件描述符获取路径（仅示例，实际需确认 iOS 支持）
+static NSString *get_path_for_fd(int fd) {
+    char pathbuf[PATH_MAX] = {0};
+    // F_GETPATH 在 iOS 中可能可用（源自 Darwin）
+    if (fcntl(fd, F_GETPATH, pathbuf) == 0) {
+        return [NSString stringWithUTF8String:pathbuf];
+    }
+    return nil;
+}
+
+int hooked_fstat(int fd, struct stat *buf) {
+    // 先调用原始函数获取真实信息
+    int ret = orig_fstat(fd, buf);
+    if (ret != 0) {
+        return ret; // 原函数已失败，直接返回
+    }
+
+    // 获取该 fd 对应的路径
+    NSString *path = get_path_for_fd(fd);
+    if (path) {
+
+		if (isJailbreakPath(path)) {
+		NSLog(@"小罪ADD: hooked_fstat 命中 isJailbreakPath ! path:%s",path);
+        errno = ENOENT;
+        return -1;
+   		 }
+
+		if (isdocPath(path)) 
+		{
+			NSLog(@"小罪ADD: hooked_fstat 命中 isJailbreakPath ! path:%s",path);
+	        return ret;
+	    }
+        
+    }
+    return ret;
+}
+
 // ---------- 2. 环境变量检测 ----------
 static __thread int in_hook = 0;  // 线程局部变量
 
@@ -606,6 +645,12 @@ int hooked_uname(struct utsname *buf) {
 int hooked_sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen) 
 {
 	//NSLog(@"小罪ADD: hooked_sysctlbyname called ! name:%s",name);
+
+	if (*oldlenp == sizeof(int) && strcmp(name, "security.mac.amfi.developer_mode_status") == 0) 
+	{
+    	 *(int *)oldp = 0; // 伪装成未开启开发者模式
+         return 0;
+    }
 	
     // 拦截系统版本相关的 sysctl 名称
     if (strcmp(name, "kern.osversion") == 0) {
@@ -844,12 +889,22 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
+		ret = DobbyHook(fstat, (void *)hooked_fstat, (void **)&orig_fstat);
+       NSLog(@"小罪ADD: [Dobby] hook hooked_fstat: %s", ret == 0 ? "success" : "failed");
+
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
         NSLog(@"小罪ADD: [Dobby] hook _dyld_get_image_name: %s", ret == 0 ? "success" : "failed");
 
 		ret = DobbyHook((void *)dlsym, (void *)hooked_dlsym, (void **)&orig_dlsym);
         NSLog(@"小罪ADD: [Dobby] hook dlsym: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
+        NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname);
+        NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
+
 
 		//做完所有的事情直接return
 		return;
