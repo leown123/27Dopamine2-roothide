@@ -524,7 +524,7 @@ void *hooked_dlsym(void *handle, const char *symbol) {
     if (symbol) {
         NSString *nsSymbol = [NSString stringWithUTF8String:symbol];
         NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"Jailbreak", @"root", @"Root",@"fish",@"systemhook",@"Troll",
-@"sign",@"jb",@"libjail"];
+@"jb",@"libjail"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
 			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! symbol:%s,sym:%@",symbol,sym);
