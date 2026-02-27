@@ -857,6 +857,7 @@ if (load_executable_path() == 0)
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
 
+		/*
         // UIDevice systemVersion
         Method m4 = class_getInstanceMethod([UIDevice class], @selector(systemVersion));
         orig_UIDevice_systemVersion = method_getImplementation(m4);
@@ -871,7 +872,7 @@ if (load_executable_path() == 0)
         Method m6 = class_getInstanceMethod([NSProcessInfo class], @selector(operatingSystemVersionString));
         orig_NSProcessInfo_operatingSystemVersionString = method_getImplementation(m6);
         method_setImplementation(m6, (IMP)hooked_NSProcessInfo_operatingSystemVersionString);
-
+		
 		//测试版本
 		NSLog(@"小罪ADD: UIDevice systemVersion: %@", [UIDevice currentDevice].systemVersion);
 		NSProcessInfo *pinfo = [NSProcessInfo processInfo];
@@ -884,7 +885,8 @@ if (load_executable_path() == 0)
 		size_t len = sizeof(osver);
 		sysctlbyname("kern.osversion", osver, &len, NULL, 0);
 		NSLog(@"小罪ADD: kern.osversion: %s", osver);
-
+		*/
+		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 Dobby+runtime Hook)");
 		//做完所有的事情直接return
 		return;
