@@ -392,7 +392,7 @@ static BOOL isdocPath(const char *path) {
     
     NSString *nsPath = [NSString stringWithUTF8String:path];
     
-    if ([nsPath hasPrefix:@"ano"]|| [nsPath hasPrefix:@"Library"])
+    if ([nsPath hasPrefix:@"ano"])//|| [nsPath hasPrefix:@"Library"]
     {
         return YES;
     }
