@@ -33,7 +33,6 @@
 #import "dobby.h"
 
 #import <sys/fcntl.h>
-#import <libproc.h>          // proc_pidinfo, proc_pidfdinfo 所需头文件
 
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
