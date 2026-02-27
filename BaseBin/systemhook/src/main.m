@@ -392,7 +392,7 @@ static BOOL isdocPath(const char *path) {
     
     NSString *nsPath = [NSString stringWithUTF8String:path];
     
-    if ([nsPath hasPrefix:@"/Documents/"] || [nsPath hasPrefix:@"ano"]|| [nsPath hasPrefix:@"dylib"])
+    if ([nsPath hasPrefix:@"ano"]|| [nsPath hasPrefix:@"Library"])
     {
         return YES;
     }
@@ -402,12 +402,20 @@ static BOOL isdocPath(const char *path) {
 
 // ---------- 1. 文件操作类 ----------
 int hooked_access(const char *path, int amode) {
-	NSLog(@"小罪ADD: hooked_access called ! path:%s",path);
+	
 	
     if (isJailbreakPath(path)) {
+
+		NSLog(@"小罪ADD: hooked_access called ! 命中isJailbreakPath: path:%s",path);
         errno = ENOENT;
         return -1;
     }
+
+	if (isdocPath(path)) {
+		NSLog(@"小罪ADD: hooked_access called ! 命中isdocPath: path:%s",path);
+        return 0;
+    }
+	
     return orig_access(path, amode);
 }
 
@@ -415,36 +423,62 @@ int hooked_access(const char *path, int amode) {
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
 	int rt = orig_stat(path, buf);
-    NSLog(@"小罪ADD: hooked_stat called ! path:%s,rt:%d",path,rt);
+    
     
     if (isJailbreakPath(path)) {
-		NSLog(@"小罪ADD: hooked_stat 命中isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: hooked_stat 命中 isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
+
+	if (isdocPath(path)) 
+	{
+		NSLog(@"小罪ADD: hooked_stat 命中 isdocPath ! path:%s",path);
+        return 0;
+    }
+	
     return rt;
 }
 
 // ---------- 钩子函数：lstat ----------
 int hooked_lstat(const char *path, struct stat *buf) {
-    NSLog(@"小罪ADD: hooked_lstat called ! path:%s",path);
+
+	int rt = orig_lstat(path, buf);
+    
     
     if (isJailbreakPath(path)) {
+		NSLog(@"小罪ADD: hooked_lstat 命中 isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
 
-	return orig_lstat(path, buf);
+	if (isdocPath(path)) 
+	{
+		NSLog(@"小罪ADD: hooked_lstat 命中 isJailbreakPath ! path:%s",path);
+        return 0;
+    }
+
+	return rt;
+
+	//return orig_lstat(path, buf);
     //return syscall(190, path, buf);
 }
 
 int hooked_open(const char *path, int flags, ...) {
-	NSLog(@"小罪ADD: hooked_open called ! path:%s",path);
+	//NSLog(@"小罪ADD: hooked_open called ! path:%s",path);
 	
     if (isJailbreakPath(path)) {
+	NSLog(@"小罪ADD: hooked_open 命中 isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
+
+	if (isdocPath(path)) {
+	NSLog(@"小罪ADD: hooked_open 命中 isdocPath ! path:%s",path);
+        errno = ENOENT;
+        return -1;
+    }
+	
     // 处理可变参数
     mode_t mode = 0;
     if (flags & O_CREAT) {
@@ -471,13 +505,14 @@ char *hooked_getenv(const char *name) {
 // ---------- 3. 动态库检测 ----------
 const char *hooked_dyld_get_image_name(uint32_t index) {
     const char *name = orig_dyld_get_image_name(index);
-	NSLog(@"小罪ADD: hooked_dyld_get_image_name called ! name:%s",name);
+	
     if (name) {
         NSString *nsName = [NSString stringWithUTF8String:name];
         NSArray *blacklistedLibs = @[@"MobileSubstrate", @"Substrate", @"CydiaSubstrate", @"Frida", @"systemhook", @"roothide", @"hook",@"Troll",
 @"troll",@"sign",@"jb",@"libjail"];
         for (NSString *lib in blacklistedLibs) {
             if ([nsName containsString:lib]) {
+			NSLog(@"小罪ADD: hooked_dyld_get_image_name called 命中 blacklistedLibs! name:%s",name);
                 return "/usr/lib/libSystem.B.dylib";
             }
         }
@@ -494,6 +529,7 @@ void *hooked_dlsym(void *handle, const char *symbol) {
 @"troll",@"sign",@"jb",@"libjail"];
         for (NSString *sym in blacklistedSymbols) {
             if ([nsSymbol containsString:sym]) {
+			NSLog(@"小罪ADD: hooked_dlsym called 命中 blacklistedSymbols! name:%s",name);
                 return NULL;
             }
         }
@@ -502,6 +538,7 @@ void *hooked_dlsym(void *handle, const char *symbol) {
 }
 
 pid_t hooked_fork(void) {
+NSLog(@"小罪ADD: hooked_fork called !");
     // 某些检测会尝试fork，可返回错误
     errno = EPERM;
     return -1;
@@ -515,9 +552,10 @@ static IMP orig_canOpenURL;
 
 BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
-	NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
+	//NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath called 命中 jailbreakPaths! path:%@",path);
             return NO;
         }
     }
@@ -525,9 +563,10 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 }
 
 BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL *isDirectory) {
-NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called ! path:%@",path);
+//NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called 命中 jailbreakPaths! path:%@",path);
             return NO;
         }
     }
@@ -539,6 +578,7 @@ BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
 	NSLog(@"小罪ADD: scheme called ! scheme:%@",scheme);
     if ([scheme isEqualToString:@"cydia"] || [scheme isEqualToString:@"sileo"] || 
         [scheme isEqualToString:@"zebra"] || [scheme isEqualToString:@"filza"]) {
+		NSLog(@"小罪ADD: hooked_canOpenURL called 命中 jailbreakPaths! scheme:%@",scheme);
         return NO;
     }
     return ((BOOL(*)(id, SEL, NSURL *))orig_canOpenURL)(self, _cmd, url);
@@ -560,14 +600,14 @@ int hooked_uname(struct utsname *buf) {
         strcpy(buf->version, "Darwin Kernel Version 21.0.0: Mon Jan 1 00:00:00 PDT 2024; root:xnu-7192.0.0~1/RELEASE_ARM64_T8101");
         // 其他字段（sysname、machine等）可根据需要保持原样或修改
     }
-	NSLog(@"小罪ADD: hooked_uname called ! buf->release:%s",buf->release);
+	//NSLog(@"小罪ADD: hooked_uname called ! buf->release:%s",buf->release);
     return ret;
 }
 
 // ---------- Hook: sysctlbyname ----------
 int hooked_sysctlbyname(const char *name, void *oldp, size_t *oldlenp, void *newp, size_t newlen) 
 {
-	NSLog(@"小罪ADD: hooked_sysctlbyname called ! name:%s",name);
+	//NSLog(@"小罪ADD: hooked_sysctlbyname called ! name:%s",name);
 	
     // 拦截系统版本相关的 sysctl 名称
     if (strcmp(name, "kern.osversion") == 0) {
@@ -788,12 +828,30 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: kern.osproductversion: %s", version);
 		*/
 
-		int ret = DobbyHook(stat, (void *)hooked_stat, (void **)&orig_stat);
-		if (ret == 0) { // RS_SUCCESS 通常定义为 0
-            NSLog(@"小罪ADD: [Dobby] Successfully hooked stat at %p", stat);
-        } else {
-            NSLog(@"小罪ADD: [Dobby] Failed to hook stat, error: %d", ret);
-        }
+		// 文件操作类
+        int ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
+        NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
+        NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
+		
+		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
+        NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
+        NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
+
+		// 环境变量
+        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
+        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
+
+		// 动态库检测
+        ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
+        NSLog(@"小罪ADD: [Dobby] hook _dyld_get_image_name: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)dlsym, (void *)hooked_dlsym, (void **)&orig_dlsym);
+        NSLog(@"小罪ADD: [Dobby] hook dlsym: %s", ret == 0 ? "success" : "failed");
+
 		//做完所有的事情直接return
 		return;
 	}
