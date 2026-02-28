@@ -347,6 +347,7 @@ static const char *(*orig_dyld_get_image_name)(uint32_t);
 static void *(*orig_dlopen)(const char *, int);
 static void *(*orig_dlsym)(void *, const char *);
 static uint32_t (*orig_dyld_image_count)(void);
+static int (*orig_dladdr)(const void *addr, Dl_info *info);
 
 // ---------- 原始函数指针 ----------
 static int (*orig_stat64)(const char *path, struct stat64 *buf);
@@ -572,6 +573,39 @@ NSLog(@"小罪ADD: hooked_fork called !");
     // 某些检测会尝试fork，可返回错误
     errno = EPERM;
     return -1;
+}
+
+int hooked_dladdr(const void *addr, Dl_info *info) {
+    // 先调用原始函数获取真实信息
+    int ret = orig_dladdr(addr, info);
+    
+    // 如果原始函数成功返回非0，并且 info 有效
+    if (ret != 0 && info) {
+        // 检查文件名（dli_fname）是否为越狱相关路径
+        if (info->dli_fname && isJailbreakPath(info->dli_fname)) {
+			NSLog(@"小罪ADD: hooked_dladdr called 命中 jailbreakPaths! info->dli_fname:%s",info->dli_fname);
+            // 伪装成未知符号（返回0表示未找到）
+            // 或者可以选择修改信息，例如改为系统库的路径
+            memset(info, 0, sizeof(Dl_info));
+            return 0;
+        }
+        
+        // 检查符号名（dli_sname）是否包含越狱特征（可选）
+        if (info->dli_sname) {
+            NSString *sname = [NSString stringWithUTF8String:info->dli_sname];
+            NSArray *blacklistedSymbols = @[@"MSHook", @"Substrate", @"dobby", @"jailbreak", @"sb",@"MSHook", @"Jailbreak", @"root", @"Root",@"fish",@"systemhook",@"Troll",
+@"jb",@"libjail"];
+            for (NSString *black in blacklistedSymbols) {
+                if ([sname containsString:black]) {
+					NSLog(@"小罪ADD: hooked_dladdr called 命中 blacklistedSymbols! sname:%@,black:%@",info->dli_fname,black);
+                    memset(info, 0, sizeof(Dl_info));
+                    return 0;
+                }
+            }
+        }
+    }
+    
+    return ret;
 }
 
 // ========== Objective-C 方法 Hook ==========
@@ -999,6 +1033,9 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
         NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook(dladdr_addr, (void *)hooked_dladdr, (void **)&orig_dladdr);
+		NSLog(@"小罪ADD: [Dobby] hook dladdr_addr: %s", ret == 0 ? "success" : "failed");
 
 		//ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname); //这个会直接三方
         //NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
