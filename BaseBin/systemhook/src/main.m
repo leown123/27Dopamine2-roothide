@@ -954,9 +954,9 @@ void* crchackthread(void* aa)
 		}
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
 
-		long crcfunc1_addr = tersafeadd + 0x245F04;
-		int ret = DobbyHook((void *)crcfunc1_addr, (void *)hooked_getenv, (void **)&orig_getenv);
-        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
+		long crcfunc_addr1 = tersafeadd + 0x245F04;
+		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
+        NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
 }
 
 __attribute__((constructor)) static void initializer(void)
