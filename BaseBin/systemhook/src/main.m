@@ -506,10 +506,10 @@ FILE *hooked_fopen(const char *filename, const char *mode) {
         return NULL;
     }
 
-	if (isdocPath(path)) {
+	if (isdocPath(filename)) {
 	NSLog(@"小罪ADD: hooked_fopen 命中 isdocPath ! filename:%s,mode:%s",filename,mode);
         errno = ENOENT;
-        return -1;
+        return NULL;
     }
     // 调用原始 fopen
     return orig_fopen(filename, mode);
