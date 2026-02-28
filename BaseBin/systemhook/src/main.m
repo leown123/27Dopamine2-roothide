@@ -587,7 +587,8 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
 	if(path)
 	{
-		NSString *pathstr = [NSString stringWithUTF8String:path];
+		
+		const char* pathstr = [path UTF8String];
 	
 		if (isJailbreakPath(pathstr)) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
@@ -614,7 +615,7 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 
 	if(path)
 	{
-		NSString *pathstr = [NSString stringWithUTF8String:path];
+		const char* pathstr = [path UTF8String];
 	
 		if (isJailbreakPath(pathstr)) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isJailbreakPath ! pathstr:%s",pathstr);
@@ -883,7 +884,7 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
-		int ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
+		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
         NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
