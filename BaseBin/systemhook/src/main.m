@@ -1120,6 +1120,9 @@ if (load_executable_path() == 0)
         NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
 
 		//2.28新增
+
+		
+		/*
 		// stat64 (如果符号存在)
         void *stat64_addr = (void *)dlsym(RTLD_DEFAULT, "stat64");
         if (stat64_addr) {
@@ -1140,7 +1143,8 @@ if (load_executable_path() == 0)
         // rename
         ret = DobbyHook((void *)rename, (void *)hooked_rename, (void **)&orig_rename);
         NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
-
+		*/
+		
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
         NSLog(@"小罪ADD: [Dobby] hook _dyld_get_image_name: %s", ret == 0 ? "success" : "failed");
@@ -1148,8 +1152,8 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)dlsym, (void *)hooked_dlsym, (void **)&orig_dlsym);
         NSLog(@"小罪ADD: [Dobby] hook dlsym: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
-        NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
+		//ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
+        //NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
 
 		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr);
 		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
@@ -1206,8 +1210,8 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 Dobby+runtime Hook)");
 
 			
-		pthread_t thread1;
-        pthread_create(&thread1, NULL, crchackthread, NULL);
+		//pthread_t thread1;
+        //pthread_create(&thread1, NULL, crchackthread, NULL);
 		
 		
 		
