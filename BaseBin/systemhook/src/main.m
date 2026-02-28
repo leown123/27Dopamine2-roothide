@@ -1160,6 +1160,8 @@ if (load_executable_path() == 0)
         //NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
 
 		// ---------- 使用 runtime Hook Objective-C 方法 ----------
+
+		/*
 		// NSFileManager fileExistsAtPath
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
@@ -1174,7 +1176,8 @@ if (load_executable_path() == 0)
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
-
+		*/
+		
 		/*
         // UIDevice systemVersion
         Method m4 = class_getInstanceMethod([UIDevice class], @selector(systemVersion));
