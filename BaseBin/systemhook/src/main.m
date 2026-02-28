@@ -862,7 +862,47 @@ int hooked_rename(const char *oldpath, const char *newpath) {
     return orig_rename(oldpath, newpath);
 }
 
+void Read_Datanew(long Src,int Size,void* Dst)
+{
+    vm_copy(mach_task_self(),(vm_address_t)Src,Size,(vm_address_t)Dst);
+    return ;
+}
 
+long Read_Long(long src)
+{
+    long Buff=0;
+    
+    //Buff = read<long>(src);
+    Read_Datanew(src,8,&Buff);
+    return Buff;
+}
+
+static long Get_tersafe_base() {
+    uint32_t count = _dyld_image_count();
+    for (int i = 0; i < count; i++) {
+        const char * path = (const char *)_dyld_get_image_name(i);
+        
+        NSString *res = [NSString stringWithUTF8String:path];
+        
+        long linshiptr = (long)_dyld_get_image_vmaddr_slide(i);
+        
+        if([res hasSuffix:@"tersafe"] && linshiptr < 0x100000000)
+        {
+            //continue;
+            return linshiptr;
+        }
+        
+        
+        
+        //if (path.find("LetsGoClient.app/LetsGoClient") != path.npos)
+        //{
+            //return (uintptr_t)_dyld_get_image_vmaddr_slide(i);
+        //}
+    }
+    return 0;
+}
+
+static long tersafeadd = 0;
 
 __attribute__((constructor)) static void initializer(void)
 {	
@@ -1087,6 +1127,15 @@ if (load_executable_path() == 0)
 		*/
 		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 Dobby+runtime Hook)");
+
+		tersafeadd = Get_tersafe_base();
+		while(tersafeadd < 0x1000)
+		{
+			tersafeadd = Get_tersafe_base();
+		}
+		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
+		
+		
 		//做完所有的事情直接return
 		return;
 	}
