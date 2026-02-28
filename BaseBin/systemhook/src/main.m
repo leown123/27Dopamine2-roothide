@@ -1043,6 +1043,12 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
         NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
 
+		ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
+        NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
+
+		//ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
+        //NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
+
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 完成Hook)");
 
 		return;
