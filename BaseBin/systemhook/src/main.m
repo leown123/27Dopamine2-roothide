@@ -906,6 +906,44 @@ static long Get_tersafe_base() {
 
 static long tersafeadd = 0;
 
+// 原始函数类型
+typedef uint16_t (*orig_crc1_func_type1)(uint8_t *data, int len);
+orig_crc_func_type1 orig_crc_func1 = NULL;
+
+// 替换函数
+uint16_t my_crc_func1(uint8_t *data, int len) {
+
+	/*
+    // 如果传入的指针等于我们关心的特定地址
+    if (data == target_address) {
+        // 在栈上分配一个足够大的缓冲区，用于存放我们构造的数据
+        // 这里假设 len 不会超过 256，可以根据实际情况调整大小
+        uint8_t fake_data[256];
+        
+        // 确保不会溢出（实际使用时建议用更安全的方式）
+        if (len > (int)sizeof(fake_data)) {
+            // 如果长度太大，可以动态分配，但需要小心内存管理
+            // 这里简单返回原始计算作为 fallback
+            return orig_crc_func(data, len);
+        }
+		
+		充特定的指令序列（例如一段 shellcode）
+        // uint8_t shellcode[] = { 0x55, 0x48, 0x89, 0xE5, ... };
+        // 注意复制时不要超过 len 长度
+        // memcpy(fake_data, shellcode, min(len, sizeof(shellcode)));
+        
+        // 调用原始函数，但传入构造好的数据指针
+        return orig_crc_func1(fake_data, len);
+    }
+    */
+
+	NSLog(@"小罪ADD: systemhook : tersafe: my_crc_func1: data:0x%lx,len: %d)", data, len);
+	
+    // 其他地址，正常调用原始函数
+    return orig_crc_func1(data, len);
+}
+
+
 void* crchackthread(void* aa)
 {
 
@@ -915,6 +953,10 @@ void* crchackthread(void* aa)
 			tersafeadd = Get_tersafe_base();
 		}
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
+
+		long crcfunc1_addr = tersafeadd + 0x245F04;
+		int ret = DobbyHook((void *)crcfunc1_addr, (void *)hooked_getenv, (void **)&orig_getenv);
+        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
 }
 
 __attribute__((constructor)) static void initializer(void)
