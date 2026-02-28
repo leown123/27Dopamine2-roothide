@@ -1034,6 +1034,11 @@ if (load_executable_path() == 0)
 			unsetenv("DISABLE_TWEAKS");
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
+
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient 暂时不Hook)");
+
+
+		return;
 			
 		//litehook_hook_function(ptrace, ptrace_hook);	
 
