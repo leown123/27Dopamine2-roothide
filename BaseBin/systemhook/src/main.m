@@ -972,22 +972,22 @@ if (load_executable_path() == 0)
 		// stat64 (如果符号存在)
         void *stat64_addr = (void *)dlsym(RTLD_DEFAULT, "stat64");
         if (stat64_addr) {
-            ret = DobbyHook(stat64_addr, (void *)my_stat64, (void **)&orig_stat64);
+            ret = DobbyHook(stat64_addr, (void *)hooked_stat64, (void **)&orig_stat64);
             NSLog(@"小罪ADD: [Dobby] hook stat64: %s", ret == 0 ? "success" : "failed");
         } else {
             NSLog(@"小罪ADD: [Dobby] stat64 not found, skipping");
         }
         
         // mkdir
-        ret = DobbyHook((void *)mkdir, (void *)my_mkdir, (void **)&orig_mkdir);
+        ret = DobbyHook((void *)mkdir, (void *)hooked_mkdir, (void **)&orig_mkdir);
         NSLog(@"小罪ADD: [Dobby] hook mkdir: %s", ret == 0 ? "success" : "failed");
         
         // rmdir
-        ret = DobbyHook((void *)rmdir, (void *)my_rmdir, (void **)&orig_rmdir);
+        ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
         NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
         
         // rename
-        ret = DobbyHook((void *)rename, (void *)my_rename, (void **)&orig_rename);
+        ret = DobbyHook((void *)rename, (void *)hooked_rename, (void **)&orig_rename);
         NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
