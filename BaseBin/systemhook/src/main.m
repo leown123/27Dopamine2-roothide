@@ -888,7 +888,7 @@ static long Get_tersafe_base() {
         
         long linshiptr = (long)_dyld_get_image_vmaddr_slide(i);
         
-        if([res hasSuffix:@"tersafe"] && linshiptr < 0x100000000)
+        if([res hasSuffix:@"tersafe"])// && linshiptr < 0x100000000
         {
             //continue;
             return linshiptr;
