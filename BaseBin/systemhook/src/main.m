@@ -1035,8 +1035,15 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 
-		NSLog(@"小罪ADD: systemhook: DeltaForceClient 暂时不Hook)");
+		
 
+		int ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
+        NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
+		
+		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
+        NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
+
+		NSLog(@"小罪ADD: systemhook: DeltaForceClient 完成Hook)");
 
 		return;
 			
@@ -1105,7 +1112,7 @@ if (load_executable_path() == 0)
 
 		
 		// 环境变量
-        int ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
+        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
         NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
 
 		// 文件操作类
