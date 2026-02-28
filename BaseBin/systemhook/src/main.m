@@ -340,7 +340,6 @@ static FILE *(*orig_fopen)(const char *, const char *);
 static pid_t (*orig_fork)(void);
 // 保存原始函数指针
 static int (*orig_fstat)(int fd, struct stat *buf);
-static FILE* (*orig_fopen)(const char *filename, const char *mode);
 
 
 static char *(*orig_getenv)(const char *);
