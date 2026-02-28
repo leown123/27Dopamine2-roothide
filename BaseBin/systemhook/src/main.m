@@ -348,6 +348,11 @@ static void *(*orig_dlopen)(const char *, int);
 static void *(*orig_dlsym)(void *, const char *);
 static uint32_t (*orig_dyld_image_count)(void);
 
+// ---------- 原始函数指针 ----------
+static int (*orig_stat64)(const char *path, struct stat64 *buf);
+static int (*orig_mkdir)(const char *path, mode_t mode);
+static int (*orig_rmdir)(const char *path);
+static int (*orig_rename)(const char *oldpath, const char *newpath);
 
 
 // ---------- 辅助函数：检查路径是否在黑名单中 ----------
@@ -748,6 +753,82 @@ NSString *hooked_NSProcessInfo_operatingSystemVersionString(id self, SEL _cmd) {
     return @"Version 21.0 (Build 21A123)";
 }
 
+// ---------- 1. stat64 Hook ----------
+int hooked_stat64(const char *path, struct stat64 *buf) {
+
+	if (isJailbreakPath(path)) {
+	NSLog(@"小罪ADD: hooked_stat64 命中 isJailbreakPath ! path:%s",path);
+        errno = ENOENT;
+        return -1;
+    }
+
+	if (isdocPath(path)) {
+	NSLog(@"小罪ADD: hooked_stat64 命中 isdocPath ! path:%s",path);
+        errno = ENOENT;
+        return -1;
+    }
+	
+    return orig_stat64(path, buf);
+}
+
+// ---------- 2. mkdir Hook ----------
+int hooked_mkdir(const char *path, mode_t mode) {
+    if (isJailbreakPath(path)) {
+		NSLog(@"小罪ADD: hooked_mkdir 命中 isJailbreakPath ! path:%s",path);
+        errno = EACCES;  // 权限不足，阻止创建
+        return -1;
+    }
+
+	if (isdocPath(path)) {
+		NSLog(@"小罪ADD: hooked_mkdir 命中 isdocPath ! path:%s",path);
+        return 0;
+    }
+	
+    return orig_mkdir(path, mode);
+}
+
+// ---------- 3. rmdir Hook ----------
+int hooked_rmdir(const char *path) {
+
+    if (isJailbreakPath(path)) {
+		NSLog(@"小罪ADD: hooked_rmdir 命中 isJailbreakPath ! path:%s",path);
+        errno = EACCES;  // 权限不足，阻止创建
+        return -1;
+    }
+
+	if (isdocPath(path)) {
+		NSLog(@"小罪ADD: hooked_rmdir 命中 isdocPath ! path:%s",path);
+        return 0;
+    }
+    return orig_rmdir(path);
+}
+
+// ---------- 4. rename Hook ----------
+int hooked_rename(const char *oldpath, const char *newpath) {
+    // 检查旧路径或新路径是否在黑名单中
+    if (isJailbreakPath(oldpath) || isJailbreakPath(newpath)) {
+        errno = EACCES;
+        return -1;
+    }
+
+	if (isJailbreakPath(oldpath) || isJailbreakPath(newpath))
+	{
+		NSLog(@"小罪ADD: hooked_rename 命中 isJailbreakPath ! oldpath:%s , newpath:%s",oldpath,newpath);
+        errno = EACCES;  // 权限不足，阻止创建
+        return -1;
+    }
+
+	if (isdocPath(oldpath) || isdocPath(newpath))
+	{
+		NSLog(@"小罪ADD: hooked_rename 命中 isdocPath ! oldpath:%s , newpath:%s",oldpath,newpath);
+        return 0;
+    }
+
+	
+    return orig_rename(oldpath, newpath);
+}
+
+
 
 __attribute__((constructor)) static void initializer(void)
 {	
@@ -886,6 +967,28 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
         NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
+
+		//2.28新增
+		// stat64 (如果符号存在)
+        void *stat64_addr = (void *)dlsym(RTLD_DEFAULT, "stat64");
+        if (stat64_addr) {
+            ret = DobbyHook(stat64_addr, (void *)my_stat64, (void **)&orig_stat64);
+            NSLog(@"小罪ADD: [Dobby] hook stat64: %s", ret == 0 ? "success" : "failed");
+        } else {
+            NSLog(@"小罪ADD: [Dobby] stat64 not found, skipping");
+        }
+        
+        // mkdir
+        ret = DobbyHook((void *)mkdir, (void *)my_mkdir, (void **)&orig_mkdir);
+        NSLog(@"小罪ADD: [Dobby] hook mkdir: %s", ret == 0 ? "success" : "failed");
+        
+        // rmdir
+        ret = DobbyHook((void *)rmdir, (void *)my_rmdir, (void **)&orig_rmdir);
+        NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
+        
+        // rename
+        ret = DobbyHook((void *)rename, (void *)my_rename, (void **)&orig_rename);
+        NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
