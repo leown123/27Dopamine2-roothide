@@ -938,6 +938,12 @@ uint16_t my_crc_func1(uint8_t *data, int len) {
     */
 
 	NSLog(@"小罪ADD: systemhook : tersafe: my_crc_func1: data:0x%lx,len: %d)", data, len);
+	if(tersafeadd == (long)data)
+	{
+		NSLog(@"小罪ADD: systemhook : tersafe: my_crc_func1(sub_245F04): 正在检测tersafe地址,data:0x%lx,len: %d)", data, len);
+		return 0xcf81;
+	}
+	
 	
     // 其他地址，正常调用原始函数
     return orig_crc_func1(data, len);
