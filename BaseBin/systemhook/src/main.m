@@ -1011,7 +1011,7 @@ if (load_executable_path() == 0)
 		if (dyldInsertLibraries) 
 		{
 			unsetenv("DYLD_INSERT_LIBRARIES");
-			NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success,getenv("DYLD_INSERT_LIBRARIES"):%s",getenv("DYLD_INSERT_LIBRARIES"));
+			NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success,getenv(DYLD_INSERT_LIBRARIES):%s",getenv("DYLD_INSERT_LIBRARIES"));
 		}
 
 		const char *SafeModestr = getenv("_SafeMode");
