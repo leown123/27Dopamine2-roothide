@@ -36,6 +36,8 @@
 
 #import <stdio.h>
 
+#include<pthread.h>
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
@@ -904,6 +906,20 @@ static long Get_tersafe_base() {
 
 static long tersafeadd = 0;
 
+void* crchackthread(void* aa)
+{
+	
+		pthread_t thread1;
+        pthread_create(&thread1, NULL, crchackthread, NULL);
+		
+		tersafeadd = Get_tersafe_base();
+		while(tersafeadd < 0x1000)
+		{
+			tersafeadd = Get_tersafe_base();
+		}
+		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
+}
+
 __attribute__((constructor)) static void initializer(void)
 {	
 /***** roothide specific ****/
@@ -1128,12 +1144,6 @@ if (load_executable_path() == 0)
 		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 越狱检测绕过钩子已安装 (使用 Dobby+runtime Hook)");
 
-		tersafeadd = Get_tersafe_base();
-		while(tersafeadd < 0x1000)
-		{
-			tersafeadd = Get_tersafe_base();
-		}
-		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
 		
 		
 		//做完所有的事情直接return
