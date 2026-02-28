@@ -34,6 +34,8 @@
 
 #import <sys/fcntl.h>
 
+#import <stdio.h>
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
@@ -338,6 +340,8 @@ static FILE *(*orig_fopen)(const char *, const char *);
 static pid_t (*orig_fork)(void);
 // 保存原始函数指针
 static int (*orig_fstat)(int fd, struct stat *buf);
+static FILE* (*orig_fopen)(const char *filename, const char *mode);
+
 
 static char *(*orig_getenv)(const char *);
 static const char *(*orig_dyld_get_image_name)(uint32_t);
@@ -493,6 +497,25 @@ int hooked_open(const char *path, int flags, ...) {
     }
     return orig_open(path, flags, mode);
 }
+
+FILE *hooked_fopen(const char *filename, const char *mode) {
+    // 检查文件路径是否在黑名单中
+    if (isJailbreakPath(filename)) 
+	{
+	NSLog(@"小罪ADD: hooked_fopen 命中 isJailbreakPath ! filename:%s,mode:%s",filename,mode);
+        errno = ENOENT;          // 假装文件不存在
+        return NULL;
+    }
+
+	if (isdocPath(path)) {
+	NSLog(@"小罪ADD: hooked_fopen 命中 isdocPath ! filename:%s,mode:%s",filename,mode);
+        errno = ENOENT;
+        return -1;
+    }
+    // 调用原始 fopen
+    return orig_fopen(filename, mode);
+}
+
 
 
 // ---------- 2. 环境变量检测 ----------
@@ -860,6 +883,9 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
+
+		int ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
+        NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
