@@ -1116,10 +1116,11 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
-        NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
+		//ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
+        //NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
 
 		//2.28新增
+		/*
 		// stat64 (如果符号存在)
         void *stat64_addr = (void *)dlsym(RTLD_DEFAULT, "stat64");
         if (stat64_addr) {
@@ -1140,7 +1141,7 @@ if (load_executable_path() == 0)
         // rename
         ret = DobbyHook((void *)rename, (void *)hooked_rename, (void **)&orig_rename);
         NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 		
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
@@ -1152,8 +1153,8 @@ if (load_executable_path() == 0)
 		//ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
         //NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr);
-		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
+		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
 
 		//ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname); //这个会直接三方
         //NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
