@@ -427,7 +427,7 @@ int hooked_access(const char *path, int amode) {
 
 	if (isdocPath(path)) {
 		NSLog(@"小罪ADD: hooked_access called ! 命中isdocPath: path:%s",path);
-        return 0;
+        //return 0;
     }
 	
     return orig_access(path, amode);
@@ -448,7 +448,7 @@ int hooked_stat(const char *path, struct stat *buf) {
 	if (isdocPath(path)) 
 	{
 		NSLog(@"小罪ADD: hooked_stat 命中 isdocPath ! path:%s",path);
-        return 0;
+        //return 0;
     }
 	
     return rt;
@@ -469,7 +469,7 @@ int hooked_lstat(const char *path, struct stat *buf) {
 	if (isdocPath(path)) 
 	{
 		NSLog(@"小罪ADD: hooked_lstat 命中 isJailbreakPath ! path:%s",path);
-        return 0;
+        //return 0;
     }
 
 	return rt;
@@ -489,8 +489,8 @@ int hooked_open(const char *path, int flags, ...) {
 
 	if (isdocPath(path)) {
 	NSLog(@"小罪ADD: hooked_open 命中 isdocPath ! path:%s",path);
-        errno = ENOENT;
-        return -1;
+        //errno = ENOENT;
+        //return -1;
     }
 	
     // 处理可变参数
@@ -516,8 +516,8 @@ FILE *hooked_fopen(const char *filename, const char *mode) {
 
 	if (isdocPath(filename)) {
 	NSLog(@"小罪ADD: hooked_fopen 命中 isdocPath ! filename:%s,mode:%s",filename,mode);
-        errno = ENOENT;
-        return NULL;
+        //errno = ENOENT;
+        //return NULL;
     }
     // 调用原始 fopen
     return orig_fopen(filename, mode);
@@ -639,7 +639,7 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		if (isdocPath(pathstr)) 
 		{
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! pathstr:%s",pathstr);
-	        return YES;
+	        //return YES;
 	    }
 	}
     return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
@@ -666,7 +666,7 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 		if (isdocPath(pathstr)) 
 		{
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isdocPath ! pathstr:%s",pathstr);
-	        return YES;
+	        //return YES;
 	    }
 	}
 	
@@ -800,8 +800,8 @@ int hooked_stat64(const char *path, struct stat64 *buf) {
 
 	if (isdocPath(path)) {
 	NSLog(@"小罪ADD: hooked_stat64 命中 isdocPath ! path:%s",path);
-        errno = ENOENT;
-        return -1;
+        //errno = ENOENT;
+        //return -1;
     }
 	
     return orig_stat64(path, buf);
@@ -816,8 +816,8 @@ int hooked_mkdir(const char *path, mode_t mode) {
     }
 
 	if (isdocPath(path)) {
-		NSLog(@"小罪ADD: hooked_mkdir 命中 isdocPath ! path:%s",path);
-        return 0;
+		//NSLog(@"小罪ADD: hooked_mkdir 命中 isdocPath ! path:%s",path);
+        //return 0;
     }
 	
     return orig_mkdir(path, mode);
@@ -833,8 +833,8 @@ int hooked_rmdir(const char *path) {
     }
 
 	if (isdocPath(path)) {
-		NSLog(@"小罪ADD: hooked_rmdir 命中 isdocPath ! path:%s",path);
-        return 0;
+		//NSLog(@"小罪ADD: hooked_rmdir 命中 isdocPath ! path:%s",path);
+        //return 0;
     }
     return orig_rmdir(path);
 }
@@ -857,7 +857,7 @@ int hooked_rename(const char *oldpath, const char *newpath) {
 	if (isdocPath(oldpath) || isdocPath(newpath))
 	{
 		NSLog(@"小罪ADD: hooked_rename 命中 isdocPath ! oldpath:%s , newpath:%s",oldpath,newpath);
-        return 0;
+        //return 0;
     }
 
 	
