@@ -482,13 +482,13 @@ int hooked_open(const char *path, int flags, ...) {
 	//NSLog(@"小罪ADD: hooked_open called ! path:%s",path);
 	
     if (isJailbreakPath(path)) {
-	NSLog(@"小罪ADD: hooked_open 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: hooked_open 命中 isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
 
 	if (isdocPath(path)) {
-	NSLog(@"小罪ADD: hooked_open 命中 isdocPath ! path:%s",path);
+		NSLog(@"小罪ADD: hooked_open 命中 isdocPath ! path:%s",path);
         //errno = ENOENT;
         //return -1;
     }
@@ -1046,8 +1046,8 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
         NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
 
-		//ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
-        //NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
+		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
+        NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 完成Hook)");
 
