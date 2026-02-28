@@ -949,6 +949,15 @@ uint16_t my_crc_func1(uint8_t *data, int len) {
     return orig_crc_func1(data, len);
 }
 
+typedef uint64_t (*orig_sub_DB938_type)(uint64_t a1);
+orig_sub_DB938_type orig_sub_DB938 = NULL;
+
+// 替换函数：直接返回 0，跳过原函数逻辑
+uint64_t hooked_sub_DB938(uint64_t a1) {
+    // 可以在此添加日志（可选）
+    // printf("[Dobby] sub_DB938 hooked, returning 0\n");
+    return 0; // 直接返回 0，可根据需要修改返回值
+}
 
 void* crchackthread(void* aa)
 {
@@ -964,6 +973,11 @@ void* crchackthread(void* aa)
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
+
+		long crcfunc_addr2 = tersafeadd + 0xDB938;
+		ret = DobbyHook((void*)crcfunc_addr2, (void*)hooked_sub_DB938, (void **)&orig_sub_DB938); // 保存原函数指针（可选，这里不使用）
+		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr2: %s", ret == 0 ? "success" : "failed");
+   
 		
 }
 
