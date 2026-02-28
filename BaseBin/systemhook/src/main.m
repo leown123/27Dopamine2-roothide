@@ -907,7 +907,7 @@ static long Get_tersafe_base() {
 static long tersafeadd = 0;
 
 // 原始函数类型
-typedef uint16_t (*orig_crc1_func_type1)(uint8_t *data, int len);
+typedef uint16_t (*orig_crc_func_type1)(uint8_t *data, int len);
 orig_crc_func_type1 orig_crc_func1 = NULL;
 
 // 替换函数
