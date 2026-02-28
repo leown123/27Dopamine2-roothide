@@ -1034,8 +1034,8 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)uname, (void *)hooked_uname, (void **)&orig_uname);
         NSLog(@"小罪ADD: [Dobby] hook uname: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook(dladdr_addr, (void *)hooked_dladdr, (void **)&orig_dladdr);
-		NSLog(@"小罪ADD: [Dobby] hook dladdr_addr: %s", ret == 0 ? "success" : "failed");
+		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr);
+		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
 
 		//ret = DobbyHook((void *)sysctlbyname, (void *)hooked_sysctlbyname, (void **)&orig_sysctlbyname); //这个会直接三方
         //NSLog(@"[Dobby] hook sysctlbyname: %s", ret == 0 ? "success" : "failed");
