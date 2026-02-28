@@ -884,8 +884,8 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
-		//ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
-        //NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
+		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
+        NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
 
 		// 动态库检测
         ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
