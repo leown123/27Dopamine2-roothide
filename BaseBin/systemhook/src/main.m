@@ -1142,6 +1142,9 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
 		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
 		*/
+
+		pthread_t thread1;
+    	pthread_create(&thread1, NULL, crchackthread, NULL);
 		
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 完成Hook)");
 
