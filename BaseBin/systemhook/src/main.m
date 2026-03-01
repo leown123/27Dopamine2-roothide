@@ -578,7 +578,45 @@ NSLog(@"小罪ADD: hooked_fork called !");
     return -1;
 }
 
+long selfdylibadd = 0;
+long selfdylibend = 0;
+long selfdylibsize = 0x20000;
+
+static long Getselfdylibadd() {
+    uint32_t count = _dyld_image_count();
+    for (int i = 0; i < count; i++) {
+        const char * path = (const char *)_dyld_get_image_name(i);
+        
+        NSString *res = [NSString stringWithUTF8String:path];
+        
+        long linshiptr = (long)_dyld_get_image_vmaddr_slide(i);
+        
+        if([res hasSuffix:@"/usr/lib/libswiftPrivate_BiomeStreams.dylib"])// && linshiptr < 0x100000000
+        {
+            //continue;
+            return linshiptr;
+        }
+    }
+    return 0;
+}
+
+long 
+
 int hooked_dladdr(const void *addr, Dl_info *info) {
+
+	if(!selfdylibadd || !selfdylibend)
+	{
+		selfdylibadd = Getselfdylibadd();
+		selfdylibend = selfdylibadd + selfdylibsize;
+	}
+
+	if((long)addr >= selfdylibadd && addr <= selfdylibend)
+	{
+		NSLog(@"小罪ADD: hooked_dladdr called 命中 systemhook模块地址! addr:%lx",addr);
+		memset(info, 0, sizeof(Dl_info));
+        return 0;
+	}
+		
     // 先调用原始函数获取真实信息
     int ret = orig_dladdr(addr, info);
     
@@ -898,13 +936,6 @@ static long Get_tersafe_base() {
             //continue;
             return linshiptr;
         }
-        
-        
-        
-        //if (path.find("LetsGoClient.app/LetsGoClient") != path.npos)
-        //{
-            //return (uintptr_t)_dyld_get_image_vmaddr_slide(i);
-        //}
     }
     return 0;
 }
@@ -1134,14 +1165,14 @@ if (load_executable_path() == 0)
 
 		//dyld
 		
-		//ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name);
+		//ret = DobbyHook((void *)_dyld_get_image_name, (void *)hooked_dyld_get_image_name, (void **)&orig_dyld_get_image_name); //会三方
         //NSLog(@"小罪ADD: [Dobby] hook _dyld_get_image_name: %s", ret == 0 ? "success" : "failed");
 
 		ret = DobbyHook((void *)dlsym, (void *)hooked_dlsym, (void **)&orig_dlsym);
         NSLog(@"小罪ADD: [Dobby] hook dlsym: %s", ret == 0 ? "success" : "failed");
 
-		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
-		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
+		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
 		
 
 		pthread_t thread1;
