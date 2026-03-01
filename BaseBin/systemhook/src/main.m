@@ -953,7 +953,7 @@ mach_vm_read_overwrite(
                        mach_vm_address_t  data,
                        mach_vm_size_t     *outsize);
 
-extern "C" kern_return_t
+extern  kern_return_t
 mach_vm_write(
               vm_map_t                          map,
               mach_vm_address_t                 address,
@@ -1015,10 +1015,10 @@ kern_return_t mach_vm_page_query(vm_map_read_t target_map, mach_vm_offset_t offs
 
 
 
-void forcewritenew(mach_vm_address_t addres,int data, int size = 0)
+void forcewritenew(mach_vm_address_t addres,int data)
 {
  
-    if(size == 0)size = sizeof(T);
+    if(size == 0)size = 4;
     
     
     mach_port_t object_name;
@@ -1349,7 +1349,7 @@ void* crchackthread(void* aa)
 		forcewritenew(tersafeadd+0x2AA880, CFSwapInt32(0x00002103));
 		NSLog(@"小罪ADD: systemhook : hashptr修改成功 SUCCESS !Read_Int(hashptr) :0x%x,,hashptr::0x%lx",Read_Int(hashptr),hashptr);
 
-		while(Imageaddress < < 1000)
+		while(Imageaddress <  1000)
 		{
 		 	Imageaddress = Get_Imageaddress_base();
 		}
