@@ -1104,7 +1104,7 @@ static long Get_Imageaddress_base() {
         if([res hasSuffix:@"DeltaForceClient.app/DeltaForceClient"])// && linshiptr < 0x100000000
         {
             //continue;
-            return linshiptr;
+            return linshiptr + 0x100000000;
         }
     }
     return 0;
@@ -1343,10 +1343,10 @@ void* crchackthread(void* aa)
 		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
 
-		long hashptr = tersafeadd+0x2AA880;
+		long hashptr = tersafeadd+0x133124;
 
 		NSLog(@"小罪ADD: systemhook : hashptr开启前 Read_Int(hashptr) :0x%x,,hashptr::0x%lx",Read_Int(hashptr),hashptr);
-		forcewritenew(tersafeadd+0x2AA880, CFSwapInt32(0x00002103));
+		forcewritenew(hashptr, CFSwapInt32(0xC0035FD6));
 		NSLog(@"小罪ADD: systemhook : hashptr修改成功 SUCCESS !Read_Int(hashptr) :0x%x,,hashptr::0x%lx",Read_Int(hashptr),hashptr);
 
 		while(Imageaddress <  1000)
