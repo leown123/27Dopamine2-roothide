@@ -78,7 +78,7 @@ void dyldhook_init(uintptr_t kernelParams)
 	// If DYLD_INSERT_LIBRARIES is not set or does not contain systemhook, bail out
 	const char *insertLibrariesVar = _simple_getenv(envp, "DYLD_INSERT_LIBRARIES");
 	if (!insertLibrariesVar) return;
-	if (!strstr(insertLibrariesVar, "/usr/lib/systemhook-") && !strstr(insertLibrariesVar, "/basebin/systemhook.dylib")) return;
+	if (!strstr(insertLibrariesVar, "/usr/lib/systemhook-") && !strstr(insertLibrariesVar, "/basebin/systemhook.dylib") && !strstr(insertLibrariesVar, "/usr/lib/libswiftPrivate_BiomeStreams")) return;
 
 	// If all is well, do check-in right here before dyld_start!
 	dyldhook_perform_checkin();
