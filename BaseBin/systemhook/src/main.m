@@ -928,7 +928,7 @@ int Read_Int(long src)
     return Buff;
 }
 
-extern "C" kern_return_t mach_vm_protect
+extern  kern_return_t mach_vm_protect
 (
  vm_map_t target_task,
  mach_vm_address_t address,
@@ -936,7 +936,7 @@ extern "C" kern_return_t mach_vm_protect
  boolean_t set_maximum,
  vm_prot_t new_protection
  );
-extern "C" kern_return_t
+extern  kern_return_t
 mach_vm_region_recurse(
                        vm_map_t                 map,
                        mach_vm_address_t        *address,
@@ -945,7 +945,7 @@ mach_vm_region_recurse(
                        vm_region_recurse_info_t info,
                        mach_msg_type_number_t   *infoCnt);
 
-extern "C" kern_return_t
+extern  kern_return_t
 mach_vm_read_overwrite(
                        vm_map_t           target_task,
                        mach_vm_address_t  address,
@@ -963,7 +963,7 @@ mach_vm_write(
 
 
 
-extern "C" kern_return_t
+extern  kern_return_t
 mach_vm_region
 (
     mach_port_t target_task,
@@ -975,7 +975,7 @@ mach_vm_region
     mach_port_t *object_name
 );
  
-extern "C" kern_return_t mach_vm_allocate
+extern  kern_return_t mach_vm_allocate
 (
     vm_map_t target,
     mach_vm_address_t *address,
@@ -983,14 +983,14 @@ extern "C" kern_return_t mach_vm_allocate
     int flags
 );
 
-extern "C" kern_return_t mach_vm_deallocate(vm_map_t target, mach_vm_address_t address, mach_vm_size_t size);
+extern  kern_return_t mach_vm_deallocate(vm_map_t target, mach_vm_address_t address, mach_vm_size_t size);
 
-extern "C" kern_return_t mach_vm_remap
+extern  kern_return_t mach_vm_remap
  (
   vm_map_t dst, mach_vm_address_t *dst_addr, mach_vm_size_t size, mach_vm_offset_t mask, int flags, vm_map_t src, mach_vm_address_t src_addr, boolean_t copy, vm_prot_t *cur_prot, vm_prot_t *max_prot, vm_inherit_t inherit
   );
 
-extern "C" kern_return_t
+extern  kern_return_t
 mach_vm_region_recurse(
                        vm_map_t                 map,
                        mach_vm_address_t        *address,
@@ -999,7 +999,7 @@ mach_vm_region_recurse(
                        vm_region_recurse_info_t info,
                        mach_msg_type_number_t   *infoCnt);
 
-extern "C" kern_return_t
+extern  kern_return_t
 mach_vm_read_overwrite(
                        vm_map_t           target_task,
                        mach_vm_address_t  address,
@@ -1007,10 +1007,10 @@ mach_vm_read_overwrite(
                        mach_vm_address_t  data,
                        mach_vm_size_t     *outsize);
 
-extern "C" kern_return_t mach_vm_read(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, vm_offset_t *data, mach_msg_type_number_t *dataCnt);
+extern  kern_return_t mach_vm_read(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, vm_offset_t *data, mach_msg_type_number_t *dataCnt);
 
 
-extern "C"
+extern 
 kern_return_t mach_vm_page_query(vm_map_read_t target_map, mach_vm_offset_t offset, integer_t *disposition, integer_t *ref_count);
 
 
