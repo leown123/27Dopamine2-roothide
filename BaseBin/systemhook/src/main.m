@@ -1322,7 +1322,7 @@ void* crchackthread(void* aa)
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
 		
 		
-		
+		/*
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
@@ -1342,7 +1342,8 @@ void* crchackthread(void* aa)
 		long crcfunc_addr5 = tersafeadd + 0x2327EC;
 		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
-
+		*/
+		
 		/*
 		long hashptr = tersafeadd+0x133124;
 
