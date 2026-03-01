@@ -291,64 +291,71 @@ int roothide_launchd___posix_spawn_prehook(pid_t *restrict pidp, const char *res
 #endif
 
 	bool roothideBlacklisted = isBlacklistedPath(path);
-	if (choicyBlocked || roothideBlacklisted)
+
+	if(string_has_suffix(path, "/DeltaForceClient.app/DeltaForceClient"))
 	{
-		int ret;
-
-		JBLogDebug("blacklisted app %s", path);
-
-		if(dyld_patch_enabled() && iOS15Arm64e && roothideBlacklisted && (strstr(path, "/PlugIns/") || strstr(path, ".appex/"))) {
-			JBLogDebug("prevent blacklisted app's extension from running: ", path);
-			ret = EPERM;
-		}
-		else if(dyld_patch_enabled() && iOS15Arm64e && roothideBlacklisted && (envbuf_getenv(envp, "ActivePrewarm") || envbuf_getenv(envp, "DYLD_USE_CLOSURES"))) {
-			JBLogDebug("prevent blacklisted app from prewarming: ", path);
-			ret = EPERM;
-		}
-		else
+		
+	}
+	else
+	{
+		if (choicyBlocked || roothideBlacklisted)
 		{
-			char **envc = envbuf_mutcopy((const char **)envp);
-
-			//choicy may set these 
-			envbuf_unsetenv(&envc, "_SafeMode");
-			envbuf_unsetenv(&envc, "_MSSafeMode");
+			int ret;
 	
-			/* According to xnu, the new thread in new process will not run in userland until after copyout pid
-			https://github.com/apple-oss-distributions/xnu/blob/8d741a5de7ff4191bf97d57b9f54c2f6d4a15585/bsd/kern/kern_exec.c#L4321
-			https://github.com/apple-oss-distributions/xnu/blob/8d741a5de7ff4191bf97d57b9f54c2f6d4a15585/bsd/kern/kern_exec.c#L4882
-			https://github.com/apple-oss-distributions/xnu/blob/8d741a5de7ff4191bf97d57b9f54c2f6d4a15585/bsd/kern/kern_exec.c#L4933
-			*/
+			JBLogDebug("blacklisted app %s", path);
 	
-			/* and posix_spawn->kernel->amfid->launchd may cause xpc dead loop so we can't use lock-spawn-unlock here */
-	
-			volatile pid_t* blacklistedPidp = allocBlacklistProcessId();
-	
-			if(roothideBlacklisted || !dyld_patch_enabled() || !iOS15Arm64e) {
-				ret = __posix_spawn_orig_wrapper(blacklistedPidp, path, desc, argv, envc);
-			} else {
-				ret = roothide_launchd___posix_spawn__spinlock_fix_only(blacklistedPidp, path, desc, argv, envc);
+			if(dyld_patch_enabled() && iOS15Arm64e && roothideBlacklisted && (strstr(path, "/PlugIns/") || strstr(path, ".appex/"))) {
+				JBLogDebug("prevent blacklisted app's extension from running: ", path);
+				ret = EPERM;
 			}
+			else if(dyld_patch_enabled() && iOS15Arm64e && roothideBlacklisted && (envbuf_getenv(envp, "ActivePrewarm") || envbuf_getenv(envp, "DYLD_USE_CLOSURES"))) {
+				JBLogDebug("prevent blacklisted app from prewarming: ", path);
+				ret = EPERM;
+			}
+			else
+			{
+				char **envc = envbuf_mutcopy((const char **)envp);
 	
-			pid_t pid = *blacklistedPidp;
-			if(pidp) *pidp = *blacklistedPidp;
-
-			commitBlacklistProcessId(blacklistedPidp); // will release blacklistedPidp
-			blacklistedPidp = NULL;
-
-			envbuf_free(envc);
-				
-			if(ret==0 && pid>0) {
-				short flags = 0;
-				posix_spawnattr_getflags(attrp, &flags);
-				if((flags & POSIX_SPAWN_START_SUSPENDED) != 0) {
-					platform_set_process_debugged(pid, false);
+				//choicy may set these 
+				envbuf_unsetenv(&envc, "_SafeMode");
+				envbuf_unsetenv(&envc, "_MSSafeMode");
+		
+				/* According to xnu, the new thread in new process will not run in userland until after copyout pid
+				https://github.com/apple-oss-distributions/xnu/blob/8d741a5de7ff4191bf97d57b9f54c2f6d4a15585/bsd/kern/kern_exec.c#L4321
+				https://github.com/apple-oss-distributions/xnu/blob/8d741a5de7ff4191bf97d57b9f54c2f6d4a15585/bsd/kern/kern_exec.c#L4882
+				https://github.com/apple-oss-distributions/xnu/blob/8d741a5de7ff4191bf97d57b9f54c2f6d4a15585/bsd/kern/kern_exec.c#L4933
+				*/
+		
+				/* and posix_spawn->kernel->amfid->launchd may cause xpc dead loop so we can't use lock-spawn-unlock here */
+		
+				volatile pid_t* blacklistedPidp = allocBlacklistProcessId();
+		
+				if(roothideBlacklisted || !dyld_patch_enabled() || !iOS15Arm64e) {
+					ret = __posix_spawn_orig_wrapper(blacklistedPidp, path, desc, argv, envc);
+				} else {
+					ret = roothide_launchd___posix_spawn__spinlock_fix_only(blacklistedPidp, path, desc, argv, envc);
+				}
+		
+				pid_t pid = *blacklistedPidp;
+				if(pidp) *pidp = *blacklistedPidp;
+	
+				commitBlacklistProcessId(blacklistedPidp); // will release blacklistedPidp
+				blacklistedPidp = NULL;
+	
+				envbuf_free(envc);
+					
+				if(ret==0 && pid>0) {
+					short flags = 0;
+					posix_spawnattr_getflags(attrp, &flags);
+					if((flags & POSIX_SPAWN_START_SUSPENDED) != 0) {
+						platform_set_process_debugged(pid, false);
+					}
 				}
 			}
+		
+			return ret;
 		}
-	
-		return ret;
 	}
-
 	if(launchdhookFirstLoad) 
 	{
 		//we should not enable system-wide injection until the jailbreak is finalized (userspace reboot).
