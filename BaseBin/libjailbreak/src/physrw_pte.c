@@ -73,6 +73,45 @@ void acquire_window(uint64_t pa, void (^block)(void *ua))
 	pthread_mutex_unlock(&gLock);
 }
 
+int physrw_pte_physreadbuf_pro(uint64_t pa, void* output, size_t size)
+{
+
+	if(size >= 50) return 0;
+	
+	__block int r = 0;
+	__block const char temp[256] = {'\0'};
+	__block const void *aa = temp;
+
+	memset(aa, 0, size);
+	
+	
+	//char temp[] = {'\0'};
+	enumerate_pages(pa, size, vm_real_kernel_page_size, ^bool(uint64_t curPA, size_t curSize) {
+		acquire_window(curPA & ~vm_real_kernel_page_mask, ^(void *ua) {
+			void *curUA = ((uint8_t*)ua) + (curPA & vm_real_kernel_page_mask);
+
+			void *a1 = &output[curPA - pa];
+			void *a2 = curUA;
+			void *a3 = aa;
+
+			memset(a1, 0, curSize);
+
+			//bool check_page_residency(void *addr, size_t length) //检查是否已有内存
+
+			if(curSize < 50)// && check_page_residency(a2, curSize)
+			{
+				__asm("dmb sy");
+				memcpy(a3, curUA, curSize);
+				vm_copy(mach_task_self(),(vm_address_t)a3,curSize,(vm_address_t)a1);
+				//memcpy(&output[curPA - pa], curUA, curSize);
+				__asm("dmb sy");
+			}
+		});
+		return true;
+	});
+	return r;
+}
+
 int physrw_pte_physreadbuf(uint64_t pa, void* output, size_t size)
 {
 	__block int r = 0;
