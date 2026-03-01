@@ -1018,7 +1018,7 @@ kern_return_t mach_vm_page_query(vm_map_read_t target_map, mach_vm_offset_t offs
 void forcewritenew(mach_vm_address_t addres,int data)
 {
  
-    if(size == 0)size = 4;
+    int size = 4;
     
     
     mach_port_t object_name;
