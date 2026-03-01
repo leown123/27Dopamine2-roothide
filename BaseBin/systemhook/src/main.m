@@ -1059,13 +1059,18 @@ uint64_t hooked_sub_A2B60(uint64_t a1, uint64_t a2, uint64_t a3, int a4) {
     return orig_sub_A2B60(a1, a2, a3, a4);
 }
 
+
+// 原始函数类型：参数为数据指针和长度，返回64位（实际低32位为CRC值）
+typedef uint64_t (*orig_sub_D3F08_type)(uint8_t *data, uint64_t len);
+orig_sub_D3F08_type orig_sub_D3F08 = NULL;
+
 // 替换函数：直接返回伪装值
 uint64_t hooked_sub_D3F08(uint8_t *data, uint64_t len) {
 
 	// 如果 a2 落在预设的地址范围内，则返回伪装值
     if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
 	{
-		long ptr = a2 - tersafeadd;
+		long ptr = (long)a2 - tersafeadd;
         NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_D3F08: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 		
@@ -1076,9 +1081,6 @@ uint64_t hooked_sub_D3F08(uint8_t *data, uint64_t len) {
 
 }
 
-// 原始函数类型：参数为数据指针和长度，返回64位（实际低32位为CRC值）
-typedef uint64_t (*orig_sub_D3F08_type)(uint8_t *data, uint64_t len);
-orig_sub_D3F08_type orig_sub_D3F08 = NULL;
 
 void* crchackthread(void* aa)
 {
