@@ -58,3 +58,14 @@ int jbdInitPPLRW(void)
 {
 	return jbclient_initialize_primitives();
 }
+
+int jbclient_initialize_primitivesPTE(void)
+{
+	return jbclient_initialize_primitives_internal(true);
+}
+
+// Used for supporting third party legacy software that still calls this function
+int jbdInitPPLRWPTE(void)
+{
+	return jbclient_initialize_primitivesPTE();
+}
