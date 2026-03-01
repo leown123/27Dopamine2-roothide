@@ -879,6 +879,10 @@ long Read_Long(long src)
     return Buff;
 }
 
+static long tersafeadd = 0;
+static int tersafesize = 0;
+static long tersafebakadd = 0;
+
 static long Get_tersafe_base() {
     uint32_t count = _dyld_image_count();
     for (int i = 0; i < count; i++) {
@@ -904,7 +908,50 @@ static long Get_tersafe_base() {
     return 0;
 }
 
-static long tersafeadd = 0;
+const char* Get_tersafe_path() {
+    uint32_t count = _dyld_image_count();
+    for (int i = 0; i < count; i++) {
+        const char * path = (const char *)_dyld_get_image_name(i);
+        
+        NSString *res = [NSString stringWithUTF8String:path];
+
+        if([res hasSuffix:@"tersafe"])// && linshiptr < 0x100000000
+        {
+            //continue;
+            return path;
+        }
+  
+    }
+    return 0;
+}
+
+long Get_tersafe_bak() 
+{
+	const char* tersapath = Get_tersafe_path();
+
+	// 1. 读取dylib到本地内存
+    int fd = open(dylib_path, O_RDONLY);
+    if (fd == -1) return;
+    
+    struct stat st;
+    fstat(fd, &st);
+    size_t file_size = st.st_size;
+    
+    // 2. 在本地创建匿名映射
+    void* local_map = mmap(NULL, file_size, 
+                          PROT_READ | PROT_WRITE,
+                          MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    
+    // 3. 读取dylib内容
+    read(fd, local_map, file_size);
+    close(fd);
+
+	//4.返回local_map
+	return (long)local_map;
+	
+}
+
+
 
 // 原始函数类型
 typedef uint16_t (*orig_crc_func_type1)(uint8_t *data, int len);
@@ -969,7 +1016,18 @@ void* crchackthread(void* aa)
 		}
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
 
+		while(tersafebakadd < 1000)
+		{
+			tersafebakadd = Get_tersafe_bak();
+		}
+
+		NSLog(@"小罪ADD: systemhook : tersafebakadd: 0x%lx,Read_Long(tersafebakadd): 0x%lx)", tersafebakadd,Read_Long(tersafebakadd));
+
+		//对比
+		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd + 0x245F04,Read_Long(tersafeadd + 0x245F04));
+		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
 		
+		/*
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
@@ -977,7 +1035,7 @@ void* crchackthread(void* aa)
 		long crcfunc_addr2 = tersafeadd + 0xDB938;
 		ret = DobbyHook((void*)crcfunc_addr2, (void*)hooked_sub_DB938, (void **)&orig_sub_DB938); // 保存原函数指针（可选，这里不使用）
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr2: %s", ret == 0 ? "success" : "failed");
-   
+   		*/
 		
 }
 
