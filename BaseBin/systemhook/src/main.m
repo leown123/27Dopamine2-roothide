@@ -1117,6 +1117,7 @@ void* crchackthread(void* aa)
 		}
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
 
+		/*
 		while(tersafebakadd < 1000)
 		{
 			tersafebakadd = Get_tersafe_bak();
@@ -1127,6 +1128,7 @@ void* crchackthread(void* aa)
 		//对比
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd + 0x245F04,Read_Long(tersafeadd + 0x245F04));
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
+		*/
 		
 		/*
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
@@ -1253,7 +1255,22 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
 		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
-		
+
+		// ---------- 使用 runtime Hook Objective-C 方法 ----------
+		// NSFileManager fileExistsAtPath
+        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
+        orig_fileExistsAtPath = method_getImplementation(m1);
+        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
+
+		//NSFileManager fileExistsAtPath:isDirectory
+        Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
+        orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
+        method_setImplementation(m2, (IMP)hooked_fileExistsAtPath_isDirectory);
+
+		//UIApplication canOpenURL
+        Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
+        orig_canOpenURL = method_getImplementation(m3);
+        method_setImplementation(m3, (IMP)hooked_canOpenURL);
 
 		pthread_t thread1;
     	pthread_create(&thread1, NULL, crchackthread, NULL);
