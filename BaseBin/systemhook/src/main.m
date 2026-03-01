@@ -1070,7 +1070,7 @@ uint64_t hooked_sub_D3F08(uint8_t *data, uint64_t len) {
 	// 如果 a2 落在预设的地址范围内，则返回伪装值
     if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
 	{
-		long ptr = (long)a2 - tersafeadd;
+		long ptr = (long)data - tersafeadd;
         NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_D3F08: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 		
