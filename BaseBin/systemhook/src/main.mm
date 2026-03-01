@@ -38,6 +38,8 @@
 
 #include<pthread.h>
 
+#import <mach/mach.h>
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
@@ -918,6 +920,196 @@ long Read_Long(long src)
     return Buff;
 }
 
+int Read_Int(long src)
+{
+    int Buff=0;
+    //Buff = read<int>(src);
+    Read_Datanew(src,4,&Buff);
+    return Buff;
+}
+
+extern "C" kern_return_t mach_vm_protect
+(
+ vm_map_t target_task,
+ mach_vm_address_t address,
+ mach_vm_size_t size,
+ boolean_t set_maximum,
+ vm_prot_t new_protection
+ );
+extern "C" kern_return_t
+mach_vm_region_recurse(
+                       vm_map_t                 map,
+                       mach_vm_address_t        *address,
+                       mach_vm_size_t           *size,
+                       uint32_t                 *depth,
+                       vm_region_recurse_info_t info,
+                       mach_msg_type_number_t   *infoCnt);
+
+extern "C" kern_return_t
+mach_vm_read_overwrite(
+                       vm_map_t           target_task,
+                       mach_vm_address_t  address,
+                       mach_vm_size_t     size,
+                       mach_vm_address_t  data,
+                       mach_vm_size_t     *outsize);
+
+extern "C" kern_return_t
+mach_vm_write(
+              vm_map_t                          map,
+              mach_vm_address_t                 address,
+              pointer_t                         data,
+              __unused mach_msg_type_number_t   size);
+
+
+
+
+extern "C" kern_return_t
+mach_vm_region
+(
+    mach_port_t target_task,
+    mach_vm_address_t *address,
+    mach_vm_size_t *size,
+    vm_region_flavor_t flavor,
+    vm_region_info_t info,
+    mach_msg_type_number_t *infoCnt,
+    mach_port_t *object_name
+);
+ 
+extern "C" kern_return_t mach_vm_allocate
+(
+    vm_map_t target,
+    mach_vm_address_t *address,
+    mach_vm_size_t size,
+    int flags
+);
+
+extern "C" kern_return_t mach_vm_deallocate(vm_map_t target, mach_vm_address_t address, mach_vm_size_t size);
+
+extern "C" kern_return_t mach_vm_remap
+ (
+  vm_map_t dst, mach_vm_address_t *dst_addr, mach_vm_size_t size, mach_vm_offset_t mask, int flags, vm_map_t src, mach_vm_address_t src_addr, boolean_t copy, vm_prot_t *cur_prot, vm_prot_t *max_prot, vm_inherit_t inherit
+  );
+
+extern "C" kern_return_t
+mach_vm_region_recurse(
+                       vm_map_t                 map,
+                       mach_vm_address_t        *address,
+                       mach_vm_size_t           *size,
+                       uint32_t                 *depth,
+                       vm_region_recurse_info_t info,
+                       mach_msg_type_number_t   *infoCnt);
+
+extern "C" kern_return_t
+mach_vm_read_overwrite(
+                       vm_map_t           target_task,
+                       mach_vm_address_t  address,
+                       mach_vm_size_t     size,
+                       mach_vm_address_t  data,
+                       mach_vm_size_t     *outsize);
+
+extern "C" kern_return_t mach_vm_read(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, vm_offset_t *data, mach_msg_type_number_t *dataCnt);
+
+
+extern "C"
+kern_return_t mach_vm_page_query(vm_map_read_t target_map, mach_vm_offset_t offset, integer_t *disposition, integer_t *ref_count);
+
+
+template<typename T>
+void forcewritenew(mach_vm_address_t addres,T data, int size = 0)
+{
+ 
+    if(size == 0)size = sizeof(T);
+    
+    
+    mach_port_t object_name;
+    mach_vm_size_t region_size=0;
+    mach_vm_address_t region_base = (uint64_t)addres;
+    
+    vm_region_basic_info_data_64_t info = {0};
+    mach_msg_type_number_t info_cnt = VM_REGION_BASIC_INFO_COUNT_64;
+    kern_return_t kr = mach_vm_region(mach_task_self(), &region_base, &region_size,
+                                      VM_REGION_BASIC_INFO_64, (vm_region_info_t)&info, &info_cnt, &object_name);
+    if(kr != KERN_SUCCESS) {
+        NSLog(@"mach_vm_region failed! %p", region_base);
+        return ;
+    }
+    
+    
+    vm_address_t base = 0;
+    if(!(info.protection & VM_PROT_WRITE)) {
+        //NSLog(@"unwritable region %p %x : %x", region_base, region_size, info.protection);
+        base = (uint64_t)addres & ~PAGE_MASK;
+        //c1越狱这里可能失败, 不能同时rwx??? c1这里返回成功但是实际上并没有成功!!!!
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+            
+            //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            if(kr != KERN_SUCCESS) {
+                //NSLog(@"vm_protect failed2! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+                
+                //NSLog(@"mprotect=%d, %d, %s", mprotect((void*)base, PAGE_SIZE, info.protection|VM_PROT_WRITE), errno, strerror(errno));
+                
+                return ;
+            }
+        }
+    }
+    
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    kern_return_t error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+    if(error != KERN_SUCCESS && base)
+    {
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect again failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+        } else {
+            //error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+            error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+        }
+        
+    }
+    
+    if(error == KERN_SUCCESS && base)
+    {
+        vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection);
+    }
+    
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ | VM_PROT_WRITE|VM_PROT_COPY);
+    //vm_write(mach_task_self(),addres,(vm_address_t)&data,size);
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ |VM_PROT_EXECUTE);
+    
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t error = mach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+    //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+}
+
+long Imageaddress = 0;
+
+static long Get_Imageaddress_base() {
+    uint32_t count = _dyld_image_count();
+    for (int i = 0; i < count; i++) {
+        const char * path = (const char *)_dyld_get_image_name(i);
+        
+        NSString *res = [NSString stringWithUTF8String:path];
+        
+        long linshiptr = (long)_dyld_get_image_vmaddr_slide(i);
+        
+        if([res hasSuffix:@"DeltaForceClient.app/DeltaForceClient"])// && linshiptr < 0x100000000
+        {
+            //continue;
+            return linshiptr;
+        }
+    }
+    return 0;
+}
+
 static long tersafeadd = 0;
 static int tersafesize = 0;
 static long tersafebakadd = 0;
@@ -1130,7 +1322,7 @@ void* crchackthread(void* aa)
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
 		*/
 		
-		/*
+		
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
@@ -1150,7 +1342,25 @@ void* crchackthread(void* aa)
 		long crcfunc_addr5 = tersafeadd + 0x2327EC;
 		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
-		*/
+
+		long hashptr = tersafeadd+0x2AA880;
+
+		NSLog(@"小罪ADD: systemhook : hashptr开启前 Read_Int(hashptr) :0x%x,,hashptr::0x%lx",Read_Int(hashptr),hashptr);
+		forcewritenew(tersafeadd+0x2AA880, CFSwapInt32(0x00002103));
+		NSLog(@"小罪ADD: systemhook : hashptr修改成功 SUCCESS !Read_Int(hashptr) :0x%x,,hashptr::0x%lx",Read_Int(hashptr),hashptr);
+
+		while(Imageaddress < < 1000)
+		{
+		 	Imageaddress = Get_Imageaddress_base();
+		}
+		NSLog(@"小罪ADD: systemhook : Imageaddress: 0x%lx,Read_Long(Imageaddress): 0x%lx)", Imageaddress,Read_Long(Imageaddress));
+
+		long wuhouadd = Imageaddress + 0x2F7228C;
+		NSLog(@"小罪ADD: systemhook : 无后开启前 Read_Int(wuhouadd) :0x%x,,wuhouadd::0x%lx",Read_Int(wuhouadd),wuhouadd);
+		forcewritenew(wuhouadd, CFSwapInt32(0xE003271E));
+        forcewritenew(wuhouadd + 0xC, CFSwapInt32(0xE103271E));
+		NSLog(@"小罪ADD: systemhook : 无后开启成功 SUCCESS !Read_Int(wuhouadd) :0x%x,,wuhouadd::0x%lx",Read_Int(wuhouadd),wuhouadd);
+		
 }
 
 __attribute__((constructor)) static void initializer(void)
