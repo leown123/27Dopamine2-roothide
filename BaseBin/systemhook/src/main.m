@@ -599,7 +599,7 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
 @"jb",@"libjail"];
             for (NSString *black in blacklistedSymbols) {
                 if ([sname containsString:black]) {
-					NSLog(@"小罪ADD: hooked_dladdr called 命中 blacklistedSymbols! sname:%@,black:%@",info->dli_fname,black);
+					NSLog(@"小罪ADD: hooked_dladdr called 命中 blacklistedSymbols! sname:%@,black:%@",sname,black);
                     memset(info, 0, sizeof(Dl_info));
                     return 0;
                 }
@@ -930,8 +930,8 @@ long Get_tersafe_bak()
 	const char* tersapath = Get_tersafe_path();
 
 	// 1. 读取dylib到本地内存
-    int fd = open(dylib_path, O_RDONLY);
-    if (fd == -1) return;
+    int fd = open(tersapath, O_RDONLY);
+    if (fd == -1) return 0;
     
     struct stat st;
     fstat(fd, &st);
