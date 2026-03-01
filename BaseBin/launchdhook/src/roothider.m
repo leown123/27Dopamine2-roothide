@@ -83,7 +83,7 @@ void roothide_launchd_postinit(bool firstLoad)
 	else
 	{		
 		//NSString* systemhookFilePath = [NSString stringWithFormat:@"%@/systemhook-%016llX.dylib", JBROOT_PATH(@"/basebin"), jbinfo(jbrand)];
-		NSString* systemhookFilePath = [NSString stringWithFormat:@"%@/libswiftPrivate_BiomeStreams.dylib", JBROOT_PATH(@"/basebin"), jbrand()];
+		NSString* systemhookFilePath = [NSString stringWithFormat:@"%@/libswiftPrivate_BiomeStreams.dylib", JBROOT_PATH(@"/basebin"), jbinfo(jbrand)];
 
 		if([NSFileManager.defaultManager fileExistsAtPath:JBROOT_PATH(@"/basebin/systemhook.dylib")])
 		{
