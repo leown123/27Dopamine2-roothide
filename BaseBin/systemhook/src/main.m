@@ -1081,6 +1081,31 @@ uint64_t hooked_sub_D3F08(uint8_t *data, uint64_t len) {
 
 }
 
+// 原始函数类型：参数为 (a1 未使用, 数据指针, 长度)
+typedef uint64_t (*orig_sub_2327EC_type)(uint64_t a1, uint8_t *data, int len);
+orig_sub_2327EC_type orig_sub_2327EC = NULL;
+// 替换函数：直接返回伪装值
+uint64_t hooked_sub_2327EC(uint64_t a1, uint8_t *data, int len) 
+{
+	// 如果 a2 落在预设的地址范围内，则返回伪装值
+    if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
+	{
+		long ptr = (long)data - tersafeadd;
+        NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_2327EC: crc正在检查tersafe：0x%lx)", ptr);
+		long fakedylibptr = tersafebakadd + ptr;
+
+		return orig_sub_2327EC(a1, (uint8_t*)fakedylibptr, len);
+    }
+
+    // 可根据需要添加条件判断，例如针对特定数据指针
+    // if (data == target_address) return 0x12345678;
+    // 否则调用原始函数计算真实值：
+	
+    return orig_sub_2327EC(a1, data, len);
+
+    // 直接返回固定值（低32位有效）
+    //return 0x12345678;
+}
 
 void* crchackthread(void* aa)
 {
@@ -1119,7 +1144,10 @@ void* crchackthread(void* aa)
 		long crcfunc_addr4 = tersafeadd + 0xD3F08;
 		ret = DobbyHook((void*)crcfunc_addr4,(void*)hooked_sub_D3F08, (void **)&orig_sub_D3F08);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr4: %s", ret == 0 ? "success" : "failed");
-		
+
+		long crcfunc_addr5 = tersafeadd + 0xD3F08;
+		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
+		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
 		
 }
 
