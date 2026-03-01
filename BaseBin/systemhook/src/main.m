@@ -546,7 +546,8 @@ const char *hooked_dyld_get_image_name(uint32_t index) {
         for (NSString *lib in blacklistedLibs) {
             if ([nsName containsString:lib]) {
 			NSLog(@"小罪ADD: hooked_dyld_get_image_name called 命中 blacklistedLibs! lib:%@ ,name:%s",lib,name);
-                return "/usr/lib/libSystem.B.dylib";
+                //return "/usr/lib/libSystem.B.dylib";
+				return "";
             }
         }
     }
