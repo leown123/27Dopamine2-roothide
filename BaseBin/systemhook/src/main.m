@@ -1115,7 +1115,7 @@ void* crchackthread(void* aa)
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr3: %s", ret == 0 ? "success" : "failed");
 
 		long crcfunc_addr4 = tersafeadd + 0xD3F08;
-		ret = DobbyHook((void*)crcfunc_addr4,(void*)my_sub_D3F08, (void **)&orig_sub_D3F08);
+		ret = DobbyHook((void*)crcfunc_addr4,(void*)hooked_sub_D3F08, (void **)&orig_sub_D3F08);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr4: %s", ret == 0 ? "success" : "failed");
 		
 		
