@@ -1014,8 +1014,8 @@ extern "C"
 kern_return_t mach_vm_page_query(vm_map_read_t target_map, mach_vm_offset_t offset, integer_t *disposition, integer_t *ref_count);
 
 
-template<typename T>
-void forcewritenew(mach_vm_address_t addres,T data, int size = 0)
+
+void forcewritenew(mach_vm_address_t addres,int data, int size = 0)
 {
  
     if(size == 0)size = sizeof(T);
