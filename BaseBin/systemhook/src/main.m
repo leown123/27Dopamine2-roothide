@@ -968,6 +968,8 @@ long Get_tersafe_bak()
     struct stat st;
     fstat(fd, &st);
     size_t file_size = st.st_size;
+
+	tersafesize = file_size;
     
     // 2. 在本地创建匿名映射
     void* local_map = mmap(NULL, file_size, 
@@ -1038,6 +1040,25 @@ uint64_t hooked_sub_DB938(uint64_t a1) {
     return 0; // 直接返回 0，可根据需要修改返回值
 }
 
+// 原始函数类型：参数和返回值与目标函数一致
+typedef uint64_t (*orig_sub_A2B60_type)(uint64_t a1, uint64_t a2, uint64_t a3, int a4);
+orig_sub_A2B60_type orig_sub_A2B60 = NULL;
+
+// 替换函数
+uint64_t hooked_sub_A2B60(uint64_t a1, uint64_t a2, uint64_t a3, int a4) {
+    // 如果 a2 落在预设的地址范围内，则返回伪装值
+    if (a2 >= tersafeadd && a2 <= (tersafeadd + tersafesize) ) 
+	{
+		long ptr = a2 - tersafeadd;
+        NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_A2B60: crc正在检查tersafe：0x%lx)", ptr);
+		long fakedylibptr = tersafebakadd + ptr;
+		
+		return orig_sub_A2B60(a1, fakedylibptr, a3, a4);
+    }
+    // 否则调用原始函数
+    return orig_sub_A2B60(a1, a2, a3, a4);
+}
+
 void* crchackthread(void* aa)
 {
 
@@ -1059,15 +1080,19 @@ void* crchackthread(void* aa)
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd + 0x245F04,Read_Long(tersafeadd + 0x245F04));
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
 		
-		/*
+		
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
 
-		long crcfunc_addr2 = tersafeadd + 0xDB938;
-		ret = DobbyHook((void*)crcfunc_addr2, (void*)hooked_sub_DB938, (void **)&orig_sub_DB938); // 保存原函数指针（可选，这里不使用）
-		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr2: %s", ret == 0 ? "success" : "failed");
-   		*/
+		//long crcfunc_addr2 = tersafeadd + 0xDB938;
+		//ret = DobbyHook((void*)crcfunc_addr2, (void*)hooked_sub_DB938, (void **)&orig_sub_DB938); // 保存原函数指针（可选，这里不使用）
+		//NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr2: %s", ret == 0 ? "success" : "failed");
+
+		long crcfunc_addr3 = tersafeadd + 0xA2B60;
+		int ret = DobbyHook((void*)crcfunc_addr3,(void*)hooked_sub_A2B60, (void **)&orig_sub_A2B60);
+		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr3: %s", ret == 0 ? "success" : "failed");
+		
 		
 }
 
