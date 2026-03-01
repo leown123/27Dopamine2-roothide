@@ -1074,7 +1074,7 @@ uint64_t hooked_sub_D3F08(uint8_t *data, uint64_t len) {
         NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_D3F08: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 		
-		return orig_sub_D3F08(fakedylibptr, len);
+		return orig_sub_D3F08((uint8_t*)fakedylibptr, len);
     }
 
 	return orig_sub_D3F08(data, len);
