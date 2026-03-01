@@ -1309,7 +1309,7 @@ void* crchackthread(void* aa)
 		}
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
 
-		/*
+		
 		while(tersafebakadd < 1000)
 		{
 			tersafebakadd = Get_tersafe_bak();
@@ -1320,7 +1320,7 @@ void* crchackthread(void* aa)
 		//对比
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd + 0x245F04,Read_Long(tersafeadd + 0x245F04));
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
-		*/
+		
 		
 		
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
@@ -1343,7 +1343,7 @@ void* crchackthread(void* aa)
 		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		long hashptr = tersafeadd+0x133124;
 
 		NSLog(@"小罪ADD: systemhook : hashptr开启前 Read_Int(hashptr) :0x%x,,hashptr::0x%lx",Read_Int(hashptr),hashptr);
@@ -1362,7 +1362,7 @@ void* crchackthread(void* aa)
 		forcewritenew(wuhouadd, CFSwapInt32(0xE003271E));
         forcewritenew(wuhouadd + 0xC, CFSwapInt32(0xE103271E));
 		NSLog(@"小罪ADD: systemhook : 无后开启成功 SUCCESS !Read_Int(wuhouadd) :0x%x,,wuhouadd::0x%lx",Read_Int(wuhouadd),wuhouadd);
-		*/
+		
 }
 
 __attribute__((constructor)) static void initializer(void)
