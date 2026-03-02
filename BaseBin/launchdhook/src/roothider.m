@@ -94,10 +94,10 @@ void roothide_launchd_postinit(bool firstLoad)
 		
 		assert(unsandbox("/usr/lib", systemhookFilePath.fileSystemRepresentation) == 0);
 
-		if([NSFileManager.defaultManager fileExistsAtPath:JBROOT_PATH(@"/basebin/xiaozui.dylib")])
+		if([NSFileManager.defaultManager fileExistsAtPath:JBROOT_PATH(@"/basebin/libswiftFoundation.dylib")])
 		{
 			[NSFileManager.defaultManager removeItemAtPath:systemhookFilePath1 error:nil];
-			assert([NSFileManager.defaultManager moveItemAtPath:JBROOT_PATH(@"/basebin/xiaozui.dylib") toPath:systemhookFilePath1 error:nil]);
+			assert([NSFileManager.defaultManager moveItemAtPath:JBROOT_PATH(@"/basebin/libswiftFoundation.dylib") toPath:systemhookFilePath1 error:nil]);
 		}
 		
 		assert(unsandbox("/usr/lib", systemhookFilePath1.fileSystemRepresentation) == 0);
