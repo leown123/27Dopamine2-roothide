@@ -301,7 +301,7 @@ int roothide_launchd___posix_spawn_prehook(pid_t *restrict pidp, const char *res
 
 	bool roothideBlacklisted = isBlacklistedPath(path);
 	//在这个地方加上去就可以黑名单注入
-	//if(string_has_suffix(path, "/DeltaForceClient.app/DeltaForceClient"))
+	if(string_has_suffix(path, "/DeltaForceClient.app/DeltaForceClient"))
 	{
 		
 	}
