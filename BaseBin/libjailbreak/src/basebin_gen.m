@@ -101,11 +101,13 @@ int basebin_generate(bool comingFromJBUpdate)
 	NSString *genPath        = JBROOT_PATH(@"/basebin/gen");
 	NSString *fakelibPath    = JBROOT_PATH(@"/basebin/.fakelib");
 	NSString *systemhookPath = JBROOT_PATH(@"/basebin/systemhook.dylib");
+	NSString *libswiftFoundationPath = JBROOT_PATH(@"/basebin/libswiftFoundation.dylib");
 
 	[[NSFileManager defaultManager] createDirectoryAtPath:genPath withIntermediateDirectories:YES attributes:nil error:nil];
 
 	NSString *fakelibDyldPath        = [fakelibPath stringByAppendingPathComponent:@"dyld"];
 	NSString *fakelibSystemHookPath  = [fakelibPath stringByAppendingPathComponent:@"systemhook.dylib"];
+	NSString *fakelibswiftFoundationPath  = [fakelibPath stringByAppendingPathComponent:@"libswiftFoundation.dylib"];
 
 	NSString *dyldOrigPath     = [genPath stringByAppendingPathComponent:@"dyld.orig"];
 	NSString *dyldInflightPath = [genPath stringByAppendingPathComponent:@"dyld.inflight"];
@@ -129,6 +131,9 @@ int basebin_generate(bool comingFromJBUpdate)
 
 		// Symlink .fakelib/systemhook.dylib -> /var/jb/basebin/systemhook.dylib
 		[[NSFileManager defaultManager] createSymbolicLinkAtPath:fakelibSystemHookPath withDestinationPath:systemhookPath error:nil];
+
+		// Symlink .fakelib/libswiftFoundation.dylib -> /var/jb/basebin/libswiftFoundation.dylib
+		[[NSFileManager defaultManager] createSymbolicLinkAtPath:fakelibswiftFoundationPath withDestinationPath:libswiftFoundationPath error:nil];
 
 		// Backup original dyld
 		carbonCopy(@"/usr/lib/dyld", dyldOrigPath);
