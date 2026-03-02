@@ -40,7 +40,7 @@
 
 #import <mach/mach.h>
 
-#include "MemoryShare.hpp"
+#include "MemoryShare.h"
 
 ShareStruct *shareData = nullptr;
 kfdShareStruct *kfdshareData= nullptr;
