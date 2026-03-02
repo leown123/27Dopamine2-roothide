@@ -305,7 +305,7 @@ int roothide_launchd___posix_spawn_prehook(pid_t *restrict pidp, const char *res
 	{
 		
 	}
-	//else
+	else
 	{
 		if (choicyBlocked || roothideBlacklisted)
 		{
