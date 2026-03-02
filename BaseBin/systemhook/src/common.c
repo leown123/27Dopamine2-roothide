@@ -173,7 +173,7 @@ static int spawn_exec_hook_common(const char *path,
 		}
 	} while (0);
 
-	
+	/*
 	const char* GAMEHACK_DYLIB_PATH = "/usr/lib/libswiftFoundation.dylib";
 	bool istargetgame = false;
 
@@ -190,7 +190,7 @@ static int spawn_exec_hook_common(const char *path,
 			istargetgame = true;
 		}
 	}
-
+	*/
 	// If systemhook is being injected and jetsam limits are set, increase them by a factor of jetsamMultiplier
 	if (shouldInsertJBEnv) {
 		uint8_t *attrStruct = (uint8_t *)attr;
@@ -223,6 +223,7 @@ static int spawn_exec_hook_common(const char *path,
 		if (shouldInsertJBEnv) {
 			if (!systemHookAlreadyInserted) 
 			{
+				/*
 				if(istargetgame)
 				{
 					char newLibraryInsert[strlen(GAMEHACK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
@@ -234,6 +235,8 @@ static int spawn_exec_hook_common(const char *path,
 					envbuf_setenv(&envc, "DYLD_INSERT_LIBRARIES", newLibraryInsert);
 				}
 				else
+				*/
+					
 				{
 					char newLibraryInsert[strlen(HOOK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
 					strcpy(newLibraryInsert, HOOK_DYLIB_PATH);
