@@ -1377,20 +1377,35 @@ void gongxiangkaiqi()
 {
     //shareData = (ShareStruct*)openShareChannel(".gdata");
     //memset(shareData, 0, sizeof(ShareStruct));
-    kfdshareData = (kfdShareStruct*)openShareChannel();
+	
+    //kfdshareData = (kfdShareStruct*)openShareChannel();
     //memset(kfdshareData, 0, sizeof(kfdShareStruct));
 
-    if(kfdshareData == (void*)-1){
-        NSLog(@"小罪ADD: systemhook: openShareChannel fail");
-        //kfdshareData = new kfdShareStruct();
-		kfdshareData = (struct kfdShareStruct *)malloc(sizeof(struct kfdShareStruct));
-    }
-    memset(kfdshareData, 0, sizeof(kfdShareStruct));
-    NSLog(@"小罪ADD: systemhook: openShareChannel success!");
+	//kfdshareData->huizhipid = getpid();
+    //NSLog(@"小罪ADD: systemhook: kfdshareData->huizhipid :%d",kfdshareData->huizhipid);
 
-	kfdshareData->huizhipid = getpid();
-    
-    NSLog(@"小罪ADD: systemhook: kfdshareData->huizhipid :%d",kfdshareData->huizhipid);
+	shareData = (ShareStruct*)openShareChannel();
+
+    if(shareData == (void*)-1){
+        NSLog(@"小罪ADD: systemhook: openShareChannel shareData fail");
+        //kfdshareData = new kfdShareStruct();
+		shareData = (struct ShareStruct*)malloc(sizeof(struct ShareStruct));
+    }
+    memset(shareData, 0, sizeof(ShareStruct));
+    NSLog(@"小罪ADD: systemhook: openShareChannel shareData success!");
+
+	pid_t wholepid = getpid();
+    shareData->pid = wholepid;
+	NSLog(@"小罪ADD: systemhook: shareData->pid: %d",shareData->pid);
+
+	NSLog(@"小罪ADD: systemhook: Imageaddress:%lx,Read_Long(Imageaddress):%lx",Imageaddress,Read_Long(Imageaddress));
+
+	shareData->baseAddress = Imageaddress;
+    shareData->readbaseAddress = Read_Long(Imageaddress);
+        
+    NSLog(@"小罪ADD: systemhook: shareData->baseAddress:%lx,shareData->readbaseAddress:%lx",shareData->baseAddress,shareData->readbaseAddress);
+	
+
 }
 
 void loadandinitshare()
