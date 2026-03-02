@@ -1415,6 +1415,7 @@ void loadandinitshare()
         gongxiangkaiqi();
         hadgongxiang = true;
         //kfdshareData->ismapped = false;
+		shareData->ismapped = false;
     }
 
 	//pid_t sharepid = kfdshareData->huizhipid;
