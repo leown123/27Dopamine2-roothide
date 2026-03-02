@@ -40,6 +40,11 @@
 
 #import <mach/mach.h>
 
+#include "MemoryShare.hpp"
+
+ShareStruct *shareData = nullptr;
+kfdShareStruct *kfdshareData= nullptr;
+
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
 char *JB_BootUUID = NULL;
@@ -1366,9 +1371,43 @@ void* crchackthread(void* aa)
 		*/
 }
 
+static bool hadgongxiang = false,hadqidongxiancheng = false;
+
+void gongxiangkaiqi()
+{
+    //shareData = (ShareStruct*)openShareChannel(".gdata");
+    //memset(shareData, 0, sizeof(ShareStruct));
+    kfdshareData = (kfdShareStruct*)openShareChannel(".ldata");
+    //memset(kfdshareData, 0, sizeof(kfdShareStruct));
+}
 
 void loadandinitshare()
 {
+	if(!hadgongxiang)
+    {
+        gongxiangkaiqi();
+        hadgongxiang = true;
+        kfdshareData->ismapped = false;
+    }
+
+	pid_t sharepid = kfdshareData->huizhipid;
+
+	if(!Imageaddress)
+	{
+		Imageaddress = Get_Imageaddress_base();
+	}
+
+	if(!tersafeadd)
+	{
+		tersafeadd = Get_tersafe_base();
+	}
+
+	NSLog(@"小罪ADD: systemhook: Imageaddress:%lx,Read_Long(Imageaddress):%lx",Imageaddress,Read_Long(Imageaddress));
+
+	shareData->baseAddress = Imageaddress;
+    shareData->readbaseAddress = Read_Long(Imageaddress);
+
+	NSLog(@"小罪ADD: systemhook: shareData->baseAddress:%lx,shareData->readbaseAddress:%lx",shareData->baseAddress,shareData->readbaseAddress);
 	
 }
 
@@ -1427,7 +1466,7 @@ if (load_executable_path() == 0)
 		}
 
 
-
+		loadandinitshare();
 
 
 		return;
