@@ -1382,7 +1382,8 @@ void gongxiangkaiqi()
 
     if(kfdshareData == (void*)-1){
         NSLog(@"小罪ADD: systemhook: openShareChannel fail");
-        kfdshareData = new kfdShareStruct();
+        //kfdshareData = new kfdShareStruct();
+		kfdshareData = (struct kfdShareStruct *)malloc(sizeof(struct kfdShareStruct));
     }
     memset(kfdshareData, 0, sizeof(kfdShareStruct));
     NSLog(@"小罪ADD: systemhook: openShareChannel success!");
