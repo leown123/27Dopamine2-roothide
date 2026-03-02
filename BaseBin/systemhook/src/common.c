@@ -14,7 +14,7 @@
 #include <libjailbreak/jbclient_xpc.h>
 #include <libjailbreak/jbserver_domains.h>
 
-#import <Foundation/Foundation.h>
+//#import <Foundation/Foundation.h>
 
 bool string_has_prefix(const char *str, const char* prefix)
 {
@@ -173,6 +173,7 @@ static int spawn_exec_hook_common(const char *path,
 		}
 	} while (0);
 
+	
 	const char* GAMEHACK_DYLIB_PATH = "/usr/lib/libswiftFoundation.dylib";
 	bool istargetgame = false;
 
