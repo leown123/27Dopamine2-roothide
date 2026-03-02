@@ -42,8 +42,8 @@
 
 #include "MemoryShare.h"
 
-ShareStruct *shareData = nullptr;
-kfdShareStruct *kfdshareData= nullptr;
+ShareStruct *shareData = 0;
+kfdShareStruct *kfdshareData= 0;
 
 bool gFullyDebugged = false;
 static void *gLibSandboxHandle;
