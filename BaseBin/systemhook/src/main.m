@@ -1379,6 +1379,17 @@ void gongxiangkaiqi()
     //memset(shareData, 0, sizeof(ShareStruct));
     kfdshareData = (kfdShareStruct*)openShareChannel();
     //memset(kfdshareData, 0, sizeof(kfdShareStruct));
+
+    if(kfdshareData == (void*)-1){
+        NSLog(@"小罪ADD: systemhook: openShareChannel fail");
+        kfdshareData = new kfdShareStruct();
+    }
+    memset(kfdshareData, 0, sizeof(kfdShareStruct));
+    NSLog(@"小罪ADD: systemhook: openShareChannel success!");
+
+	kfdshareData->huizhipid = getpid();
+    
+    NSLog(@"小罪ADD: systemhook: kfdshareData->huizhipid :%d",kfdshareData->huizhipid);
 }
 
 void loadandinitshare()
