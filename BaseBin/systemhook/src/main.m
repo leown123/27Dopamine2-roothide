@@ -1377,7 +1377,7 @@ void gongxiangkaiqi()
 {
     //shareData = (ShareStruct*)openShareChannel(".gdata");
     //memset(shareData, 0, sizeof(ShareStruct));
-    kfdshareData = (kfdShareStruct*)openShareChannel(".ldata");
+    kfdshareData = (kfdShareStruct*)openShareChannel();
     //memset(kfdshareData, 0, sizeof(kfdShareStruct));
 }
 
