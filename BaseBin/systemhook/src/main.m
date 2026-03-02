@@ -1366,6 +1366,12 @@ void* crchackthread(void* aa)
 		*/
 }
 
+
+void loadandinitshare()
+{
+	
+}
+
 __attribute__((constructor)) static void initializer(void)
 {	
 /***** roothide specific ****/
@@ -1420,7 +1426,11 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 
-		
+
+
+
+
+		return;
 
 		int ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
