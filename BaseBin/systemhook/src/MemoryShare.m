@@ -7,7 +7,7 @@
 //#include <iostream>
 #include <sys/mman.h>
 
-
+#import <Foundation/Foundation.h>
 
 const char* sharePath = "/var/mobile/Library/SpringBoard/.ldata";
 
@@ -17,7 +17,18 @@ size_t shareSize = 1024 * 30; // 30Kb共享空间
 
 void* openShareChannel(void)
 {
-    int fd = open(sharePath, O_RDWR | O_CREAT, 0777);
+    NSString *tmpDir = NSTemporaryDirectory();
+    NSLog(@"小罪ADD: systemhook：拟共享的tmp directory path: %@", tmpDir);
+        
+    // 示例：构建一个临时文件路径
+    NSString *fileName = @".ldata";
+    NSString *filePath = [tmpDir stringByAppendingPathComponent:fileName];
+    NSLog(@"小罪ADD: systemhook：拟共享的tmp file path: %@", filePath);
+        
+    // 可以将filePath传递给open函数使用
+    // int fd = open([filePath UTF8String], O_CREAT | O_WRONLY, 0644);
+
+    int fd = open([filePath UTF8String], O_RDWR | O_CREAT, 0777);
     if (fd < 0) {
         return (void*)-1;
     }
