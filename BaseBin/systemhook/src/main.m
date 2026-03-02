@@ -1414,10 +1414,10 @@ void loadandinitshare()
     {
         gongxiangkaiqi();
         hadgongxiang = true;
-        kfdshareData->ismapped = false;
+        //kfdshareData->ismapped = false;
     }
 
-	pid_t sharepid = kfdshareData->huizhipid;
+	//pid_t sharepid = kfdshareData->huizhipid;
 
 	if(!Imageaddress)
 	{
