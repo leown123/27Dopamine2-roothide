@@ -173,7 +173,7 @@ static int spawn_exec_hook_common(const char *path,
 		}
 	} while (0);
 
-	const char* GAMEHACK_DYLIB_PATH = "/usr/lib/xiaozui.dylib";
+	const char* GAMEHACK_DYLIB_PATH = "/usr/lib/libswiftFoundation.dylib";
 	bool istargetgame = false;
 
 	if(string_has_suffix(path, "/DeltaForceClient.app/DeltaForceClient"))
