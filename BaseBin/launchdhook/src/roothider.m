@@ -84,6 +84,7 @@ void roothide_launchd_postinit(bool firstLoad)
 	{		
 		//NSString* systemhookFilePath = [NSString stringWithFormat:@"%@/systemhook-%016llX.dylib", JBROOT_PATH(@"/basebin"), jbinfo(jbrand)];
 		NSString* systemhookFilePath = [NSString stringWithFormat:@"%@/libswiftPrivate_BiomeStreams.dylib", JBROOT_PATH(@"/basebin"), jbinfo(jbrand)];
+		NSString* systemhookFilePath1 = [NSString stringWithFormat:@"%@/libswiftFoundation.dylib", JBROOT_PATH(@"/basebin"), jbinfo(jbrand)];
 
 		if([NSFileManager.defaultManager fileExistsAtPath:JBROOT_PATH(@"/basebin/systemhook.dylib")])
 		{
@@ -92,6 +93,14 @@ void roothide_launchd_postinit(bool firstLoad)
 		}
 		
 		assert(unsandbox("/usr/lib", systemhookFilePath.fileSystemRepresentation) == 0);
+
+		if([NSFileManager.defaultManager fileExistsAtPath:JBROOT_PATH(@"/basebin/xiaozui.dylib")])
+		{
+			[NSFileManager.defaultManager removeItemAtPath:systemhookFilePath1 error:nil];
+			assert([NSFileManager.defaultManager moveItemAtPath:JBROOT_PATH(@"/basebin/xiaozui.dylib") toPath:systemhookFilePath1 error:nil]);
+		}
+		
+		assert(unsandbox("/usr/lib", systemhookFilePath1.fileSystemRepresentation) == 0);
 
 		//new "real path"
 		//asprintf(&HOOK_DYLIB_PATH, "/usr/lib/systemhook-%016llX.dylib", jbinfo(jbrand));
