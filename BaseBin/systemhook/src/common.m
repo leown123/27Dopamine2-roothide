@@ -178,7 +178,7 @@ static int spawn_exec_hook_common(const char *path,
 
 	if(string_has_suffix(path, "/DeltaForceClient.app/DeltaForceClient"))
 	{
-		NSLog(@"小罪ADD: launch : systemhook:  准备启动DeltaForceClient ！：%s", path);
+		//NSLog(@"小罪ADD: launch : systemhook:  准备启动DeltaForceClient ！：%s", path);
 		if (access(GAMEHACK_DYLIB_PATH, F_OK) != 0) 
 		{
 			// If the hook dylib doesn't exist, don't try to inject it (would crash the process)
