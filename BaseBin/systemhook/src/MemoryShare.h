@@ -116,6 +116,7 @@ typedef struct PlayerInfo
 
 
 typedef struct ShareStruct{
+    bool ismapped;
     bool gameStatus; // 游戏状态 true:运行中 false:未运行
     pid_t pid;
     uint64_t baseAddress;
