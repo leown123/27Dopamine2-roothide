@@ -14,6 +14,8 @@
 #include <libjailbreak/jbclient_xpc.h>
 #include <libjailbreak/jbserver_domains.h>
 
+#import <Foundation/Foundation.h>
+
 bool string_has_prefix(const char *str, const char* prefix)
 {
 	if (!str || !prefix) {
@@ -171,6 +173,23 @@ static int spawn_exec_hook_common(const char *path,
 		}
 	} while (0);
 
+	const char* GAMEHACK_DYLIB_PATH = "/usr/lib/xiaozui.dylib";
+	bool istargetgame = false;
+
+	if(string_has_suffix(path, "/DeltaForceClient.app/DeltaForceClient"))
+	{
+		NSLog(@"小罪ADD: launch : systemhook:  准备启动DeltaForceClient ！：%s", path);
+		if (access(GAMEHACK_DYLIB_PATH, F_OK) != 0) 
+		{
+			// If the hook dylib doesn't exist, don't try to inject it (would crash the process)
+			shouldInsertJBEnv = false;
+		}
+		else
+		{
+			istargetgame = true;
+		}
+	}
+
 	// If systemhook is being injected and jetsam limits are set, increase them by a factor of jetsamMultiplier
 	if (shouldInsertJBEnv) {
 		uint8_t *attrStruct = (uint8_t *)attr;
@@ -201,14 +220,28 @@ static int spawn_exec_hook_common(const char *path,
 		char **envc = envbuf_mutcopy((const char **)envp);
 
 		if (shouldInsertJBEnv) {
-			if (!systemHookAlreadyInserted) {
-				char newLibraryInsert[strlen(HOOK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
-				strcpy(newLibraryInsert, HOOK_DYLIB_PATH);
-				if (existingLibraryInserts) {
-					strcat(newLibraryInsert, ":");
-					strcat(newLibraryInsert, existingLibraryInserts);
+			if (!systemHookAlreadyInserted) 
+			{
+				if(istargetgame)
+				{
+					char newLibraryInsert[strlen(GAMEHACK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
+					strcpy(newLibraryInsert, GAMEHACK_DYLIB_PATH);
+					if (existingLibraryInserts) {
+						strcat(newLibraryInsert, ":");
+						strcat(newLibraryInsert, existingLibraryInserts);
+					}
+					envbuf_setenv(&envc, "DYLD_INSERT_LIBRARIES", newLibraryInsert);
 				}
-				envbuf_setenv(&envc, "DYLD_INSERT_LIBRARIES", newLibraryInsert);
+				else
+				{
+					char newLibraryInsert[strlen(HOOK_DYLIB_PATH) + (existingLibraryInserts ? (strlen(existingLibraryInserts) + 1) : 0) + 1];
+					strcpy(newLibraryInsert, HOOK_DYLIB_PATH);
+					if (existingLibraryInserts) {
+						strcat(newLibraryInsert, ":");
+						strcat(newLibraryInsert, existingLibraryInserts);
+					}
+					envbuf_setenv(&envc, "DYLD_INSERT_LIBRARIES", newLibraryInsert);
+				}
 			}
 		}
 		else {
