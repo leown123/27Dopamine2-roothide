@@ -39,6 +39,7 @@
 #include<pthread.h>
 
 #import <mach/mach.h>
+#include <sys/mman.h>
 
 #include "MemoryShare.h"
 
@@ -910,28 +911,6 @@ int hooked_rename(const char *oldpath, const char *newpath) {
     return orig_rename(oldpath, newpath);
 }
 
-void Read_Datanew(long Src,int Size,void* Dst)
-{
-    vm_copy(mach_task_self(),(vm_address_t)Src,Size,(vm_address_t)Dst);
-    return ;
-}
-
-long Read_Long(long src)
-{
-    long Buff=0;
-    
-    //Buff = read<long>(src);
-    Read_Datanew(src,8,&Buff);
-    return Buff;
-}
-
-int Read_Int(long src)
-{
-    int Buff=0;
-    //Buff = read<int>(src);
-    Read_Datanew(src,4,&Buff);
-    return Buff;
-}
 
 extern  kern_return_t mach_vm_protect
 (
@@ -1019,6 +998,223 @@ extern
 kern_return_t mach_vm_page_query(vm_map_read_t target_map, mach_vm_offset_t offset, integer_t *disposition, integer_t *ref_count);
 
 
+bool 是否缺页(long address)
+{
+	
+
+    //内存属性
+    
+    
+    mach_port_t object_name;
+    mach_vm_size_t region_size=0;
+    mach_vm_address_t region_base = (uint64_t)address;
+    
+    vm_region_basic_info_data_64_t info = {0};
+    mach_msg_type_number_t info_cnt = VM_REGION_BASIC_INFO_COUNT_64;
+    
+    
+    kern_return_t kr = mach_vm_region(task, &region_base, &region_size,
+                                      VM_REGION_BASIC_INFO_64, (vm_region_info_t)&info, &info_cnt, &object_name);
+    if(kr != KERN_SUCCESS) {
+        //NSLog(@"mach_vm_region failed! %p", region_base);
+        return true;
+    }
+
+    long addbase = (long)address & ~(PAGE_SIZE-1);
+    long juliptr = address - addbase ;
+    
+    int pqueryinfo;
+    kern_return_t    ret;
+    pqueryinfo = 0;
+    int numref;
+    int mincoreinfo=0;
+    
+    ret = mach_vm_page_query(task, addbase, &pqueryinfo, &numref);
+    
+    if (ret != KERN_SUCCESS)
+    {
+        pqueryinfo = 0;
+        //NSLog(@"小罪add : mach_vm_page_query call fail !");
+    }
+    
+    /*
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_PRESENT) mincoreinfo |= MINCORE_INCORE;
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_REF)     mincoreinfo |= MINCORE_REFERENCED;
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_DIRTY)   mincoreinfo |= MINCORE_MODIFIED;
+    */
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_PRESENT)
+    {
+        mincoreinfo |= MINCORE_INCORE;
+     }
+     if (pqueryinfo & VM_PAGE_QUERY_PAGE_REF)
+     {
+        mincoreinfo |= MINCORE_REFERENCED;
+    }
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_DIRTY)
+    {
+        mincoreinfo |= MINCORE_MODIFIED;
+    }
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_PAGED_OUT)
+    {
+        mincoreinfo |= MINCORE_PAGED_OUT;
+    }
+    if (pqueryinfo & VM_PAGE_QUERY_PAGE_COPIED)
+    {
+        mincoreinfo |= MINCORE_COPIED;
+    }
+    if ((pqueryinfo & VM_PAGE_QUERY_PAGE_EXTERNAL) == 0)
+    {
+        mincoreinfo |= MINCORE_ANONYMOUS;
+    }
+    //NSLog(@"小罪add : pqueryinfo:%d numref:%d mincoreinfo:%d",pqueryinfo,numref,mincoreinfo);
+    
+    if(pqueryinfo == 0 || numref == 0 || mincoreinfo == 0)
+    {
+        //NSLog(@"小罪add : 缺页地址:%lx",addbase);
+        
+        return true;
+    }
+        
+    
+    
+    
+    /*
+    vm_prot_t cur_prot=0,  max_prot=0;
+     
+    kr = mach_vm_remap (self_task1, (mach_vm_address_t *)&selfpage, PAGE_SIZE, 0, VM_FLAGS_FIXED | VM_FLAGS_OVERWRITE, task, (mach_vm_address_t)addbase,false, &cur_prot, &max_prot, VM_INHERIT_NONE);
+
+    //kern_return_t kr = mach_vm_remap (task, (mach_vm_address_t *)&shijuaddbase, PAGE_SIZE, 0, VM_FLAGS_ANYWHERE, task, (mach_vm_address_t)new_page,true, &cur_prot, &max_prot, VM_INHERIT_SHARE);
+
+    if (kr != KERN_SUCCESS) {
+        
+        
+        NSLog(@"小罪add remap failed");
+        return false;
+
+        //NSLog(@"小罪add remap failed");
+        // 处理错误
+        //jinggao(@"remap failed");
+    }
+    else{
+        NSLog(@"小罪add remap success");
+    }
+    */
+    
+
+    /*
+    getchar();
+    
+    //char* state = NULL;
+
+    //unsigned char state;
+    
+    //unsigned char *state = (unsigned char *)malloc(1);
+    
+    unsigned char vec = 0;
+    
+    //mincore(<#const void *#>, size_t, <#char *#>)
+    int jieguo = mincore((void *)addbase,PAGE_SIZE,(char *)&vec);
+    
+    if(jieguo != -1)
+    {
+        NSLog(@"小罪add jieguo:%d , state:%d ?",jieguo,vec);
+        
+        
+        NSLog(@"小罪add 是否incore： %d",vec);
+        
+        //NSLog(@"小罪add 是否incore： %s",state ? "In core" : "Not in core");
+        
+        if(vec & 1)
+        {
+            NSLog(@"小罪add 内存页在物理中");
+        }
+        else
+        {
+            NSLog(@"小罪add 内存页不在物理中");
+        }
+ 
+        //free(state);
+        
+        long testimageadd = Read_Longself(selfpage+juliptr);
+        
+        NSLog(@"小罪add testimageadd :%lx",testimageadd);
+        
+    }
+    else
+    {
+        NSLog(@"小罪add mincore fail");
+        //return false;
+    }
+    */
+    //vm_inherit
+    
+    return false;
+}
+}
+
+BOOL isValidAddress (uintptr_t address)
+{
+    return address && address > 0x100000000 && address < 0xFFFFFFFFF;
+}
+
+void Read_Datanew(long Src,int Size,void* Dst)
+{
+	if (!isValidAddress(Src) ){
+        return ;
+    }
+
+	if(是否缺页(Src) == true)
+    {
+         return ;
+    }
+	
+    vm_copy(mach_task_self(),(vm_address_t)Src,Size,(vm_address_t)Dst);
+    return ;
+}
+
+
+
+long Read_Long(long src)
+{
+    long Buff=0;
+    
+    //Buff = read<long>(src);
+    Read_Datanew(src,8,&Buff);
+    return Buff;
+}
+
+int Read_Int(long src)
+{
+    int Buff=0;
+    //Buff = read<int>(src);
+    Read_Datanew(src,4,&Buff);
+    return Buff;
+}
+
+int Read_Short(long src)
+{
+    int Buff=0;
+    //Buff = read<unsigned short int>(src);
+    Read_Datanew(src,2,&Buff);
+    return Buff;
+}
+
+
+float Read_Float(long src)
+{
+    float Buff=0;
+    //Buff = read<float>(src);
+    Read_Datanew(src,4,&Buff);
+    return Buff;
+}
+
+char Read_Char(long src)
+{
+    char Buff=0;
+    //Buff = read<float>(src);
+    Read_Datanew(src,1,&Buff);
+    return Buff;
+}
 
 void forcewritenew(mach_vm_address_t addres,int data)
 {
