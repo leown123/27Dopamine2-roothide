@@ -1645,7 +1645,7 @@ struct Rotation矩阵 获取Rotation矩阵(struct Rotator Rotation) {
         sinf(Rotation.Roll * M_PI / 180.0f),
         cosf(Rotation.Roll * M_PI / 180.0f),
     };
-    return {
+    return (struct Rotation矩阵){
         Pitch.余弦 * Yaw.余弦,
         Pitch.余弦 * Yaw.正弦,
         Pitch.正弦,
@@ -1666,7 +1666,7 @@ struct TeamComp 获取TeamComp(long Actor) {
     
     //struct UGPTeamComponent* TeamComp; // 0x1090(0x08)
     if (!isValidAddress(TeamComp)) return {-1, -1};
-    return {
+    return (struct TeamComp){
         Read_Int(TeamComp + 0x108),
         Read_Int(TeamComp + 0x10C),
     };
@@ -1689,7 +1689,7 @@ struct Vector 获取RelativeLocation(long Actor) {
 };
 
 struct Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location, float 比例值) {
-    return {
+    return (struct Vector){
         (RelativeLocation.X - Location.X) / 比例值,
         (RelativeLocation.Y - Location.Y) / 比例值,
         (RelativeLocation.Z - Location.Z) / 比例值,
