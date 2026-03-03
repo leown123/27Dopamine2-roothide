@@ -1013,7 +1013,7 @@ bool 是否缺页(long address)
     mach_msg_type_number_t info_cnt = VM_REGION_BASIC_INFO_COUNT_64;
     
     
-    kern_return_t kr = mach_vm_region(task, &region_base, &region_size,
+    kern_return_t kr = mach_vm_region(mach_task_self(), &region_base, &region_size,
                                       VM_REGION_BASIC_INFO_64, (vm_region_info_t)&info, &info_cnt, &object_name);
     if(kr != KERN_SUCCESS) {
         //NSLog(@"mach_vm_region failed! %p", region_base);
@@ -1029,7 +1029,7 @@ bool 是否缺页(long address)
     int numref;
     int mincoreinfo=0;
     
-    ret = mach_vm_page_query(task, addbase, &pqueryinfo, &numref);
+    ret = mach_vm_page_query(mach_task_self(), addbase, &pqueryinfo, &numref);
     
     if (ret != KERN_SUCCESS)
     {
@@ -1081,9 +1081,9 @@ bool 是否缺页(long address)
     /*
     vm_prot_t cur_prot=0,  max_prot=0;
      
-    kr = mach_vm_remap (self_task1, (mach_vm_address_t *)&selfpage, PAGE_SIZE, 0, VM_FLAGS_FIXED | VM_FLAGS_OVERWRITE, task, (mach_vm_address_t)addbase,false, &cur_prot, &max_prot, VM_INHERIT_NONE);
+    kr = mach_vm_remap (mach_task_self(), (mach_vm_address_t *)&selfpage, PAGE_SIZE, 0, VM_FLAGS_FIXED | VM_FLAGS_OVERWRITE, task, (mach_vm_address_t)addbase,false, &cur_prot, &max_prot, VM_INHERIT_NONE);
 
-    //kern_return_t kr = mach_vm_remap (task, (mach_vm_address_t *)&shijuaddbase, PAGE_SIZE, 0, VM_FLAGS_ANYWHERE, task, (mach_vm_address_t)new_page,true, &cur_prot, &max_prot, VM_INHERIT_SHARE);
+    //kern_return_t kr = mach_vm_remap (mach_task_self(), (mach_vm_address_t *)&shijuaddbase, PAGE_SIZE, 0, VM_FLAGS_ANYWHERE, task, (mach_vm_address_t)new_page,true, &cur_prot, &max_prot, VM_INHERIT_SHARE);
 
     if (kr != KERN_SUCCESS) {
         
