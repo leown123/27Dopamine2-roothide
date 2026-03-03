@@ -1785,7 +1785,7 @@ void xunhuanhuizhi()
 		float MaxWalkSpeed = Read_Float(CharacterMovement + 0x1DC);
 		uint32_t GNameID = Read_Int(对象指针 + 0x1C);
 
-		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f) )
+		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
 			calint = calint + 1;
 			shareData->playerInfo[calint].actived = false;
