@@ -85,7 +85,7 @@ typedef struct PlayerInfo
     float Health;
     float MaxHealth;
     
-    structVector3 pos;
+    struct Vector3 pos;
     struct Vector2 scrPosVec2;
     struct Vector4D scrPosVec4;
     float 对象距离;
