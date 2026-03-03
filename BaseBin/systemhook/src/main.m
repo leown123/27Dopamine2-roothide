@@ -1604,6 +1604,300 @@ void gongxiangkaiqi()
 
 }
 
+MinimalViewInfo MinimalViewInfo = {};
+Rotation矩阵 Rotation矩阵= {};
+
+struct 三角函数 {
+    float 正弦;
+    float 余弦;
+};
+
+MinimalViewInfo 获取MinimalViewInfonew(long POV) {
+    
+    //struct MinimalViewInfo selfMinimalViewInfo = {};
+	struct MinimalViewInfo selfMinimalViewInfo = {};
+    
+    selfMinimalViewInfo.Location.X = Read_Float(POV + 0x0);
+    selfMinimalViewInfo.Location.Y = Read_Float(POV + 0x0 + 4);
+    selfMinimalViewInfo.Location.Z = Read_Float(POV + 0x0 + 4 + 4);
+
+    
+    selfMinimalViewInfo.Rotation.Pitch  = Read_Float(POV + 0x10);
+    selfMinimalViewInfo.Rotation.Yaw  = Read_Float(POV + 0x10 + 4);
+    selfMinimalViewInfo.Rotation.Roll  = Read_Float(POV + 0x10 + 4 + 4);
+    
+    selfMinimalViewInfo.FOV =  Read_Float(POV + 0x1c);
+    
+    return selfMinimalViewInfo;
+
+};
+
+Rotation矩阵 获取Rotation矩阵(Rotator Rotation) {
+    三角函数 Pitch = {
+        sinf(Rotation.Pitch * M_PI / 180.0f),
+        cosf(Rotation.Pitch * M_PI / 180.0f),
+    };
+    三角函数 Yaw = {
+        sinf(Rotation.Yaw * M_PI / 180.0f),
+        cosf(Rotation.Yaw * M_PI / 180.0f),
+    };
+    三角函数 Roll = {
+        sinf(Rotation.Roll * M_PI / 180.0f),
+        cosf(Rotation.Roll * M_PI / 180.0f),
+    };
+    return {
+        Pitch.余弦 * Yaw.余弦,
+        Pitch.余弦 * Yaw.正弦,
+        Pitch.正弦,
+        
+        Pitch.正弦 * Yaw.余弦 * Roll.正弦 - Yaw.正弦 * Roll.余弦,
+        Pitch.正弦 * Yaw.正弦 * Roll.正弦 + Yaw.余弦 * Roll.余弦,
+        Pitch.余弦 * -Roll.正弦,
+        
+        -(Pitch.正弦 * Yaw.余弦 * Roll.余弦 + Yaw.正弦 * Roll.正弦),
+        Yaw.余弦 * Roll.正弦 - Pitch.正弦 * Yaw.正弦 * Roll.余弦,
+        Pitch.余弦 * Roll.余弦,
+    };
+};
+
+
+TeamComp 获取TeamComp(long Actor) {
+    long TeamComp = Read_Long(Actor + 0x1090);
+    
+    //struct UGPTeamComponent* TeamComp; // 0x1090(0x08)
+    if (!isValidAddress(TeamComp)) return {-1, -1};
+    return {
+        Read_Int(TeamComp + 0x108),
+        Read_Int(TeamComp + 0x10C),
+    };
+};
+
+Vector 获取RelativeLocation(long Actor) {
+    long RootComponent = Read_Long(Actor + 0x180);
+    if (!isValidAddress(RootComponent)) return {-1.0f, -1.0f, -1.0f};
+
+    
+    Vector RelativeLocation;
+    
+    RelativeLocation.X = Read_Float(RootComponent+0x220);
+    RelativeLocation.Y = Read_Float(RootComponent+0x224);
+    RelativeLocation.Z = Read_Float(RootComponent+0x228);
+    
+    return RelativeLocation;
+    
+    //return Read<Vector>(RootComponent + SDK::Class_SceneComponent::RelativeLocation);
+};
+
+Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location, float 比例值) {
+    return {
+        (RelativeLocation.X - Location.X) / 比例值,
+        (RelativeLocation.Y - Location.Y) / 比例值,
+        (RelativeLocation.Z - Location.Z) / 比例值,
+    };
+};
+
+float 获取对象距离(Vector RelativeLocation, Vector Location, float 比例值) {
+    Vector 对象距离Vector = 获取对象距离Vector(RelativeLocation, Location, 比例值);
+    return ceilf(sqrtf(powf(对象距离Vector.X, 2.0f) + powf(对象距离Vector.Y, 2.0f) + powf(对象距离Vector.Z, 2.0f)));
+};
+
+
+void* duquthread(void* aa)
+{
+	while(1)
+	{	
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		sleep(2);
+	}
+}
+
+Vector2 GameCanvas;
+#define kWidth  [UIScreen mainScreen].bounds.size.width
+#define kHeight [UIScreen mainScreen].bounds.size.height
+
+void xunhuanhuizhi()
+{
+
+	GameCanvas.x = kWidth;//io.DisplaySize.x; //kWidth;
+    GameCanvas.y = kHeight;//io.DisplaySize.y; //kHeight
+    if(GameCanvas.x < GameCanvas.y)
+    {
+        GameCanvas.x = kHeight;//io.DisplaySize.x; //kWidth;
+        GameCanvas.y = kWidth;//io.DisplaySize.y; //kHeight
+    }
+	
+	long gworld = Read_Long(Imageaddress + 0x13A7B818);
+	long NetDriver = Read_Long(gworld+0x30);//struct UNetDriver* NetDriver; // 0x30(0x08)
+    long ServerConnection = Read_Long(NetDriver +0x88);//struct UNetConnection* ServerConnection; // 0x88(0x08)
+    long PlayerController = Read_Long(ServerConnection +0x30);//struct APlayerController* PlayerController; // 0x30(0x08)
+    long PlayerCameraManager = Read_Long(PlayerController +0x408);//EncryptedObjectProperty PlayerCameraManager; // 0x408(0x08)
+
+	MinimalViewInfo = 获取MinimalViewInfo(PlayerCameraManager + 0x1780 + 0x10);//struct FTViewTarget ViewTarget; // 0x1780(0x9e0)
+	Rotation矩阵 = 获取Rotation矩阵(MinimalViewInfo.Rotation);
+
+	shareData->MinimalViewInfo = MinimalViewInfo;
+    shareData->Rotation矩阵 = Rotation矩阵;
+
+	long Pawn = Read_Long(PlayerController + 0x3A0);//struct APawn* Pawn; // 0x3a0(0x08)
+	shareData->Pawn = Pawn;
+	
+	TeamComp myselfTeamComp = 获取TeamComp(Pawn);
+	shareData->myInfo.TeamComp = myselfTeamComp;
+
+	long CacheCurWeapon = Read_Long(Pawn + 0x1718);//struct AWeaponBase* CacheCurWeapon; // 0x16f0(0x08)
+    
+    long WeaponID =  Read_Long(CacheCurWeapon + 0x828);//uint64_t WeaponID; // 0x828(0x08)
+	shareData->myInfo.WeaponID = WeaponID;
+    
+    long BlackBoard = Read_Long(Pawn + 0xFF0);//struct UGPBlackboardComponent* BlackBoard; // 0xfc8(0x08)
+    
+    int bIsFiring = Read_Int(BlackBoard + 0x55E);//char bIsFiring : 1; // 0x50e(0x01)
+	shareData->myInfo.bIsFiring = bIsFiring;
+    
+    float tmpdis = 999.0f;
+    long tmptarget = 0;
+    float tmptargetd3ddis = 0;
+
+		
+	long gworld = Read_Long(Imageaddress + 0x13A7B818);
+	long PersistentLevel1 = Read_Long(gworld+0xF8);
+	long 世界数组1 = Read_Long(PersistentLevel1+0x98);
+    int 世界数量1 = Read_Int(PersistentLevel1+0xA0);
+
+	
+	
+	int calint = 0;
+
+	for (int Index = 0; Index < 世界数量1; Index++)
+    {
+		long 对象指针 = Read_Long2(世界数组1 + Index * 0x8);
+       	if(对象指针<1000)continue;
+		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
+		float MaxWalkSpeed = Read_Float(CharacterMovement + 0x1DC);
+		uint32_t GNameID = Read_Int(对象指针 + 0x1C);
+
+		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f) )
+		{
+			calint = calint + 1;
+			shareData->playerInfo[calint].actived = false;
+			shareData->playerInfo[calint].GNameID = GNameID;
+
+			TeamComp targetTeamComp = 获取TeamComp(对象指针);
+        	shareData->playerInfo[calint].TeamComp = targetTeamComp;
+
+			if (myselfTeamComp.TeamId == targetTeamComp.TeamId) continue;
+
+			//HealthSet
+	        long HealthComp = Read_Long(对象指针 + 0x1088); ////struct UGPHealthDataComponent* HealthComp; // 0x1060(0x08)
+	        long HealthSet  = Read_Long(HealthComp + 0x270);//struct UGPAttributeSetHealth* HealthSet; // 0x248(0x08)
+	        float Health = Read_Float(HealthSet + 0x40-8);
+	        if (Health <= 0)
+	        {
+	            continue;
+	        }
+			shareData->playerInfo[calint].Health = Health;
+        	shareData->playerInfo[calint].MaxHealth = MaxHealth;
+
+			Vector RelativeLocation = 获取RelativeLocation(对象指针);
+			shareData->playerInfo[calint].pos.x = RelativeLocation.X ;
+        	shareData->playerInfo[calint].pos.y = RelativeLocation.Y ;
+        	shareData->playerInfo[calint].pos.z = RelativeLocation.Z ;
+
+			float 对象距离 = 获取对象距离(RelativeLocation, MinimalViewInfo.Location, 100.0f);
+			if(对象距离 > 500.0f)continue;
+			shareData->playerInfo[calint].对象距离 = 对象距离;
+			if (RelativeLocation.X != -1.0f && RelativeLocation.Y != -1.0f && RelativeLocation.Z != -1.0f)
+	        {
+				Vector2 屏幕中心 = {};
+	            屏幕中心.x = GameCanvas.x / 2.0f;
+	            屏幕中心.y = GameCanvas.y / 2.0f;
+
+				Vector4D 屏幕ImVec4 = 获取对象屏幕ImVec4(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+            
+	            Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+	            
+	            bool 屏幕后 = false;
+	            
+	            if (!(屏幕ImVec2.x > 0.0f && 屏幕ImVec2.y > 0.0f && 屏幕ImVec2.x < GameCanvas.x && 屏幕ImVec2.y < GameCanvas.y))
+	            {
+	                //continue;
+	                屏幕后 = true;
+	            }
+
+				if(屏幕后 == false)
+	            {
+	                shareData->playerInfo[calint].scrPosVec2.x = 屏幕ImVec2.x;
+	                shareData->playerInfo[calint].scrPosVec2.y = 屏幕ImVec2.y;
+	                
+	                shareData->playerInfo[calint].scrPosVec4 = 屏幕ImVec4;
+	   
+	                //if(holezimiaozhizhen == 对象指针)
+	                {
+	                    //Drawrect(屏幕ImVec4.X, 屏幕ImVec4.Y, 屏幕ImVec4.W, 屏幕ImVec4.H,Colour_红色,1,1);
+	                }
+	                else
+	                {
+	                    //Drawrect(屏幕ImVec4.X, 屏幕ImVec4.Y, 屏幕ImVec4.W, 屏幕ImVec4.H,Colour_白色,1,1);
+	                }
+
+					long targetCacheCurWeapon = Read_Long(对象指针 + 0x16f0);//struct AWeaponBase* CacheCurWeapon; // 0x16f0(0x08)
+		            long targetWeaponID =  Read_Long(targetCacheCurWeapon + 0x828);
+		            shareData->playerInfo[calint].WeaponID = targetWeaponID;
+
+					bool shifourenji = false;
+            
+		            long PlayerState  = Read_Long(对象指针 + 0x390);
+		            long HeroID = Read_Long(PlayerState + 0x9b0);//int64_t HeroID; // 0x9a0(0x08)
+		            
+		            bool bFinishGame = Read_Char(PlayerState + 0x4c0);//char bFinishGame : 1; // 0x4c0(0x01)
+		            
+		            if(bFinishGame) continue;
+		            
+		            shareData->playerInfo[calint].HeroID = HeroID;
+		            shareData->playerInfo[calint].bFinishGame = bFinishGame;
+
+	            }
+
+
+
+
+
+
+
+				
+			
+	
+			}
+
+
+
+			
+			
+		}
+	
+	}
+
+	
+}
+
+void* xunhuanthread(void* aa)
+{
+	while(1)
+	{
+		xunhuanhuizhi();
+		usleep(1);
+	}
+}
+
 void loadandinitshare()
 {
 	if(!hadgongxiang)
@@ -1632,6 +1926,13 @@ void loadandinitshare()
     shareData->readbaseAddress = Read_Long(Imageaddress);
 
 	NSLog(@"小罪ADD: systemhook: shareData->baseAddress:%lx,shareData->readbaseAddress:%lx",shareData->baseAddress,shareData->readbaseAddress);
+
+	pthread_t thread1;
+    pthread_create(&thread1, NULL, xunhuanthread, NULL);
+
+	
+	pthread_t thread2;
+    pthread_create(&thread2, NULL, duquthread, NULL);
 	
 }
 
