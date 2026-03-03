@@ -1787,7 +1787,7 @@ void xunhuanhuizhi()
 
 	NSLog(@"小罪ADD: systemhook: shareData->Pawn:%lx",shareData->Pawn);
 
-	if(Pawn < 1000) continue;
+	if(Pawn < 1000) return;
 	
 	struct TeamComp myselfTeamComp = 获取TeamComp(Pawn);
 	shareData->myInfo.TeamComp = myselfTeamComp;
