@@ -1906,6 +1906,8 @@ void xunhuanhuizhi()
 		            shareData->playerInfo[calint].HeroID = HeroID;
 		            shareData->playerInfo[calint].bFinishGame = bFinishGame;
 
+					shareData->playerInfo[calint].actived = true;
+
 	            }
 
 
