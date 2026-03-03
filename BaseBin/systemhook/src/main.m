@@ -1827,9 +1827,7 @@ void xunhuanhuizhi()
 
 		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
-			long zhizhen = 0;
-			zhizhen = 对象指针;
-			//NSLog(@"小罪ADD: systemhook: 对象指针:%lx",(long)zhizhen);
+			NSLog(@"小罪ADD: systemhook: 对象指针:%lx",对象指针);
 			
 			shareData->playerInfo[calint].actived = false;
 			shareData->playerInfo[calint].GNameID = GNameID;
