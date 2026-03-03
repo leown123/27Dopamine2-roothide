@@ -1786,6 +1786,8 @@ void xunhuanhuizhi()
 	shareData->Pawn = Pawn;
 
 	NSLog(@"小罪ADD: systemhook: shareData->Pawn:%lx",shareData->Pawn);
+
+	if(Pawn < 1000) continue;
 	
 	struct TeamComp myselfTeamComp = 获取TeamComp(Pawn);
 	shareData->myInfo.TeamComp = myselfTeamComp;
@@ -1940,7 +1942,7 @@ void* xunhuanthread(void* aa)
 	while(1)
 	{
 		xunhuanhuizhi();
-		usleep(1);
+		//usleep(1);
 	}
 }
 
