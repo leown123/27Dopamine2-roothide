@@ -1820,7 +1820,7 @@ void xunhuanhuizhi()
     {
 		calint = calint + 1;
 		long 对象指针 = Read_Long(世界数组1 + Index * 0x8);
-       	if(!isValidAddress(对象指针)continue;
+       	if(!isValidAddress(对象指针))continue;
 		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
 		float MaxWalkSpeed = Read_Float(CharacterMovement + 0x1DC);
 		uint32_t GNameID = Read_Int(对象指针 + 0x1C);
