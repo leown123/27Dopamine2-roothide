@@ -1604,15 +1604,15 @@ void gongxiangkaiqi()
 
 }
 
-MinimalViewInfo MinimalViewInfo = {};
-Rotation矩阵 Rotation矩阵= {};
+struct MinimalViewInfo MinimalViewInfo = {};
+struct Rotation矩阵 Rotation矩阵= {};
 
 struct 三角函数 {
     float 正弦;
     float 余弦;
 };
 
-MinimalViewInfo 获取MinimalViewInfonew(long POV) {
+struct MinimalViewInfo 获取MinimalViewInfonew(long POV) {
     
     //struct MinimalViewInfo selfMinimalViewInfo = {};
 	struct MinimalViewInfo selfMinimalViewInfo = {};
@@ -1632,16 +1632,16 @@ MinimalViewInfo 获取MinimalViewInfonew(long POV) {
 
 };
 
-Rotation矩阵 获取Rotation矩阵(Rotator Rotation) {
-    三角函数 Pitch = {
+struct Rotation矩阵 获取Rotation矩阵(struct Rotator Rotation) {
+    struct 三角函数 Pitch = {
         sinf(Rotation.Pitch * M_PI / 180.0f),
         cosf(Rotation.Pitch * M_PI / 180.0f),
     };
-    三角函数 Yaw = {
+    struct 三角函数 Yaw = {
         sinf(Rotation.Yaw * M_PI / 180.0f),
         cosf(Rotation.Yaw * M_PI / 180.0f),
     };
-    三角函数 Roll = {
+    struct 三角函数 Roll = {
         sinf(Rotation.Roll * M_PI / 180.0f),
         cosf(Rotation.Roll * M_PI / 180.0f),
     };
@@ -1661,7 +1661,7 @@ Rotation矩阵 获取Rotation矩阵(Rotator Rotation) {
 };
 
 
-TeamComp 获取TeamComp(long Actor) {
+struct TeamComp 获取TeamComp(long Actor) {
     long TeamComp = Read_Long(Actor + 0x1090);
     
     //struct UGPTeamComponent* TeamComp; // 0x1090(0x08)
@@ -1672,7 +1672,7 @@ TeamComp 获取TeamComp(long Actor) {
     };
 };
 
-Vector 获取RelativeLocation(long Actor) {
+struct Vector 获取RelativeLocation(long Actor) {
     long RootComponent = Read_Long(Actor + 0x180);
     if (!isValidAddress(RootComponent)) return {-1.0f, -1.0f, -1.0f};
 
@@ -1688,7 +1688,7 @@ Vector 获取RelativeLocation(long Actor) {
     //return Read<Vector>(RootComponent + SDK::Class_SceneComponent::RelativeLocation);
 };
 
-Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location, float 比例值) {
+struct Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location, float 比例值) {
     return {
         (RelativeLocation.X - Location.X) / 比例值,
         (RelativeLocation.Y - Location.Y) / 比例值,
