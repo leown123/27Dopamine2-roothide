@@ -133,7 +133,7 @@ typedef struct ShareStruct{
     
     //人物绘制数据
     int actorListcount;
-    PlayerInfo playerInfo[100];
+    PlayerInfo playerInfo[1000];
     
     
     
