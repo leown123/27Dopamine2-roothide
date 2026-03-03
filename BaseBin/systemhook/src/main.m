@@ -1879,7 +1879,7 @@ void xunhuanhuizhi()
 	                {
 	                    //Drawrect(屏幕ImVec4.X, 屏幕ImVec4.Y, 屏幕ImVec4.W, 屏幕ImVec4.H,Colour_红色,1,1);
 	                }
-	                else
+	                //else
 	                {
 	                    //Drawrect(屏幕ImVec4.X, 屏幕ImVec4.Y, 屏幕ImVec4.W, 屏幕ImVec4.H,Colour_白色,1,1);
 	                }
