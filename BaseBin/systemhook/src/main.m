@@ -1784,6 +1784,8 @@ void xunhuanhuizhi()
 
 	long Pawn = Read_Long(PlayerController + 0x3A0);//struct APawn* Pawn; // 0x3a0(0x08)
 	shareData->Pawn = Pawn;
+
+	NSLog(@"小罪ADD: systemhook: shareData->Pawn:%lx",shareData->Pawn);
 	
 	struct TeamComp myselfTeamComp = 获取TeamComp(Pawn);
 	shareData->myInfo.TeamComp = myselfTeamComp;
@@ -1807,8 +1809,9 @@ void xunhuanhuizhi()
 	long 世界数组1 = Read_Long(PersistentLevel1+0x98);
     int 世界数量1 = Read_Int(PersistentLevel1+0xA0);
 
-	
-	
+	shareData->actorListcount = (int)世界数量1;
+	NSLog(@"小罪ADD: systemhook: shareData->actorListcount:%d",shareData->actorListcount);
+
 	int calint = 0;
 
 	for (int Index = 0; Index < 世界数量1; Index++)
@@ -1821,6 +1824,7 @@ void xunhuanhuizhi()
 
 		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
+			NSLog(@"小罪ADD: systemhook: 对象指针:%lx",对象指针);
 			calint = calint + 1;
 			shareData->playerInfo[calint].actived = false;
 			shareData->playerInfo[calint].GNameID = GNameID;
@@ -1874,6 +1878,8 @@ void xunhuanhuizhi()
 	                shareData->playerInfo[calint].scrPosVec2.y = 屏幕ImVec2.y;
 	                
 	                shareData->playerInfo[calint].scrPosVec4 = 屏幕ImVec4;
+
+					NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].scrPosVec2.x:%.2f,shareData->playerInfo[calint].scrPosVec2.y:%.2f",shareData->playerInfo[calint].scrPosVec2.x,shareData->playerInfo[calint].scrPosVec2.y);
 	   
 	                //if(holezimiaozhizhen == 对象指针)
 	                {
@@ -1912,12 +1918,14 @@ void xunhuanhuizhi()
 			
 	
 			}
-
+			
 
 
 			
 			
 		}
+
+		
 	
 	}
 
