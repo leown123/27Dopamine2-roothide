@@ -1665,7 +1665,7 @@ struct TeamComp 获取TeamComp(long Actor) {
     long TeamComp = Read_Long(Actor + 0x1090);
     
     //struct UGPTeamComponent* TeamComp; // 0x1090(0x08)
-    if (!isValidAddress(TeamComp)) return {-1, -1};
+    if (!isValidAddress(TeamComp)) return (struct TeamComp){-1, -1};
     return (struct TeamComp){
         Read_Int(TeamComp + 0x108),
         Read_Int(TeamComp + 0x10C),
@@ -1674,10 +1674,10 @@ struct TeamComp 获取TeamComp(long Actor) {
 
 struct Vector 获取RelativeLocation(long Actor) {
     long RootComponent = Read_Long(Actor + 0x180);
-    if (!isValidAddress(RootComponent)) return {-1.0f, -1.0f, -1.0f};
+    if (!isValidAddress(RootComponent)) return (struct Vector){-1.0f, -1.0f, -1.0f};
 
     
-    Vector RelativeLocation;
+    struct Vector RelativeLocation;
     
     RelativeLocation.X = Read_Float(RootComponent+0x220);
     RelativeLocation.Y = Read_Float(RootComponent+0x224);
@@ -1688,7 +1688,7 @@ struct Vector 获取RelativeLocation(long Actor) {
     //return Read<Vector>(RootComponent + SDK::Class_SceneComponent::RelativeLocation);
 };
 
-struct Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location, float 比例值) {
+struct Vector 获取对象距离Vector(struct Vector RelativeLocation,struct Vector Location, float 比例值) {
     return (struct Vector){
         (RelativeLocation.X - Location.X) / 比例值,
         (RelativeLocation.Y - Location.Y) / 比例值,
@@ -1699,6 +1699,41 @@ struct Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location,
 float 获取对象距离(struct Vector RelativeLocation,struct Vector Location, float 比例值) {
     struct Vector 对象距离Vector = 获取对象距离Vector(RelativeLocation, Location, 比例值);
     return ceilf(sqrtf(powf(对象距离Vector.X, 2.0f) + powf(对象距离Vector.Y, 2.0f) + powf(对象距离Vector.Z, 2.0f)));
+};
+
+struct Vector2 获取对象屏幕ImVec2(struct Vector RelativeLocation,struct MinimalViewInfo MinimalViewInfo,struct Rotation矩阵 Rotation矩阵,struct Vector2 屏幕中心ImVec2) {
+    struct Vector 对象距离Vector = 获取对象距离Vector(RelativeLocation, MinimalViewInfo.Location, 1.0f);
+    struct Vector 对象转换Vector = {
+        对象距离Vector.X * Rotation矩阵._10 + 对象距离Vector.Y * Rotation矩阵._11 + 对象距离Vector.Z * Rotation矩阵._12,
+        对象距离Vector.X * Rotation矩阵._20 + 对象距离Vector.Y * Rotation矩阵._21 + 对象距离Vector.Z * Rotation矩阵._22,
+        对象距离Vector.X * Rotation矩阵._00 + 对象距离Vector.Y * Rotation矩阵._01 + 对象距离Vector.Z * Rotation矩阵._02,
+    };
+    if (对象转换Vector.Z < 1.0f) 对象转换Vector.Z = 1.0f;
+    return (struct Vector2 ){
+        屏幕中心ImVec2.x + 对象转换Vector.X * (屏幕中心ImVec2.x / tanf(MinimalViewInfo.FOV * M_PI / 360.0f)) / 对象转换Vector.Z,
+        屏幕中心ImVec2.y - 对象转换Vector.Y * (屏幕中心ImVec2.x / tanf(MinimalViewInfo.FOV * M_PI / 360.0f)) / 对象转换Vector.Z,
+    };
+};
+
+struct Vector4D 获取对象屏幕ImVec4(struct Vector RelativeLocation, struct MinimalViewInfo MinimalViewInfo, struct Rotation矩阵 Rotation矩阵, struct Vector2 屏幕中心ImVec2) {
+    struct Vector 顶部RelativeLocation = {
+        RelativeLocation.X,
+        RelativeLocation.Y,
+        RelativeLocation.Z + 88.0f,
+    };
+    struct Vector 底部RelativeLocation = {
+        RelativeLocation.X,
+        RelativeLocation.Y,
+        RelativeLocation.Z - 88.0f,
+    };
+    struct Vector2 顶部对象屏幕ImVec2 = 获取对象屏幕ImVec2(顶部RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心ImVec2);
+    struct Vector2 底部对象屏幕ImVec2 = 获取对象屏幕ImVec2(底部RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心ImVec2);
+    return (struct Vector4D ){
+        顶部对象屏幕ImVec2.x,
+        顶部对象屏幕ImVec2.y,
+        (底部对象屏幕ImVec2.y - 顶部对象屏幕ImVec2.y) / 2.0f,
+        底部对象屏幕ImVec2.y - 顶部对象屏幕ImVec2.y,
+    };
 };
 
 
@@ -1720,7 +1755,7 @@ void* duquthread(void* aa)
 	}
 }
 
-Vector2 GameCanvas;
+struct Vector2 GameCanvas;
 #define kWidth  [UIScreen mainScreen].bounds.size.width
 #define kHeight [UIScreen mainScreen].bounds.size.height
 
@@ -1750,7 +1785,7 @@ void xunhuanhuizhi()
 	long Pawn = Read_Long(PlayerController + 0x3A0);//struct APawn* Pawn; // 0x3a0(0x08)
 	shareData->Pawn = Pawn;
 	
-	TeamComp myselfTeamComp = 获取TeamComp(Pawn);
+	struct TeamComp myselfTeamComp = 获取TeamComp(Pawn);
 	shareData->myInfo.TeamComp = myselfTeamComp;
 
 	long CacheCurWeapon = Read_Long(Pawn + 0x1718);//struct AWeaponBase* CacheCurWeapon; // 0x16f0(0x08)
@@ -1767,8 +1802,7 @@ void xunhuanhuizhi()
     long tmptarget = 0;
     float tmptargetd3ddis = 0;
 
-		
-	long gworld = Read_Long(Imageaddress + 0x13A7B818);
+	
 	long PersistentLevel1 = Read_Long(gworld+0xF8);
 	long 世界数组1 = Read_Long(PersistentLevel1+0x98);
     int 世界数量1 = Read_Int(PersistentLevel1+0xA0);
@@ -1779,7 +1813,7 @@ void xunhuanhuizhi()
 
 	for (int Index = 0; Index < 世界数量1; Index++)
     {
-		long 对象指针 = Read_Long2(世界数组1 + Index * 0x8);
+		long 对象指针 = Read_Long(世界数组1 + Index * 0x8);
        	if(对象指针<1000)continue;
 		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
 		float MaxWalkSpeed = Read_Float(CharacterMovement + 0x1DC);
@@ -1791,7 +1825,7 @@ void xunhuanhuizhi()
 			shareData->playerInfo[calint].actived = false;
 			shareData->playerInfo[calint].GNameID = GNameID;
 
-			TeamComp targetTeamComp = 获取TeamComp(对象指针);
+			struct TeamComp targetTeamComp = 获取TeamComp(对象指针);
         	shareData->playerInfo[calint].TeamComp = targetTeamComp;
 
 			if (myselfTeamComp.TeamId == targetTeamComp.TeamId) continue;
@@ -1800,6 +1834,7 @@ void xunhuanhuizhi()
 	        long HealthComp = Read_Long(对象指针 + 0x1088); ////struct UGPHealthDataComponent* HealthComp; // 0x1060(0x08)
 	        long HealthSet  = Read_Long(HealthComp + 0x270);//struct UGPAttributeSetHealth* HealthSet; // 0x248(0x08)
 	        float Health = Read_Float(HealthSet + 0x40-8);
+			float MaxHealth = Read_Float(HealthSet + 0x50-8);
 	        if (Health <= 0)
 	        {
 	            continue;
@@ -1807,7 +1842,7 @@ void xunhuanhuizhi()
 			shareData->playerInfo[calint].Health = Health;
         	shareData->playerInfo[calint].MaxHealth = MaxHealth;
 
-			Vector RelativeLocation = 获取RelativeLocation(对象指针);
+			struct Vector RelativeLocation = 获取RelativeLocation(对象指针);
 			shareData->playerInfo[calint].pos.x = RelativeLocation.X ;
         	shareData->playerInfo[calint].pos.y = RelativeLocation.Y ;
         	shareData->playerInfo[calint].pos.z = RelativeLocation.Z ;
@@ -1817,13 +1852,13 @@ void xunhuanhuizhi()
 			shareData->playerInfo[calint].对象距离 = 对象距离;
 			if (RelativeLocation.X != -1.0f && RelativeLocation.Y != -1.0f && RelativeLocation.Z != -1.0f)
 	        {
-				Vector2 屏幕中心 = {};
+				struct Vector2 屏幕中心 = {};
 	            屏幕中心.x = GameCanvas.x / 2.0f;
 	            屏幕中心.y = GameCanvas.y / 2.0f;
 
-				Vector4D 屏幕ImVec4 = 获取对象屏幕ImVec4(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+				struct Vector4D 屏幕ImVec4 = 获取对象屏幕ImVec4(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
             
-	            Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+	            struct Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
 	            
 	            bool 屏幕后 = false;
 	            
