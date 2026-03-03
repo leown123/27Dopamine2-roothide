@@ -1816,6 +1816,7 @@ void xunhuanhuizhi()
 
 	for (int Index = 0; Index < 世界数量1; Index++)
     {
+		calint = calint + 1;
 		long 对象指针 = Read_Long(世界数组1 + Index * 0x8);
        	if(对象指针<1000)continue;
 		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
@@ -1825,7 +1826,7 @@ void xunhuanhuizhi()
 		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
 			NSLog(@"小罪ADD: systemhook: 对象指针:%lx",对象指针);
-			calint = calint + 1;
+			
 			shareData->playerInfo[calint].actived = false;
 			shareData->playerInfo[calint].GNameID = GNameID;
 
