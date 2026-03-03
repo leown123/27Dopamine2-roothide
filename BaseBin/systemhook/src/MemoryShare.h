@@ -16,12 +16,12 @@ void syncShareChannel(void* ptr);
 }
 #endif
 
-typedef struct {
+struct Vector2{
     float x;
     float y;
 } Vector2;
 
-typedef struct {
+struct Vector3{
     float x;
     float y;
     float z;
