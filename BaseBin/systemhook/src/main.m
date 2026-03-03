@@ -1612,7 +1612,7 @@ struct 三角函数 {
     float 余弦;
 };
 
-struct MinimalViewInfo 获取MinimalViewInfonew(long POV) {
+struct MinimalViewInfo 获取MinimalViewInfo(long POV) {
     
     //struct MinimalViewInfo selfMinimalViewInfo = {};
 	struct MinimalViewInfo selfMinimalViewInfo = {};
@@ -1696,8 +1696,8 @@ struct Vector 获取对象距离Vector(Vector RelativeLocation, Vector Location,
     };
 };
 
-float 获取对象距离(Vector RelativeLocation, Vector Location, float 比例值) {
-    Vector 对象距离Vector = 获取对象距离Vector(RelativeLocation, Location, 比例值);
+float 获取对象距离(struct Vector RelativeLocation,struct Vector Location, float 比例值) {
+    struct Vector 对象距离Vector = 获取对象距离Vector(RelativeLocation, Location, 比例值);
     return ceilf(sqrtf(powf(对象距离Vector.X, 2.0f) + powf(对象距离Vector.Y, 2.0f) + powf(对象距离Vector.Z, 2.0f)));
 };
 
