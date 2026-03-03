@@ -1829,7 +1829,7 @@ void xunhuanhuizhi()
 		{
 			long zhizhen = 0;
 			zhizhen = 对象指针;
-			NSLog(@"小罪ADD: systemhook: 对象指针:%lx",(long)zhizhen);
+			//NSLog(@"小罪ADD: systemhook: 对象指针:%lx",(long)zhizhen);
 			
 			shareData->playerInfo[calint].actived = false;
 			shareData->playerInfo[calint].GNameID = GNameID;
