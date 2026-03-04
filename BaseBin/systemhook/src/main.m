@@ -2147,7 +2147,7 @@ struct FEquipmentInfo {
 };
 
 struct FArmorInfo2 GetArmorInfo2(struct FEquipmentInfo EquipmentInfo) {
-    FArmorInfo2 info = { 0 };
+    struct FArmorInfo2 info = { 0 };
     if (EquipmentInfo.ItemID > 10000000 && EquipmentInfo.ItemID < 20000000000) {
         //std::string str = std::to_string(EquipmentInfo.ItemID);
         //char* p = (char*)str.c_str();
