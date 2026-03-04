@@ -2226,11 +2226,7 @@ struct Vector4 {
     float w;
 };
 
-struct Vector3new {
-    float X;
-    float Y;
-    float Z;
-};
+
 
 struct FTransform {
     struct Vector4 rot;
@@ -2562,9 +2558,37 @@ void xunhuanhuizhi()
 					shareData->playerInfo[calint].头盔护甲等级 = 头盔护甲等级;
 					shareData->playerInfo[calint].护甲等级 = 护甲等级;
 					
-					NSLog(@"小罪ADD: systemhook: 头盔护甲等级:%d,护甲等级:%d",头盔护甲等级,护甲等级);
+					//NSLog(@"小罪ADD: systemhook: 头盔护甲等级:%d,护甲等级:%d",头盔护甲等级,护甲等级);
+
+					long Mesh = Read_Long(对象指针 + 0x3d0);
+
+					Vector3new 头部世界坐标 = GetBoneFTransform(Mesh, 31);
+	                Vector3new 脖子世界坐标 = GetBoneFTransform(Mesh, 30);
+	                
+	                Vector3new 左肩世界坐标 = GetBoneFTransform(Mesh, 6);
+	                Vector3new 左肘世界坐标 = GetBoneFTransform(Mesh, 7);
+	                Vector3new 左手世界坐标 = GetBoneFTransform(Mesh, 8);
+	                
+	                Vector3new 右肩世界坐标 = GetBoneFTransform(Mesh, 34);
+	                Vector3new 右肘世界坐标 = GetBoneFTransform(Mesh, 35);
+	                Vector3new 右手世界坐标 = GetBoneFTransform(Mesh, 36);
+	                
+	                Vector3new 屁股世界坐标 = GetBoneFTransform(Mesh, 1);
+	                
+	                Vector3new 左胯世界坐标 = GetBoneFTransform(Mesh, 58);
+	                Vector3new 左膝世界坐标 = GetBoneFTransform(Mesh, 59);
+	                Vector3new 左脚世界坐标 = GetBoneFTransform(Mesh, 60);
+	                
+	                Vector3new 右胯世界坐标 = GetBoneFTransform(Mesh, 62);
+	                Vector3new 右膝世界坐标 = GetBoneFTransform(Mesh, 63);
+	                Vector3new 右脚世界坐标 = GetBoneFTransform(Mesh, 63);
+
+
+					
 	
 					shareData->playerInfo[calint].actived = true;
+
+					
 
 	            }
 
