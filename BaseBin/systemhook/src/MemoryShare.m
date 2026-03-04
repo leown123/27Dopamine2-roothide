@@ -26,7 +26,7 @@ void* openShareChannel(void)
     NSString *filePath = [tmpDir stringByAppendingPathComponent:fileName];
     NSLog(@"小罪ADD: systemhook：openShareChannel 拟共享的tmp file path: %@", filePath);
 
-    shareSize = sizeof(struct ShareStruct))*2;
+    shareSize = sizeof(struct ShareStruct)*2;
 
     NSLog(@"小罪ADD: systemhook：openShareChannel shareSize: %d,oldshareSize: %d", shareSize,1024 * 30);
 
