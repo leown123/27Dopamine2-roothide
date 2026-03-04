@@ -2205,14 +2205,14 @@ void xunhuanhuizhi()
 	                    //Drawrect(屏幕ImVec4.X, 屏幕ImVec4.Y, 屏幕ImVec4.W, 屏幕ImVec4.H,Colour_白色,1,1);
 	                }
 
-					long targetCacheCurWeapon = Read_Long(对象指针 + 0x16f0);//struct AWeaponBase* CacheCurWeapon; // 0x16f0(0x08)
+					long targetCacheCurWeapon = Read_Long(对象指针 + 0x1718);//struct AWeaponBase* CacheCurWeapon; // 0x16f0(0x08)
 		            long targetWeaponID =  Read_Long(targetCacheCurWeapon + 0x828);
 		            shareData->playerInfo[calint].WeaponID = targetWeaponID;
 
 					bool shifourenji = false;
             
 		            long PlayerState  = Read_Long(对象指针 + 0x390);
-		            long HeroID = Read_Long(PlayerState + 0x9b0);//int64_t HeroID; // 0x9a0(0x08)
+		            long HeroID = Read_Long(PlayerState + 0x9E8);//int64_t HeroID; // 0x9a0(0x08)
 		            
 		            bool bFinishGame = Read_Char(PlayerState + 0x4c0);//char bFinishGame : 1; // 0x4c0(0x01)
 		            
