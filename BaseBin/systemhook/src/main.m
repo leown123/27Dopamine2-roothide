@@ -2146,7 +2146,7 @@ struct FEquipmentInfo {
     char pad_2C[0x4]; // 0x2c(0x04)
 };
 
-FArmorInfo2 GetArmorInfo2(FEquipmentInfo EquipmentInfo) {
+struct FArmorInfo2 GetArmorInfo2(struct FEquipmentInfo EquipmentInfo) {
     FArmorInfo2 info = { 0 };
     if (EquipmentInfo.ItemID > 10000000 && EquipmentInfo.ItemID < 20000000000) {
         //std::string str = std::to_string(EquipmentInfo.ItemID);
@@ -2170,16 +2170,16 @@ struct EquipedArmorInfoArray 获取EquipedArmorInfoArray(long Actor) {
     int Armorlevel = 0;
     int HelmetArmorlevel = 0;
     
-    long CharacterEquipComponentCache = Read<long>(Actor + 0x2208);//EncryptedObjectProperty CharacterEquipComponentCache; // 0x2188(0x08)
-    long EquipmentInfoArray = Read<long>(CharacterEquipComponentCache + 0x1d8);// struct TArray<struct FEquipmentInfo> EquipmentInfoArray; // 0x1d8(0x10)
+    long CharacterEquipComponentCache = Read_Long(Actor + 0x2208);//EncryptedObjectProperty CharacterEquipComponentCache; // 0x2188(0x08)
+    long EquipmentInfoArray = Read_Long(CharacterEquipComponentCache + 0x1d8);// struct TArray<struct FEquipmentInfo> EquipmentInfoArray; // 0x1d8(0x10)
     
-    FEquipmentInfo EquipPawn;
+    struct FEquipmentInfo EquipPawn;
     
     for (int i = 0; i < 6; i++) {
         @autoreleasepool {
             //readMemory(EquipmentInfoArray + i * sizeof(FEquipmentInfo), &EquipPawn, sizeof(FEquipmentInfo));
             Read_Datanew(EquipmentInfoArray + i * sizeof(FEquipmentInfo),sizeof(FEquipmentInfo),&EquipPawn);
-            FArmorInfo2 fArmorInfo2 = GetArmorInfo2(EquipPawn);
+            struct FArmorInfo2 fArmorInfo2 = GetArmorInfo2(EquipPawn);
             // NSLog(@"dh666 ArmorHealth %d",fArmorInfo2.AttachPosition);
             if (fArmorInfo2.AttachPosition == EAttachPosition::Attach_BreastPlate)
             {
