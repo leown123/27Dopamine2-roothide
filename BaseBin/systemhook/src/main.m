@@ -1202,6 +1202,14 @@ short Read_Short(long src)
     return Buff;
 }
 
+unichar Read_unichar(long src)
+{
+    unichar Buff=0;
+    //Buff = read<unsigned short int>(src);
+    Read_Datanew(src,sizeof(unichar),&Buff);
+    return Buff;
+}
+
 
 float Read_Float(long src)
 {
@@ -2021,7 +2029,7 @@ NSString* 获取PlayerNamePrivate(long PlayerNamePrivate) {
     
        for (int Index = 0; Index < 14; Index++) {
            //unichar 名字字符串 = Read<unichar>(PlayerNamePrivate + Index * 2);
-		   unichar 名字字符串 = (unichar)Read_Short(PlayerNamePrivate + Index * 2);
+		   unichar 名字字符串 = Read_unichar(PlayerNamePrivate + Index * 2);
            if (名字字符串 == 0) break;
            [名字字符 appendFormat:@"%C", (unichar)名字字符串];
        }
