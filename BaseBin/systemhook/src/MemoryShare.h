@@ -147,6 +147,9 @@ typedef struct PlayerInfo
     struct Vector3new 右膝世界坐标;
     struct Vector3new 右脚世界坐标;
 
+    int 物资价值;
+    int 物资等级;
+
 } PlayerInfo;
 
 
