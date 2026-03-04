@@ -1671,7 +1671,7 @@ BOOL vm_protect_and_clear(void *ptr, size_t size) {
     );
     
     if (kr != KERN_SUCCESS) {
-        NSLog(@"vm_region 查询失败: %d", kr);
+        NSLog(@"小罪ADD: vm_protect_and_clearvm_region 查询失败: %d", kr);
         return NO;
     }
     
@@ -1686,7 +1686,7 @@ BOOL vm_protect_and_clear(void *ptr, size_t size) {
                         original_prot | VM_PROT_WRITE);
         
         if (kr != KERN_SUCCESS) {
-            NSLog(@"vm_protect 添加写权限失败: %d (可能原因: 超过最大权限或地址无效)", kr);
+            NSLog(@"小罪ADD: vm_protect_and_clearvm_region vm_protect 添加写权限失败: %d (可能原因: 超过最大权限或地址无效)", kr);
             return NO;
         }
         
@@ -1708,12 +1708,12 @@ BOOL vm_protect_and_clear(void *ptr, size_t size) {
         
         if (kr == KERN_SUCCESS) {
             if ((verify_info.protection & VM_PROT_WRITE) == 0) {
-                NSLog(@"警告：权限验证失败，仍然不可写");
+                NSLog(@"小罪ADD: vm_protect_and_clearvm_region 警告：权限验证失败，仍然不可写");
                 // 可以选择返回 NO 或继续，这里保守返回 NO
                 return NO;
             }
         } else {
-            NSLog(@"警告：无法验证权限修改结果");
+            NSLog(@"小罪ADD: vm_protect_and_clearvm_region 警告：无法验证权限修改结果");
         }
     }
     
@@ -1724,7 +1724,7 @@ BOOL vm_protect_and_clear(void *ptr, size_t size) {
     // 检查第一个字节是否确实被清零
     volatile uint8_t *bytes = (volatile uint8_t *)ptr;
     if (bytes[0] != 0) {  // 使用 volatile 防止编译器优化
-        NSLog(@"警告：内存写入验证失败，数据未被清零");
+        NSLog(@"小罪ADD: vm_protect_and_clearvm_region 警告：内存写入验证失败，数据未被清零");
         // 如果写入验证失败，可以选择是否恢复原始权限
     }
     
@@ -1732,8 +1732,94 @@ BOOL vm_protect_and_clear(void *ptr, size_t size) {
     if (!originallyWritable) {
         kr = vm_protect(task, (vm_address_t)ptr, size, FALSE, original_prot);
         if (kr != KERN_SUCCESS) {
-            NSLog(@"恢复原始权限失败: %d", kr);
+            NSLog(@"小罪ADD: vm_protect_and_clearvm_region 恢复原始权限失败: %d", kr);
             // 即使恢复失败，写入操作已经完成，可根据需要处理
+        }
+    }
+    
+    return YES;
+}
+
+BOOL vm_write_clear(void *ptr, size_t size) {
+    mach_port_t task = mach_task_self();
+    
+    // 步骤1：查询当前保护属性（可选，用于后续恢复）
+    vm_address_t region_address = (vm_address_t)ptr;
+    vm_size_t region_size = 0;
+    vm_region_basic_info_data_64_t info;
+    mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
+    memory_object_name_t object_name = 0;
+    
+    kern_return_t kr = vm_region_64(
+        task,
+        &region_address,
+        &region_size,
+        VM_REGION_BASIC_INFO_64,
+        (vm_region_info_t)&info,
+        &info_count,
+        &object_name
+    );
+    
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: vm_write_clear：vm_region 查询失败: %d", kr);
+        return NO;
+    }
+    
+    vm_prot_t original_prot = info.protection;
+    BOOL originallyWritable = (original_prot & VM_PROT_WRITE) != 0;
+    
+    // 步骤2：如果不可写，尝试用 vm_protect 添加写权限
+    if (!originallyWritable) {
+        kr = vm_protect(task, (vm_address_t)ptr, size, FALSE,
+                        original_prot | VM_PROT_WRITE);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"小罪ADD: vm_write_clear：vm_protect 添加写权限失败: %d", kr);
+            return NO;
+        }
+    }
+    
+    // 步骤3：准备源数据缓冲区（全零）
+    void *zero_buffer = malloc(size);
+    if (!zero_buffer) {
+        NSLog(@"小罪ADD: vm_write_clear：内存分配失败");
+        // 若之前修改了权限，尝试恢复
+        if (!originallyWritable) {
+            vm_protect(task, (vm_address_t)ptr, size, FALSE, original_prot);
+        }
+        return NO;
+    }
+    memset(zero_buffer, 0, size);  // 清零源缓冲区
+    
+    // 步骤4：调用 vm_write 写入零数据
+    kr = vm_write(task,
+                  (vm_address_t)ptr,
+                  (vm_offset_t)zero_buffer,
+                  (mach_msg_type_number_t)size);
+    
+    // 释放源缓冲区
+    free(zero_buffer);
+    
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: vm_write_clear：vm_write 失败: %d", kr);
+        // 写入失败，但仍需恢复权限（如果修改过）
+        if (!originallyWritable) {
+            vm_protect(task, (vm_address_t)ptr, size, FALSE, original_prot);
+        }
+        return NO;
+    }
+    
+    // 步骤5：验证写入结果（可选）
+    volatile uint8_t *bytes = (volatile uint8_t *)ptr;
+    if (bytes[0] != 0) {  // 检查第一个字节
+        NSLog(@"小罪ADD: vm_write_clear：警告：写入验证失败，数据可能未清零");
+    }
+    
+    // 步骤6：如果原始权限不可写，恢复原始保护属性
+    if (!originallyWritable) {
+        kr = vm_protect(task, (vm_address_t)ptr, size, FALSE, original_prot);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"小罪ADD: vm_write_clear：恢复原始权限失败: %d", kr);
+            // 即使恢复失败，写入已完成，可根据需要处理
         }
     }
     
@@ -1772,7 +1858,7 @@ void gongxiangkaiqi()
 	
     //memset(shareData, 0, sizeof(ShareStruct));
 	//if(isAddressWritable((void*)shareData))
-	if(vm_protect_and_clear((void*)shareData,sizeof(struct ShareStruct)))
+	if(vm_write_clear((void*)shareData,sizeof(struct ShareStruct)))
 	{
     	NSLog(@"小罪ADD: systemhook: openShareChannel shareData success!");
 	}
