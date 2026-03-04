@@ -77,7 +77,8 @@ typedef struct PlayerInfo
     int id;
     
     int GNameID;
-    const char* GName;
+    //const char* GName;
+    char GName[100];
     
     float MaxWalkSpeed;
     struct TeamComp TeamComp;
@@ -93,15 +94,18 @@ typedef struct PlayerInfo
     long WeaponID;
     int bIsFiring;
 
-    const char* 手持str;
+    //const char* 手持str;
+    char 手持str[100];
     
     long HeroID;
     bool bFinishGame;
     
     bool shifourenji;
     
-    const char* 距离str;
-    const char* 名字str;
+    //const char* 距离str;
+    //const char* 名字str;
+    char 距离str[100];
+    char 名字str[100];
     
     float HelmetHealth ;
     float ArmorHealth ;
@@ -109,8 +113,11 @@ typedef struct PlayerInfo
     int 头盔护甲等级;
     int 护甲等级;
     
-    const char* 头甲str;
-    const char* 血量str;
+    //const char* 头甲str;
+    //const char* 血量str;
+
+    char 头甲str[100];
+    char 血量str[100];
 
 } PlayerInfo;
 
