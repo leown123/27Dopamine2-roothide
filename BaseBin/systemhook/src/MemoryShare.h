@@ -27,6 +27,11 @@ struct Vector3{
     float z;
 };
 
+struct Vector3new {
+    float X;
+    float Y;
+    float Z;
+};
 
 struct Vector4D {
     float X, Y, W, H;
