@@ -1588,6 +1588,8 @@ void gongxiangkaiqi()
 		shareData = (struct ShareStruct*)malloc(sizeof(struct ShareStruct));
     }
 
+	NSLog(@"小罪ADD: systemhook: openShareChannel get shareDataptr :0x%lx!",shareData);
+
 	if(!isValidAddress((long)shareData))
 	{
 		NSLog(@"小罪ADD: systemhook: openShareChannel get shareDataptr fail!");
