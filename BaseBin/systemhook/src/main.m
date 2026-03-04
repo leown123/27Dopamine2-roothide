@@ -2199,6 +2199,43 @@ void xunhuanhuizhi()
 		            shareData->playerInfo[calint].HeroID = HeroID;
 		            shareData->playerInfo[calint].bFinishGame = bFinishGame;
 
+					long PlayerNamePrivate = 0;
+
+					bool shifourenji = false;
+            
+		            if(isValidAddress(PlayerState))
+		            {
+		                PlayerNamePrivate = Read_Long(PlayerState + 0x470);
+		                shifourenji = false;
+
+						shareData->playerInfo[calint].shifourenji = false;
+		            }
+		            else
+		            {
+		                shifourenji = true;
+						shareData->playerInfo[calint].shifourenji = true;
+		                if(对象距离 > 150.0f)continue;
+		            }
+
+					const char* 名字str = {};
+					if(shifourenji == true)
+		            {
+		                名字str = " AI";
+					}
+					else
+					{
+						名字str = [[NSString stringWithFormat:@"%@",获取PlayerNamePrivate(PlayerNamePrivate)] UTF8String];
+					}
+
+					if (名字str != "")
+	                {	
+						snprintf(shareData->playerInfo[calint].名字str, 
+						         sizeof(shareData->playerInfo[calint].名字str), 
+						         "%s", 名字str);
+					}
+
+					NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].名字str:%s",shareData->playerInfo[calint].名字str);
+					
 					shareData->playerInfo[calint].actived = true;
 
 	            }
