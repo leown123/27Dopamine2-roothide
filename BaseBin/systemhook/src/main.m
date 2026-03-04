@@ -1651,7 +1651,7 @@ bool setMemoryWritableAndClear(void *ptr, size_t size) {
 
 BOOL vm_protect_and_clear(void *ptr, size_t size) {
     // 步骤1：获取当前任务端口
-    vm_task_t task = mach_task_self();
+    mach_port_t task = mach_task_self();
     
     // 步骤2：先查询当前保护属性（用于后续恢复和验证）
     vm_address_t region_address = (vm_address_t)ptr;
@@ -1772,7 +1772,7 @@ void gongxiangkaiqi()
 	
     //memset(shareData, 0, sizeof(ShareStruct));
 	//if(isAddressWritable((void*)shareData))
-	if(vm_protect_and_clear((void*)shareData),sizeof(struct ShareStruct)))
+	if(vm_protect_and_clear((void*)shareData,sizeof(struct ShareStruct)))
 	{
     	NSLog(@"小罪ADD: systemhook: openShareChannel shareData success!");
 	}
