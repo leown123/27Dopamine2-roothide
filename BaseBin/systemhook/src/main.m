@@ -2181,11 +2181,11 @@ struct EquipedArmorInfoArray 获取EquipedArmorInfoArray(long Actor) {
             Read_Datanew(EquipmentInfoArray + i * sizeof(struct FEquipmentInfo),sizeof(struct FEquipmentInfo),&EquipPawn);
             struct FArmorInfo2 fArmorInfo2 = GetArmorInfo2(EquipPawn);
             // NSLog(@"dh666 ArmorHealth %d",fArmorInfo2.AttachPosition);
-            if (fArmorInfo2.AttachPosition == EAttachPosition::Attach_BreastPlate)
+            if (fArmorInfo2.AttachPosition == Attach_BreastPlate)
             {
                 Armorlevel = fArmorInfo2.ArmorLevel;
                 
-            } else if (fArmorInfo2.AttachPosition == EAttachPosition::Attach_Helmet)
+            } else if (fArmorInfo2.AttachPosition == Attach_Helmet)
             {
                 HelmetArmorlevel = fArmorInfo2.ArmorLevel;
             }
@@ -2202,7 +2202,7 @@ struct EquipedArmorInfoArray 获取EquipedArmorInfoArray(long Actor) {
 
     
 
-    return {
+    return (struct EquipedArmorInfoArray){
         -1,
         -1,
     };
