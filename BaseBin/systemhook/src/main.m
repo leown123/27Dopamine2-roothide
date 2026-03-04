@@ -2246,7 +2246,7 @@ void xunhuanhuizhi()
 					{
 						名字str = [[NSString stringWithFormat:@"%@",获取PlayerNamePrivate(PlayerNamePrivate)] UTF8String];
 
-						NSLog(@"小罪ADD: systemhook: 内存读取的名字nsstr:%@ , str:%s"，获取PlayerNamePrivate(PlayerNamePrivate),名字str);
+						NSLog(@"小罪ADD: systemhook: 内存读取的名字nsstr:%@ , str:%s",获取PlayerNamePrivate(PlayerNamePrivate),名字str);
 					}
 
 					//if (名字str != "")
