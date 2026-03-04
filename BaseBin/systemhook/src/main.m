@@ -41,6 +41,9 @@
 #import <mach/mach.h>
 #include <sys/mman.h>
 
+#import <mach/vm_region.h>
+#import <unistd.h>
+
 #include "MemoryShare.h"
 
 ShareStruct *shareData = 0;
@@ -1567,6 +1570,85 @@ void* crchackthread(void* aa)
 		*/
 }
 
+bool isAddressWritable(void *addr) {
+    vm_address_t region_address = (vm_address_t)addr;
+    vm_size_t region_size = 0;
+    vm_region_basic_info_data_64_t info;
+    mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
+    memory_object_name_t object_name = 0;
+
+    kern_return_t kr = vm_region_64(
+        mach_task_self(),
+        &region_address,
+        &region_size,
+        VM_REGION_BASIC_INFO_64,
+        (vm_region_info_t)&info,
+        &info_count,
+        &object_name
+    );
+
+    if (kr != KERN_SUCCESS) {
+        // 地址无效或未映射
+        return false;
+    }
+
+    // 检查保护属性是否包含写权限
+    return (info.protection & VM_PROT_WRITE) != 0;
+}
+
+bool setMemoryWritableAndClear(void *ptr, size_t size) {
+    // 步骤1：获取页大小，用于对齐检查
+    long pageSize = sysconf(_SC_PAGESIZE);
+    
+    // 步骤2：计算ptr所在区域的页起始地址和区域大小（需页对齐）
+    void *pageStart = (void *)((uintptr_t)ptr & ~(pageSize - 1));
+    size_t regionSize = ((uintptr_t)ptr + size + pageSize - 1) & ~(pageSize - 1);
+    regionSize = regionSize - (uintptr_t)pageStart;
+    
+    // 步骤3：查询当前保护属性（可选，但有助于了解原始状态）
+    vm_address_t region_address = (vm_address_t)pageStart;
+    vm_size_t region_size = 0;
+    vm_region_basic_info_data_64_t info;
+    mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
+    memory_object_name_t object_name = 0;
+    
+    kern_return_t kr = vm_region_64(
+        mach_task_self(),
+        &region_address,
+        &region_size,
+        VM_REGION_BASIC_INFO_64,
+        (vm_region_info_t)&info,
+        &info_count,
+        &object_name
+    );
+    
+    if (kr != KERN_SUCCESS) {
+        // 地址无效或未映射，无法操作
+        return false;
+    }
+    
+    // 步骤4：检查当前是否可写，如果不可写，尝试修改
+    BOOL originallyWritable = (info.protection & VM_PROT_WRITE) != 0;
+    if (!originallyWritable) {
+        // 尝试添加写权限
+        if (mprotect(pageStart, regionSize, info.protection | PROT_WRITE) != 0) {
+            // 修改失败，可能是权限不允许（例如代码段）
+            return false;
+        }
+    }
+    
+    // 步骤5：执行 memset
+    memset(ptr, 0, size);
+    
+    // 步骤6：如果原始权限不可写，且我们修改了权限，可以选择恢复
+    if (!originallyWritable) {
+        // 恢复原始保护属性
+        //mprotect(pageStart, regionSize, info.protection);
+    }
+    
+    return true;
+}
+
 static bool hadgongxiang = false,hadqidongxiancheng = false;
 
 void gongxiangkaiqi()
@@ -1595,10 +1677,26 @@ void gongxiangkaiqi()
 		NSLog(@"小罪ADD: systemhook: openShareChannel get shareDataptr fail!");
 		return;
 	}
-	
-    memset(shareData, 0, sizeof(ShareStruct));
-    NSLog(@"小罪ADD: systemhook: openShareChannel shareData success!");
 
+	if (isAddressWritable(buffer)) 
+	{
+    	memset(buffer, 0, size);
+	} else {
+	    // 不能写入，可选择备选方案或报错
+
+		
+	}
+	
+	
+    //memset(shareData, 0, sizeof(ShareStruct));
+	if(isAddressWritable((void*)shareData))
+	{
+    	NSLog(@"小罪ADD: systemhook: openShareChannel shareData success!");
+	}
+	else
+	{
+		NSLog(@"小罪ADD: systemhook: openShareChannel shareData fail!");
+	}
 	pid_t wholepid = getpid();
     shareData->pid = wholepid;
 	NSLog(@"小罪ADD: systemhook: shareData->pid: %d",shareData->pid);
