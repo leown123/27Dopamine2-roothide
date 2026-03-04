@@ -2674,10 +2674,12 @@ void xunhuanhuizhi()
 	                shareData->playerInfo[calint].scrPosVec2.y = 屏幕ImVec2.y;
 	                
 	                shareData->playerInfo[calint].scrPosVec4 = 屏幕ImVec4;
+
+					shareData->playerInfo[calint].actived = true;
 				}
 
 
-				shareData->playerInfo[calint].actived = true;
+				
 			}
 
 			
