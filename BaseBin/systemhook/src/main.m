@@ -2041,8 +2041,7 @@ struct EquipedArmorInfoArray {
     int 护甲ArmorLevel;
 };
 
-enum class EAttachPosition : uint32_t
-{
+typedef enum {
     Attach_None = 0, // 无附着位置
     Attach_EquipmentStart = 100, // 装备开始位置
     Attach_Helmet = 101, // 头盔
@@ -2116,7 +2115,8 @@ enum class EAttachPosition : uint32_t
     Attach_Temp_FortificationHammer = 77777002, // 临时防御锤
     Attach_PVE_RPG = 99999999, // PVE火箭筒
     EAttachPosition_MAX = 100000000 // 最大值
-};
+} EAttachPosition;
+
 
 #pragma pack(push, 1) // 强制1字节对齐，防止编译器自动对齐
 struct FArmorInfo2
@@ -2436,10 +2436,10 @@ void xunhuanhuizhi()
 					//NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].名字str:%s",shareData->playerInfo[calint].名字str);
 					
 					float HelmetHealth = 0,ArmorHealth = 0;
-		            long DFMAttributesCenter = Read<long>(对象指针 + 0x2370);
+		            long DFMAttributesCenter = Read_Long(对象指针 + 0x2370);
 					if (isValidAddress(DFMAttributesCenter)){
-		                HelmetHealth = Read<float>(DFMAttributesCenter + 0x2e8 + 0x8 + 0x4);
-						ArmorHealth = Read<float>(DFMAttributesCenter + 0x2e8 + 0x8);
+		                HelmetHealth = Read_Float(DFMAttributesCenter + 0x2e8 + 0x8 + 0x4);
+						ArmorHealth = Read_Float(DFMAttributesCenter + 0x2e8 + 0x8);
 
 						shareData->playerInfo[calint].HelmetHealth = HelmetHealth;
 						shareData->playerInfo[calint].ArmorHealth = ArmorHealth;
