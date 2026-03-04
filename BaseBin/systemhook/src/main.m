@@ -2583,6 +2583,27 @@ void xunhuanhuizhi()
 	                Vector3new 右膝世界坐标 = GetBoneFTransform(Mesh, 63);
 	                Vector3new 右脚世界坐标 = GetBoneFTransform(Mesh, 63);
 
+					shareData->playerInfo[calint].头部世界坐标 = 头部世界坐标;
+					shareData->playerInfo[calint].脖子世界坐标 = 脖子世界坐标;
+
+					shareData->playerInfo[calint].左肩世界坐标 = 左肩世界坐标;
+					shareData->playerInfo[calint].左肘世界坐标 = 左肘世界坐标;
+					shareData->playerInfo[calint].左手世界坐标 = 左手世界坐标;
+
+					shareData->playerInfo[calint].右肩世界坐标 = 右肩世界坐标;
+					shareData->playerInfo[calint].右肘世界坐标 = 右肘世界坐标;
+					shareData->playerInfo[calint].右手世界坐标 = 右手世界坐标;
+
+					shareData->playerInfo[calint].屁股世界坐标 = 屁股世界坐标;
+
+					shareData->playerInfo[calint].左胯世界坐标 = 左胯世界坐标;
+					shareData->playerInfo[calint].左膝世界坐标 = 左膝世界坐标;
+					shareData->playerInfo[calint].左脚世界坐标 = 左脚世界坐标;
+
+					shareData->playerInfo[calint].右胯世界坐标 = 右胯世界坐标;
+					shareData->playerInfo[calint].右膝世界坐标 = 右膝世界坐标;
+					shareData->playerInfo[calint].右脚世界坐标 = 右脚世界坐标;
+
 
 					
 	
