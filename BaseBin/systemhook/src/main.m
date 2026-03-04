@@ -2036,6 +2036,182 @@ NSString* 获取PlayerNamePrivate(long PlayerNamePrivate) {
        return [名字字符 copy];
 };
 
+struct EquipedArmorInfoArray {
+    int ArmorLevel;
+    int 护甲ArmorLevel;
+};
+
+enum class EAttachPosition : uint32_t
+{
+    Attach_None = 0, // 无附着位置
+    Attach_EquipmentStart = 100, // 装备开始位置
+    Attach_Helmet = 101, // 头盔
+    Attach_Headset = 102, // 耳机
+    Attach_ArmedForceBaseProp = 103, // 武装部队基础道具
+    Attach_Armband = 104, // 臂章
+    Attach_BreastPlate = 105, // 胸甲
+    Attach_Glasses = 106, // 眼镜
+    Attach_ChestHanging = 107, // 胸前挂件
+    Attach_Bag = 108, // 背包
+    Attach_SafeBox = 109, // 保险箱
+    Attach_Shoe = 110, // 鞋子
+    Attach_MainWeaponLeft = 111, // 主武器（左侧）
+    Attach_MainWeaponRight = 112, // 主武器（右侧）
+    Attach_MeleeWeapon = 113, // 近战武器
+    Attach_PistolWeapon = 114, // 手枪
+    Attach_SecondaryWeapon = 1111, // 次要武器
+    Attach_ArmedForceProp1 = 115, // 武装部队道具1
+    Attach_KeyChain = 116, // 钥匙链
+    Attach_ArmedForceProp2 = 117, // 武装部队道具2
+    Attach_Character = 118, // 角色
+    Attach_DogTag = 119, // 狗牌
+    PVEMainWeaponLeft = 120, // PVE主武器（左侧）
+    PVEMainWeaponRight = 121, // PVE主武器（右侧）
+    Medical = 122, // 医疗物品
+    Archive = 123, // 档案
+    Attach_SceneWeapon = 124, // 场景武器
+    Attach_ClassMeleeEquipment = 125, // 职业近战装备
+    Attach_ClassThrowableEquipment = 126, // 职业投掷装备
+    Attach_ClassConsumable = 127, // 职业消耗品
+    Attach_PVEWeapon = 128, // PVE武器
+    Attach_MissionMeleeEquipment = 129, // 任务近战装备
+    Attach_BulletLeft = 131, // 左侧子弹
+    Attach_BulletRight = 132, // 右侧子弹
+    Attach_SkillWeaponSpecial = 133, // 特殊技能武器
+    Attach_SkillWeaponUltimate = 134, // 终极技能武器
+    Attach_SkillWeaponActive = 135, // 主动技能武器
+    Attach_SkillWeaponSupport = 136, // 支援技能武器
+    Attach_SkillWeaponBattleFieldPropSkill = 137, // 战场道具技能
+    Attach_SkillWeaponCustom2 = 138, // 自定义技能武器2
+    Attach_SkillWeaponCustom3 = 139, // 自定义技能武器3
+    Attach_MP_Begin = 140, // 多人模式开始
+    Attach_MP_ArmedForceBaseProp = 141, // MP武装部队基础道具
+    Attach_MP_ArmedForceTDMProp = 142, // MP武装部队团队死斗道具
+    Attach_MP_MainWeapon = 143, // MP主武器
+    Attach_MP_SecondaryWeapon = 144, // MP次要武器
+    Attach_MP_MeleeWeapon = 145, // MP近战武器
+    Attach_MP_ArmedForceProp1 = 146, // MP武装部队道具1
+    Attach_MP_ArmedForceProp2 = 147, // MP武装部队道具2
+    Attach_MP_End = 148, // 多人模式结束
+    Attach_EquipmentEnd = 150, // 装备结束
+    Attach_Fashion = 200, // 时装
+    Attach_AllNearby = 301, // 附近所有物品
+    Attach_PickupBox = 302, // 拾取箱
+    Attach_LootTmp = 303, // 临时战利品
+    Attach_TmpPerk = 304, // 临时增益
+    Attach_DeadbodyLootBox = 305, // 尸体战利品箱
+    Attach_AbilityVehicle = 306, // 能力载具
+    Attach_ContainerStart = 100000, // 容器开始
+    Attach_ChestHangingContainer = 107001, // 胸前挂件容器
+    Attach_BagContainer = 108001, // 背包容器
+    Attach_SafeBoxContainer = 109001, // 保险箱容器
+    Attach_KeyChainContainer = 116001, // 钥匙链容器
+    Attach_ArchiveContainer = 123001, // 档案容器
+    Attach_Pocket = 199997, // 口袋
+    Attach_BagSpaceContainer = 199998, // 背包空间容器
+    Attach_ContainerEnd = 199999, // 容器结束
+    Attach_CarrayItem = 200001, // 携带物品
+    Attach_Temp = 77777, // 临时
+    Attach_TempContainer = 77777001, // 临时容器
+    Attach_Temp_FortificationHammer = 77777002, // 临时防御锤
+    Attach_PVE_RPG = 99999999, // PVE火箭筒
+    EAttachPosition_MAX = 100000000 // 最大值
+};
+
+#pragma pack(push, 1) // 强制1字节对齐，防止编译器自动对齐
+struct FArmorInfo2
+{
+    bool Status; // [偏移量: 0x00 | 大小: 0x01]
+    char Padding1[3]; // 填充字节，使 AttachPosition 对齐到 0x04
+    EAttachPosition AttachPosition; // [偏移量: 0x04 | 大小: 0x04]
+    float ArmorHP; // [偏移量: 0x08 | 大小: 0x04]
+    float MaxArmorHP; // [偏移量: 0x0C | 大小: 0x04]
+    char Padding2[56]; // 填充至 0x48
+    int32_t ArmorLevel; // [偏移量: 0x48 | 大小: 0x04]
+};
+#pragma pack(pop)
+
+// ScriptStruct DFMGameplay.EquipmentInfo
+// Size: 0x30 (Inherited: 0x00)
+struct FEquipmentInfo {
+    uint64_t ItemID; // 0x00(0x08)
+    uint64_t gid; // 0x08(0x08)
+    float Health; // 0x10(0x04)
+    float MaxHealth; // 0x14(0x04)
+    float Durability; // 0x18(0x04)
+    float MaxDurability; // 0x1c(0x04)
+    float TotalEquipSeceonds; // 0x20(0x04)
+    float LastEquipTimeSeconds; // 0x24(0x04)
+    float TotalApplyDamage; // 0x28(0x04)
+    char pad_2C[0x4]; // 0x2c(0x04)
+};
+
+FArmorInfo2 GetArmorInfo2(FEquipmentInfo EquipmentInfo) {
+    FArmorInfo2 info = { 0 };
+    if (EquipmentInfo.ItemID > 10000000 && EquipmentInfo.ItemID < 20000000000) {
+        //std::string str = std::to_string(EquipmentInfo.ItemID);
+        //char* p = (char*)str.c_str();
+		char str[32];  // 足够存放任意整数（包括 64 位）的十进制表示
+		snprintf(str, sizeof(str), "%lld", EquipmentInfo.ItemID);  // 若 ItemID 是 long long，则用 "%lld"
+		char *p = str;
+        int v1 = (p[1] - '0') * 100;
+        int v2 = (p[2] - '0') * 10;
+        int v3 = p[3] - '0';
+        int level = p[7] - '0';
+        info.ArmorLevel = level;
+        info.AttachPosition = (enum EAttachPosition)(v1 + v2 + v3);
+        info.Status = TRUE;
+    }
+    return info;
+}
+
+struct EquipedArmorInfoArray 获取EquipedArmorInfoArray(long Actor) {
+    
+    int Armorlevel = 0;
+    int HelmetArmorlevel = 0;
+    
+    long CharacterEquipComponentCache = Read<long>(Actor + 0x2208);//EncryptedObjectProperty CharacterEquipComponentCache; // 0x2188(0x08)
+    long EquipmentInfoArray = Read<long>(CharacterEquipComponentCache + 0x1d8);// struct TArray<struct FEquipmentInfo> EquipmentInfoArray; // 0x1d8(0x10)
+    
+    FEquipmentInfo EquipPawn;
+    
+    for (int i = 0; i < 6; i++) {
+        @autoreleasepool {
+            //readMemory(EquipmentInfoArray + i * sizeof(FEquipmentInfo), &EquipPawn, sizeof(FEquipmentInfo));
+            Read_Datanew(EquipmentInfoArray + i * sizeof(FEquipmentInfo),sizeof(FEquipmentInfo),&EquipPawn);
+            FArmorInfo2 fArmorInfo2 = GetArmorInfo2(EquipPawn);
+            // NSLog(@"dh666 ArmorHealth %d",fArmorInfo2.AttachPosition);
+            if (fArmorInfo2.AttachPosition == EAttachPosition::Attach_BreastPlate)
+            {
+                Armorlevel = fArmorInfo2.ArmorLevel;
+                
+            } else if (fArmorInfo2.AttachPosition == EAttachPosition::Attach_Helmet)
+            {
+                HelmetArmorlevel = fArmorInfo2.ArmorLevel;
+            }
+        }
+    }
+    
+    return (struct EquipedArmorInfoArray){
+        HelmetArmorlevel,
+        Armorlevel
+    };
+    
+    
+    
+
+    
+
+    return {
+        -1,
+        -1,
+    };
+    
+
+    
+    
+};
+
 
 void* duquthread(void* aa)
 {
@@ -2246,7 +2422,7 @@ void xunhuanhuizhi()
 					{
 						名字str = [[NSString stringWithFormat:@"%@",获取PlayerNamePrivate(PlayerNamePrivate)] UTF8String];
 
-						NSLog(@"小罪ADD: systemhook: 内存读取的名字nsstr:%@ , str:%s",获取PlayerNamePrivate(PlayerNamePrivate),名字str);
+						//NSLog(@"小罪ADD: systemhook: 内存读取的名字nsstr:%@ , str:%s",获取PlayerNamePrivate(PlayerNamePrivate),名字str);
 					}
 
 					//if (名字str != "")
@@ -2257,8 +2433,27 @@ void xunhuanhuizhi()
 						         "%s", 名字str);
 					}
 
-					NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].名字str:%s",shareData->playerInfo[calint].名字str);
+					//NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].名字str:%s",shareData->playerInfo[calint].名字str);
 					
+					float HelmetHealth = 0,ArmorHealth = 0;
+		            long DFMAttributesCenter = Read<long>(对象指针 + 0x2370);
+					if (isValidAddress(DFMAttributesCenter)){
+		                HelmetHealth = Read<float>(DFMAttributesCenter + 0x2e8 + 0x8 + 0x4);
+						ArmorHealth = Read<float>(DFMAttributesCenter + 0x2e8 + 0x8);
+
+						shareData->playerInfo[calint].HelmetHealth = HelmetHealth;
+						shareData->playerInfo[calint].ArmorHealth = ArmorHealth;
+		            }
+					
+					struct EquipedArmorInfoArray EquipedArmorInfoArray = 获取EquipedArmorInfoArray(对象指针);
+		            int 头盔护甲等级 = EquipedArmorInfoArray.ArmorLevel;
+		            int 护甲等级 = EquipedArmorInfoArray.护甲ArmorLevel;
+
+					shareData->playerInfo[calint].头盔护甲等级 = 头盔护甲等级;
+					shareData->playerInfo[calint].护甲等级 = 护甲等级;
+					
+					NSLog(@"小罪ADD: systemhook: 头盔护甲等级:%d,护甲等级:%d",头盔护甲等级,护甲等级);
+	
 					shareData->playerInfo[calint].actived = true;
 
 	            }
