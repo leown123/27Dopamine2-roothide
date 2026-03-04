@@ -1678,15 +1678,6 @@ void gongxiangkaiqi()
 		return;
 	}
 
-	if (isAddressWritable(buffer)) 
-	{
-    	memset(buffer, 0, size);
-	} else {
-	    // 不能写入，可选择备选方案或报错
-
-		
-	}
-	
 	
     //memset(shareData, 0, sizeof(ShareStruct));
 	if(isAddressWritable((void*)shareData))
