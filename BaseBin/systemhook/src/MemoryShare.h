@@ -82,7 +82,7 @@ typedef struct PlayerInfo
     
     float MaxWalkSpeed;
     struct TeamComp TeamComp;
-    
+     
     float Health;
     float MaxHealth;
     
