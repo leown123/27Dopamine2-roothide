@@ -2096,7 +2096,8 @@ void xunhuanhuizhi()
 
 	for (int Index = 0; Index < 世界数量1; Index++)
     {
-		calint = calint + 1;
+		//calint = calint + 1;
+		calint = Index;
 		long 对象指针 = Read_Long(世界数组1 + Index * 0x8);
        	if(!isValidAddress(对象指针))continue;
 		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
@@ -2105,9 +2106,12 @@ void xunhuanhuizhi()
 
 		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
-			NSLog(@"小罪ADD: systemhook: 对象指针:%lx",对象指针);
-			
+			NSLog(@"小罪ADD: systemhook: Index:%d,对象指针:%lx",Index,对象指针);
+
+			NSLog(@"小罪ADD: systemhook: 准备赋值对象指针:%lx的actived为false",Index);
 			shareData->playerInfo[calint].actived = false;
+			NSLog(@"小罪ADD: systemhook: 赋值对象指针:%lx的actived为false完成！",Index);
+			
 			shareData->playerInfo[calint].GNameID = GNameID;
 
 			struct TeamComp targetTeamComp = 获取TeamComp(对象指针);
