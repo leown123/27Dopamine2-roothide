@@ -2410,6 +2410,8 @@ void xunhuanhuizhi()
 
 		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
+			shareData->playerInfo[calint].objtype = 1;
+			
 			//NSLog(@"小罪ADD: systemhook: Index:%d,对象指针:%lx",Index,对象指针);
 
 			//NSLog(@"小罪ADD: systemhook: 准备赋值对象指针:%lx的actived为false",Index);
@@ -2629,6 +2631,25 @@ void xunhuanhuizhi()
 			
 			
 		}
+
+		//继续看是否属于可拾取物品或者盒子
+		long 物资总偏移 = Read_Long(对象指针 + 0x1130);
+        int 物资价值 = Read_Int(物资总偏移 + 0xD8 + 4);
+        int 物资等级 = Read_Int(物资总偏移 + 0x68);
+                    
+        if(物资价值 > 5000 && 物资价值 < 30000000 && 物资等级 > 3 && 物资等级 < 8)
+        {
+			shareData->playerInfo[calint].objtype = 2;
+			shareData->playerInfo[calint].物资价值 = 物资价值;
+			shareData->playerInfo[calint].物资等级 = 物资等级;
+
+			struct Vector RelativeLocation = 获取RelativeLocation(对象指针);
+			shareData->playerInfo[calint].pos.x = RelativeLocation.X ;
+        	shareData->playerInfo[calint].pos.y = RelativeLocation.Y ;
+        	shareData->playerInfo[calint].pos.z = RelativeLocation.Z ;
+			shareData->playerInfo[calint].actived = true;
+               
+        }
 
 		
 	
