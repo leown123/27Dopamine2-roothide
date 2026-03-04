@@ -43,7 +43,7 @@ void* openShareChannel(void)
     chown(sharePath, 501, 501);
     void* ptr = mmap(NULL, shareSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
-    NSLog(@"小罪ADD: systemhook：openShareChannel mmapptr: %d", ptr);
+    NSLog(@"小罪ADD: systemhook：openShareChannel mmapptr: %lx", ptr);
     
     if (ptr == MAP_FAILED) {
         return (void*)-1;
