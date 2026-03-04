@@ -11,7 +11,7 @@
 
 const char* sharePath = "/var/mobile/Library/SpringBoard/.ldata";
 
-size_t shareSize = 1024 * 30; // 30Kb共享空间
+//size_t shareSize = 1024 * 30; // 30Kb共享空间
 
 // 打开共享通道
 
@@ -24,7 +24,11 @@ void* openShareChannel(void)
     NSString *fileName = @".ldata";
     NSString *filePath = [tmpDir stringByAppendingPathComponent:fileName];
     NSLog(@"小罪ADD: systemhook：openShareChannel 拟共享的tmp file path: %@", filePath);
-        
+
+    size_t shareSize = sizeof(struct ShareStruct))*2;
+
+    NSLog(@"小罪ADD: systemhook：openShareChannel shareSize: %d,oldshareSize: %d", shareSize,1024 * 30);
+
     // 可以将filePath传递给open函数使用
     // int fd = open([filePath UTF8String], O_CREAT | O_WRONLY, 0644);
 
