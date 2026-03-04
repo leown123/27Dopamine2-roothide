@@ -1194,9 +1194,9 @@ int Read_Int(long src)
     return Buff;
 }
 
-int Read_Short(long src)
+short Read_Short(long src)
 {
-    int Buff=0;
+    short Buff=0;
     //Buff = read<unsigned short int>(src);
     Read_Datanew(src,2,&Buff);
     return Buff;
@@ -2014,6 +2014,20 @@ struct Vector4D 获取对象屏幕ImVec4(struct Vector RelativeLocation, struct 
     };
 };
 
+NSString* 获取PlayerNamePrivate(long PlayerNamePrivate) {
+    //NSMutableString *名字字符 = [NSMutableString string];
+    NSMutableString *名字字符 = [[NSMutableString alloc] init];
+
+    
+       for (int Index = 0; Index < 14; Index++) {
+           //unichar 名字字符串 = Read<unichar>(PlayerNamePrivate + Index * 2);
+		   unichar 名字字符串 = (unichar)Read_Short(PlayerNamePrivate + Index * 2);
+           if (名字字符串 == 0) break;
+           [名字字符 appendFormat:@"%C", (unichar)名字字符串];
+       }
+       return [名字字符 copy];
+};
+
 
 void* duquthread(void* aa)
 {
@@ -2200,8 +2214,6 @@ void xunhuanhuizhi()
 		            shareData->playerInfo[calint].bFinishGame = bFinishGame;
 
 					long PlayerNamePrivate = 0;
-
-					bool shifourenji = false;
             
 		            if(isValidAddress(PlayerState))
 		            {
