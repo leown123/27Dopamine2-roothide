@@ -2229,7 +2229,7 @@ void xunhuanhuizhi()
 		                if(对象距离 > 150.0f)continue;
 		            }
 
-					const char* 名字str = {};
+					const char* 名字str = "";
 					if(shifourenji == true)
 		            {
 		                名字str = " AI";
@@ -2239,8 +2239,9 @@ void xunhuanhuizhi()
 						名字str = [[NSString stringWithFormat:@"%@",获取PlayerNamePrivate(PlayerNamePrivate)] UTF8String];
 					}
 
-					if (名字str != "")
-	                {	
+					//if (名字str != "")
+	                if (strcmp(名字str, "") != 0)
+					{	
 						snprintf(shareData->playerInfo[calint].名字str, 
 						         sizeof(shareData->playerInfo[calint].名字str), 
 						         "%s", 名字str);
