@@ -78,6 +78,8 @@ struct HealthSet {
 typedef struct PlayerInfo
 {
     bool actived;
+
+    int objtype;
     
     int id;
     
