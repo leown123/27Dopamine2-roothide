@@ -1587,6 +1587,13 @@ void gongxiangkaiqi()
         //kfdshareData = new kfdShareStruct();
 		shareData = (struct ShareStruct*)malloc(sizeof(struct ShareStruct));
     }
+
+	if(!isValidAddress((long)shareData))
+	{
+		NSLog(@"小罪ADD: systemhook: openShareChannel get shareDataptr fail!");
+		return;
+	}
+	
     memset(shareData, 0, sizeof(ShareStruct));
     NSLog(@"小罪ADD: systemhook: openShareChannel shareData success!");
 
