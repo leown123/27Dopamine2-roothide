@@ -2106,16 +2106,17 @@ void xunhuanhuizhi()
 
 		if(MaxWalkSpeed >= 400.0f && MaxWalkSpeed <= 1500.0f)
 		{
-			NSLog(@"小罪ADD: systemhook: Index:%d,对象指针:%lx",Index,对象指针);
+			//NSLog(@"小罪ADD: systemhook: Index:%d,对象指针:%lx",Index,对象指针);
 
-			NSLog(@"小罪ADD: systemhook: 准备赋值对象指针:%lx的actived为false",Index);
+			//NSLog(@"小罪ADD: systemhook: 准备赋值对象指针:%lx的actived为false",Index);
 			shareData->playerInfo[calint].actived = false;
-			NSLog(@"小罪ADD: systemhook: 赋值对象指针:%lx的actived为false完成！",Index);
+			//NSLog(@"小罪ADD: systemhook: 赋值对象指针:%lx的actived为false完成！");
 			
 			shareData->playerInfo[calint].GNameID = GNameID;
 
 			struct TeamComp targetTeamComp = 获取TeamComp(对象指针);
         	shareData->playerInfo[calint].TeamComp = targetTeamComp;
+			NSLog(@"小罪ADD: systemhook: shareData->playerInfo[%d].TeamComp:%d",calint,shareData->playerInfo[calint].TeamComp);
 
 			if (myselfTeamComp.TeamId == targetTeamComp.TeamId) continue;
 
@@ -2131,6 +2132,8 @@ void xunhuanhuizhi()
 			shareData->playerInfo[calint].Health = Health;
         	shareData->playerInfo[calint].MaxHealth = MaxHealth;
 
+			NSLog(@"小罪ADD: systemhook: shareData->playerInfo[%d].Health:%.2f,MaxHealth:%.2f",calint,shareData->playerInfo[calint].Health,shareData->playerInfo[calint].MaxHealth);
+
 			struct Vector RelativeLocation = 获取RelativeLocation(对象指针);
 			shareData->playerInfo[calint].pos.x = RelativeLocation.X ;
         	shareData->playerInfo[calint].pos.y = RelativeLocation.Y ;
@@ -2139,6 +2142,9 @@ void xunhuanhuizhi()
 			float 对象距离 = 获取对象距离(RelativeLocation, MinimalViewInfo.Location, 100.0f);
 			if(对象距离 > 500.0f)continue;
 			shareData->playerInfo[calint].对象距离 = 对象距离;
+
+			NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].对象距离:%d,",calint,shareData->playerInfo[calint].对象距离);
+			
 			if (RelativeLocation.X != -1.0f && RelativeLocation.Y != -1.0f && RelativeLocation.Z != -1.0f)
 	        {
 				struct Vector2 屏幕中心 = {};
@@ -2148,6 +2154,8 @@ void xunhuanhuizhi()
 				struct Vector4D 屏幕ImVec4 = 获取对象屏幕ImVec4(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
             
 	            struct Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+
+				NSLog(@"小罪ADD: systemhook: 屏幕ImVec2.x:%.2f,屏幕ImVec2.y:%.2f",屏幕ImVec2.x,屏幕ImVec2.y);
 	            
 	            bool 屏幕后 = false;
 	            
