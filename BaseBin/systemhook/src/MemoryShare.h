@@ -124,6 +124,27 @@ typedef struct PlayerInfo
     char 头甲str[100];
     char 血量str[100];
 
+    struct Vector3new 头部世界坐标;
+    struct Vector3new 脖子世界坐标;
+                
+    struct Vector3new 左肩世界坐标;
+    struct Vector3new 左肘世界坐标;
+    struct Vector3new 左手世界坐标;
+                
+    struct Vector3new 右肩世界坐标;
+    struct Vector3new 右肘世界坐标;
+    struct Vector3new 右手世界坐标;
+                
+    struct Vector3new 屁股世界坐标;
+                
+    struct Vector3new 左胯世界坐标;
+    struct Vector3new 左膝世界坐标;
+    struct Vector3new 左脚世界坐标;
+                
+    struct Vector3new 右胯世界坐标;
+    struct Vector3new 右膝世界坐标;
+    struct Vector3new 右脚世界坐标;
+
 } PlayerInfo;
 
 
