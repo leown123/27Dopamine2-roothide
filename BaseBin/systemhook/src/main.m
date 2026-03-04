@@ -2647,7 +2647,41 @@ void xunhuanhuizhi()
 			shareData->playerInfo[calint].pos.x = RelativeLocation.X ;
         	shareData->playerInfo[calint].pos.y = RelativeLocation.Y ;
         	shareData->playerInfo[calint].pos.z = RelativeLocation.Z ;
-			shareData->playerInfo[calint].actived = true;
+
+			
+			if (RelativeLocation.X != -1.0f && RelativeLocation.Y != -1.0f && RelativeLocation.Z != -1.0f)
+	        {
+				struct Vector2 屏幕中心 = {};
+	            屏幕中心.x = GameCanvas.x / 2.0f;
+	            屏幕中心.y = GameCanvas.y / 2.0f;
+
+				struct Vector4D 屏幕ImVec4 = 获取对象屏幕ImVec4(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+            
+	            struct Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
+
+				NSLog(@"小罪ADD: systemhook: 屏幕ImVec2.x:%.2f,屏幕ImVec2.y:%.2f",屏幕ImVec2.x,屏幕ImVec2.y);
+	            
+	            bool 屏幕后 = false;
+	            
+	            if (!(屏幕ImVec2.x > 0.0f && 屏幕ImVec2.y > 0.0f && 屏幕ImVec2.x < GameCanvas.x && 屏幕ImVec2.y < GameCanvas.y))
+	            {
+	                //continue;
+	                屏幕后 = true;
+	            }
+				if(屏幕后 == false)
+	            {
+	                shareData->playerInfo[calint].scrPosVec2.x = 屏幕ImVec2.x;
+	                shareData->playerInfo[calint].scrPosVec2.y = 屏幕ImVec2.y;
+	                
+	                shareData->playerInfo[calint].scrPosVec4 = 屏幕ImVec4;
+				}
+
+
+				shareData->playerInfo[calint].actived = true;
+			}
+
+			
+			
                
         }
 
