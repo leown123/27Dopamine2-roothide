@@ -2041,7 +2041,7 @@ struct EquipedArmorInfoArray {
     int 护甲ArmorLevel;
 };
 
-typedef enum {
+typedef enum EAttachPosition{
     Attach_None = 0, // 无附着位置
     Attach_EquipmentStart = 100, // 装备开始位置
     Attach_Helmet = 101, // 头盔
@@ -2159,7 +2159,7 @@ struct FArmorInfo2 GetArmorInfo2(struct FEquipmentInfo EquipmentInfo) {
         int v3 = p[3] - '0';
         int level = p[7] - '0';
         info.ArmorLevel = level;
-        info.AttachPosition = (enum EAttachPosition)(v1 + v2 + v3);
+        info.AttachPosition = (EAttachPosition)(v1 + v2 + v3);
         info.Status = TRUE;
     }
     return info;
@@ -2177,8 +2177,8 @@ struct EquipedArmorInfoArray 获取EquipedArmorInfoArray(long Actor) {
     
     for (int i = 0; i < 6; i++) {
         @autoreleasepool {
-            //readMemory(EquipmentInfoArray + i * sizeof(FEquipmentInfo), &EquipPawn, sizeof(FEquipmentInfo));
-            Read_Datanew(EquipmentInfoArray + i * sizeof(FEquipmentInfo),sizeof(FEquipmentInfo),&EquipPawn);
+            //readMemory(EquipmentInfoArray + i * sizeof(struct FEquipmentInfo), &EquipPawn, sizeof(struct FEquipmentInfo));
+            Read_Datanew(EquipmentInfoArray + i * sizeof(struct FEquipmentInfo),sizeof(struct FEquipmentInfo),&EquipPawn);
             struct FArmorInfo2 fArmorInfo2 = GetArmorInfo2(EquipPawn);
             // NSLog(@"dh666 ArmorHealth %d",fArmorInfo2.AttachPosition);
             if (fArmorInfo2.AttachPosition == EAttachPosition::Attach_BreastPlate)
