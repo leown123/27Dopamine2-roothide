@@ -2305,13 +2305,13 @@ struct D3DXMATRIX FTransform_MatrixMultiplication(struct D3DXMATRIX pM1, struct 
 struct Vector3new GetBoneFTransform(long Mesh, int Id)
 {
     long BoneActor;
-    Read_Data(Mesh + 0x718, sizeof(BoneActor), &BoneActor);
+    Read_Datanew(Mesh + 0x718, sizeof(BoneActor), &BoneActor);
 
     struct FTransform lpFTransform;
-    Read_Data(BoneActor + Id * 0x30, sizeof(struct FTransform), &lpFTransform);
+    Read_Datanew(BoneActor + Id * 0x30, sizeof(struct FTransform), &lpFTransform);
 
     struct FTransform ComponentToWorld;
-    Read_Data(Mesh + 0x210, sizeof(struct FTransform), &ComponentToWorld);
+    Read_Datanew(Mesh + 0x210, sizeof(struct FTransform), &ComponentToWorld);
 
     struct D3DXMATRIX Matrix = FTransform_MatrixMultiplication(
         FTransform_ToMatrixWithScale(&lpFTransform),
