@@ -2212,6 +2212,116 @@ struct EquipedArmorInfoArray 获取EquipedArmorInfoArray(long Actor) {
     
 };
 
+struct D3DXMATRIX {
+    float _11, _12, _13, _14;
+    float _21, _22, _23, _24;
+    float _31, _32, _33, _34;
+    float _41, _42, _43, _44;
+};
+
+struct Vector4 {
+    float x;
+    float y;
+    float z;
+    float w;
+};
+
+struct Vector3new {
+    float X;
+    float Y;
+    float Z;
+};
+
+struct FTransform {
+    struct Vector4 rot;
+    struct Vector3new translation;
+    struct Vector3new scale;
+};
+
+// 将成员函数改为外部函数，接受结构体指针参数
+struct D3DXMATRIX FTransform_ToMatrixWithScale(struct FTransform* transform) {
+    struct D3DXMATRIX m;
+    m._41 = transform->translation.X;
+    m._42 = transform->translation.Y;
+    m._43 = transform->translation.Z;
+
+    float x2 = transform->rot.x + transform->rot.x;
+    float y2 = transform->rot.y + transform->rot.y;
+    float z2 = transform->rot.z + transform->rot.z;
+
+    float xx2 = transform->rot.x * x2;
+    float yy2 = transform->rot.y * y2;
+    float zz2 = transform->rot.z * z2;
+    m._11 = (1.0f - (yy2 + zz2)) * transform->scale.X;
+    m._22 = (1.0f - (xx2 + zz2)) * transform->scale.Y;
+    m._33 = (1.0f - (xx2 + yy2)) * transform->scale.Z;
+
+    float yz2 = transform->rot.y * z2;
+    float wx2 = transform->rot.w * x2;
+    m._32 = (yz2 - wx2) * transform->scale.Z;
+    m._23 = (yz2 + wx2) * transform->scale.Y;
+
+    float xy2 = transform->rot.x * y2;
+    float wz2 = transform->rot.w * z2;
+    m._21 = (xy2 - wz2) * transform->scale.Y;
+    m._12 = (xy2 + wz2) * transform->scale.X;
+
+    float xz2 = transform->rot.x * z2;
+    float wy2 = transform->rot.w * y2;
+    m._31 = (xz2 + wy2) * transform->scale.Z;
+    m._13 = (xz2 - wy2) * transform->scale.X;
+
+    m._14 = 0.0f;
+    m._24 = 0.0f;
+    m._34 = 0.0f;
+    m._44 = 1.0f;
+
+    return m;
+}
+
+// 静态成员函数改为普通函数
+struct D3DXMATRIX FTransform_MatrixMultiplication(struct D3DXMATRIX pM1, struct D3DXMATRIX pM2) {
+    struct D3DXMATRIX pOut;
+    pOut._11 = pM1._11 * pM2._11 + pM1._12 * pM2._21 + pM1._13 * pM2._31 + pM1._14 * pM2._41;
+    pOut._12 = pM1._11 * pM2._12 + pM1._12 * pM2._22 + pM1._13 * pM2._32 + pM1._14 * pM2._42;
+    pOut._13 = pM1._11 * pM2._13 + pM1._12 * pM2._23 + pM1._13 * pM2._33 + pM1._14 * pM2._43;
+    pOut._14 = pM1._11 * pM2._14 + pM1._12 * pM2._24 + pM1._13 * pM2._34 + pM1._14 * pM2._44;
+    pOut._21 = pM1._21 * pM2._11 + pM1._22 * pM2._21 + pM1._23 * pM2._31 + pM1._24 * pM2._41;
+    pOut._22 = pM1._21 * pM2._12 + pM1._22 * pM2._22 + pM1._23 * pM2._32 + pM1._24 * pM2._42;
+    pOut._23 = pM1._21 * pM2._13 + pM1._22 * pM2._23 + pM1._23 * pM2._33 + pM1._24 * pM2._43;
+    pOut._24 = pM1._21 * pM2._14 + pM1._22 * pM2._24 + pM1._23 * pM2._34 + pM1._24 * pM2._44;
+    pOut._31 = pM1._31 * pM2._11 + pM1._32 * pM2._21 + pM1._33 * pM2._31 + pM1._34 * pM2._41;
+    pOut._32 = pM1._31 * pM2._12 + pM1._32 * pM2._22 + pM1._33 * pM2._32 + pM1._34 * pM2._42;
+    pOut._33 = pM1._31 * pM2._13 + pM1._32 * pM2._23 + pM1._33 * pM2._33 + pM1._34 * pM2._43;
+    pOut._34 = pM1._31 * pM2._14 + pM1._32 * pM2._24 + pM1._33 * pM2._34 + pM1._34 * pM2._44;
+    pOut._41 = pM1._41 * pM2._11 + pM1._42 * pM2._21 + pM1._43 * pM2._31 + pM1._44 * pM2._41;
+    pOut._42 = pM1._41 * pM2._12 + pM1._42 * pM2._22 + pM1._43 * pM2._32 + pM1._44 * pM2._42;
+    pOut._43 = pM1._41 * pM2._13 + pM1._42 * pM2._23 + pM1._43 * pM2._33 + pM1._44 * pM2._43;
+    pOut._44 = pM1._41 * pM2._14 + pM1._42 * pM2._24 + pM1._43 * pM2._34 + pM1._44 * pM2._44;
+
+    return pOut;
+}
+
+struct Vector3new GetBoneFTransform(long Mesh, int Id)
+{
+    long BoneActor;
+    Read_Data(Mesh + 0x718, sizeof(BoneActor), &BoneActor);
+
+    struct FTransform lpFTransform;
+    Read_Data(BoneActor + Id * 0x30, sizeof(struct FTransform), &lpFTransform);
+
+    struct FTransform ComponentToWorld;
+    Read_Data(Mesh + 0x210, sizeof(struct FTransform), &ComponentToWorld);
+
+    struct D3DXMATRIX Matrix = FTransform_MatrixMultiplication(
+        FTransform_ToMatrixWithScale(&lpFTransform),
+        FTransform_ToMatrixWithScale(&ComponentToWorld)
+    );
+
+    struct Vector3new result = (struct Vector3new){ Matrix._41, Matrix._42, Matrix._43 };
+    return result;
+}
+
 
 void* duquthread(void* aa)
 {
