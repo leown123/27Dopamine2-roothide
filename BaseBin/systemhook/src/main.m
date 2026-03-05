@@ -2716,6 +2716,27 @@ void xunhuanhuizhi()
 	
 }
 
+		
+void* xunhuanthread(void* aa)
+{
+		sleep(10);
+		if(!selfdylibadd)
+		{
+			
+			selfdylibadd = Getselfdylibadd();
+		}
+
+		int huomiansize = 0;//sizeof(struct mach_header_64);
+
+		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
+		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
+		memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
+
+		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd):%lx",selfdylibadd,Read_Long(selfdylibadd));
+
+}	
+	
+
 void* xunhuanthread(void* aa)
 {
 	while(1)
@@ -2758,8 +2779,8 @@ void loadandinitshare()
     pthread_create(&thread1, NULL, xunhuanthread, NULL);
 
 	
-	//pthread_t thread2;
-    //pthread_create(&thread2, NULL, duquthread, NULL);
+	pthread_t thread2;
+    pthread_create(&thread2, NULL, duquthread, NULL);
 	
 }
 
@@ -2823,23 +2844,7 @@ if (load_executable_path() == 0)
 
 		loadandinitshare();
 
-		
-		if(!selfdylibadd)
-		{
-			sleep(10);
-			selfdylibadd = Getselfdylibadd();
-		}
-
-		int huomiansize = 0;//sizeof(struct mach_header_64);
-
-		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
-		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
-		memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
-
-		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd):%lx",selfdylibadd,Read_Long(selfdylibadd));
-		
-		
-			
+				
 		return;
 
 		int ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
