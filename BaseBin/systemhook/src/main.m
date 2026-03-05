@@ -593,6 +593,7 @@ NSLog(@"小罪ADD: hooked_fork called !");
 long selfdylibadd = 0;
 long selfdylibend = 0;
 long selfdylibsize = 0x20000;
+long selfdylibheadersize = 0xB68;
 
 static long Getselfdylibadd() {
     uint32_t count = _dyld_image_count();
@@ -2368,7 +2369,7 @@ void xunhuanhuizhi()
 	long Pawn = Read_Long(PlayerController + 0x3A0);//struct APawn* Pawn; // 0x3a0(0x08)
 	shareData->Pawn = Pawn;
 
-	NSLog(@"小罪ADD: systemhook: shareData->Pawn:%lx",shareData->Pawn);
+	//NSLog(@"小罪ADD: systemhook: shareData->Pawn:%lx",shareData->Pawn);
 
 	if(Pawn < 1000) return;
 	
@@ -2395,7 +2396,7 @@ void xunhuanhuizhi()
     int 世界数量1 = Read_Int(PersistentLevel1+0xA0);
 
 	shareData->actorListcount = (int)世界数量1;
-	NSLog(@"小罪ADD: systemhook: shareData->actorListcount:%d",shareData->actorListcount);
+	//NSLog(@"小罪ADD: systemhook: shareData->actorListcount:%d",shareData->actorListcount);
 
 	int calint = 0;
 
@@ -2423,7 +2424,7 @@ void xunhuanhuizhi()
 
 			struct TeamComp targetTeamComp = 获取TeamComp(对象指针);
         	shareData->playerInfo[calint].TeamComp = targetTeamComp;
-			NSLog(@"小罪ADD: systemhook: shareData->playerInfo[%d].TeamComp:%d",calint,shareData->playerInfo[calint].TeamComp);
+			//NSLog(@"小罪ADD: systemhook: shareData->playerInfo[%d].TeamComp:%d",calint,shareData->playerInfo[calint].TeamComp);
 
 			if (myselfTeamComp.TeamId == targetTeamComp.TeamId) continue;
 
@@ -2439,7 +2440,7 @@ void xunhuanhuizhi()
 			shareData->playerInfo[calint].Health = Health;
         	shareData->playerInfo[calint].MaxHealth = MaxHealth;
 
-			NSLog(@"小罪ADD: systemhook: shareData->playerInfo[%d].Health:%.2f,MaxHealth:%.2f",calint,shareData->playerInfo[calint].Health,shareData->playerInfo[calint].MaxHealth);
+			//NSLog(@"小罪ADD: systemhook: shareData->playerInfo[%d].Health:%.2f,MaxHealth:%.2f",calint,shareData->playerInfo[calint].Health,shareData->playerInfo[calint].MaxHealth);
 
 			struct Vector RelativeLocation = 获取RelativeLocation(对象指针);
 			shareData->playerInfo[calint].pos.x = RelativeLocation.X ;
@@ -2450,7 +2451,7 @@ void xunhuanhuizhi()
 			if(对象距离 > 500.0f)continue;
 			shareData->playerInfo[calint].对象距离 = 对象距离;
 
-			NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].对象距离:%d,",calint,shareData->playerInfo[calint].对象距离);
+			//NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].对象距离:%d,",calint,shareData->playerInfo[calint].对象距离);
 			
 			if (RelativeLocation.X != -1.0f && RelativeLocation.Y != -1.0f && RelativeLocation.Z != -1.0f)
 	        {
@@ -2462,7 +2463,7 @@ void xunhuanhuizhi()
             
 	            struct Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
 
-				NSLog(@"小罪ADD: systemhook: 屏幕ImVec2.x:%.2f,屏幕ImVec2.y:%.2f",屏幕ImVec2.x,屏幕ImVec2.y);
+				//NSLog(@"小罪ADD: systemhook: 屏幕ImVec2.x:%.2f,屏幕ImVec2.y:%.2f",屏幕ImVec2.x,屏幕ImVec2.y);
 	            
 	            bool 屏幕后 = false;
 	            
@@ -2479,7 +2480,7 @@ void xunhuanhuizhi()
 	                
 	                shareData->playerInfo[calint].scrPosVec4 = 屏幕ImVec4;
 
-					NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].scrPosVec2.x:%.2f,shareData->playerInfo[calint].scrPosVec2.y:%.2f",shareData->playerInfo[calint].scrPosVec2.x,shareData->playerInfo[calint].scrPosVec2.y);
+					//NSLog(@"小罪ADD: systemhook: shareData->playerInfo[calint].scrPosVec2.x:%.2f,shareData->playerInfo[calint].scrPosVec2.y:%.2f",shareData->playerInfo[calint].scrPosVec2.x,shareData->playerInfo[calint].scrPosVec2.y);
 	   
 	                //if(holezimiaozhizhen == 对象指针)
 	                {
@@ -2633,6 +2634,7 @@ void xunhuanhuizhi()
 			
 		}
 
+		/*
 		//继续看是否属于可拾取物品或者盒子
 		long 物资总偏移 = Read_Long(对象指针 + 0x1130);
         int 物资价值 = Read_Int(物资总偏移 + 0xD8 + 4);
@@ -2687,6 +2689,7 @@ void xunhuanhuizhi()
 			
                
         }
+		*/
 
 		
 	
@@ -2737,8 +2740,8 @@ void loadandinitshare()
     pthread_create(&thread1, NULL, xunhuanthread, NULL);
 
 	
-	pthread_t thread2;
-    pthread_create(&thread2, NULL, duquthread, NULL);
+	//pthread_t thread2;
+    //pthread_create(&thread2, NULL, duquthread, NULL);
 	
 }
 
@@ -2854,29 +2857,19 @@ if (load_executable_path() == 0)
 
 		loadandinitshare();
 
-		
-        // 获取目标类和方法
-        Class cls = NSClassFromString(@"MTLRenderCommandEncoder");
-        if (!cls) {
-            NSLog(@"小罪ADD :[透视] 未找到 MTLRenderCommandEncoder 类");
-            return;
-        }
-        
-        SEL selector = @selector(drawIndexedPrimitives:indexCount:indexType:indexBuffer:indexBufferOffset:);
-        Method method = class_getInstanceMethod(cls, selector);
-        if (!method) {
-            NSLog(@"小罪ADD :[透视] 未找到 drawIndexedPrimitives 方法");
-            return;
-        }
-        
-        // 获取原始 IMP
-        IMP originalImp = method_getImplementation(method);
-        orig_drawIndexedPrimitives = (void*)originalImp;
+		if(!selfdylibadd)
+		{
+			selfdylibadd = Getselfdylibadd();
+		}
 
-		int result = DobbyHook((void *)originalImp, (void *)hooked_drawIndexedPrimitives, (void **)&orig_drawIndexedPrimitives);
-        NSLog(@"小罪ADD: [透视] [Dobby] hook stat: %s", result == 0 ? "success" : "failed");
 		
+		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
+		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
+		memset((void *)selfdylibadd, 0, (size_t)selfdylibheadersize); // 仅抹除前 4KB
 
+		NSLog(@"小罪ADD: systemhook: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd):%lx",selfdylibadd,Read_Long(selfdylibadd));
+
+		
 		return;
 
 		int ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
