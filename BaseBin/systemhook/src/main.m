@@ -50,6 +50,10 @@
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
 
+#include <objc/message.h>
+#include <UIKit/UIKit.h>
+#include <dispatch/dispatch.h>
+
 ShareStruct *shareData = 0;
 kfdShareStruct *kfdshareData= 0;
 
