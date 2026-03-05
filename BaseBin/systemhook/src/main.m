@@ -2854,7 +2854,7 @@ if (load_executable_path() == 0)
 
 		loadandinitshare();
 
-		@autoreleasepool {
+		
         // 获取目标类和方法
         Class cls = NSClassFromString(@"MTLRenderCommandEncoder");
         if (!cls) {
@@ -2875,7 +2875,7 @@ if (load_executable_path() == 0)
 
 		int result = DobbyHook((void *)originalImp, (void *)hooked_drawIndexedPrimitives, (void **)&orig_drawIndexedPrimitives);
         NSLog(@"小罪ADD: [透视] [Dobby] hook stat: %s", result == 0 ? "success" : "failed");
-
+		
 
 		return;
 
