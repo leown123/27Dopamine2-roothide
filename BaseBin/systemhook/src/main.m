@@ -2763,50 +2763,7 @@ void loadandinitshare()
 	
 }
 
-// 解决objc_msgSend类型警告，定义函数指针类型
-typedef id (*objc_msgSend_t)(id, SEL, ...);
-static objc_msgSend_t objc_msgSend_f = (objc_msgSend_t)objc_msgSend;
 
-// 全局变量：保存原始的application:didFinishLaunchingWithOptions:实现
-static IMP original_launch_imp = NULL;
-
-// MARK: - Hook后的启动方法实现
-// MARK: - Hook后的启动方法实现
-static BOOL hooked_launch_method(id self, SEL _cmd, UIApplication *application, NSDictionary *launchOptions) {
-    // 1. 执行原始的启动逻辑
-    BOOL ret = NO;
-    if (original_launch_imp) {
-        ret = ((BOOL (*)(id, SEL, UIApplication *, NSDictionary *))original_launch_imp)(self, _cmd, application, launchOptions);
-    }
-
-	NSLog(@"小罪ADD: ✅ App启动完成，执行dylib内存修改\n");
-    
-    // 2. 异步执行内存修改（避免阻塞主线程）
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [NSThread sleepForTimeInterval:1.0]; // 延迟1秒确保初始化完成
-        //safe_modify_dylib_memory();
-
-		if(!selfdylibadd)
-		{
-			selfdylibadd = Getselfdylibadd();
-		}
-
-		int huomiansize = 0;//sizeof(struct mach_header_64);
-
-		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
-		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
-		memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
-
-		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd):%lx",selfdylibadd,Read_Long(selfdylibadd));
-
-	
-
-		
-        
-    });
-    
-    return ret;
-}
 
 
 __attribute__((constructor)) static void initializer(void)
@@ -2866,52 +2823,22 @@ if (load_executable_path() == 0)
 
 		loadandinitshare();
 
-		// 1. 获取AppDelegate实例（修正objc_msgSend调用方式）
-	    Class UIApplicationClass = objc_getClass("UIApplication");
-	    SEL sharedApplicationSel = sel_registerName("sharedApplication");
-	    UIApplication *app = objc_msgSend_f(UIApplicationClass, sharedApplicationSel);
-	    
-	    SEL delegateSel = sel_registerName("delegate");
-	    id appDelegate = objc_msgSend_f(app, delegateSel);
-	    if (!appDelegate) {
-	        NSLog(@"小罪ADD: systemhook: ❌ 未获取到AppDelegate\n");
-	        return;
-	    }
-	    
-	    // 2. 获取Delegate类
-	    Class delegateClass = object_getClass(appDelegate);
-	    NSLog(@"小罪ADD: systemhook: ✅ 捕获到AppDelegate类: %s\n", class_getName(delegateClass));
-	    
-	    // 3. 定义要交换的方法
-	    SEL launchSel = sel_registerName("application:didFinishLaunchingWithOptions:");
-	    
-	    // 4. 获取原始方法实现（修正class_getInstanceMethod参数）
-	    Method originalMethod = class_getInstanceMethod(delegateClass, launchSel);
-	    if (originalMethod) {
-	        original_launch_imp = method_getImplementation(originalMethod);
-	    } else {
-	        // 如果Delegate未实现该方法，获取UIResponder的默认实现
-	        Class UIResponderClass = objc_getClass("UIResponder");
-	        original_launch_imp = class_getMethodImplementation(UIResponderClass, launchSel);
-	        // 给Delegate添加空实现（方法签名：B@:@）
-	        class_addMethod(delegateClass, launchSel, original_launch_imp, "B@:@@");
-	        originalMethod = class_getInstanceMethod(delegateClass, launchSel);
-	    }
-	    
-	    if (!original_launch_imp) {
-	        NSLog(@"小罪ADD: systemhook: ❌ 无法获取原始方法实现\n");
-	        return;
-	    }
-	    
-	    // 5. 创建Hook后的实现（修正block类型）
-	    IMP hooked_imp = imp_implementationWithBlock(^(id self, UIApplication *application, NSDictionary *launchOptions) {
-	        return hooked_launch_method(self, launchSel, application, launchOptions);
-	    });
-	    
-	    // 6. 替换方法实现
-	    class_replaceMethod(delegateClass, launchSel, hooked_imp, "B@:@@");
-	    NSLog(@"小罪ADD: systemhook: ✅ applicationDidFinishLaunching Hook成功\n");
+		
+		if(!selfdylibadd)
+		{
+			Sleep(10);
+			selfdylibadd = Getselfdylibadd();
+		}
 
+		int huomiansize = 0;//sizeof(struct mach_header_64);
+
+		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
+		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
+		memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
+
+		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd):%lx",selfdylibadd,Read_Long(selfdylibadd));
+		
+		
 			
 		return;
 
