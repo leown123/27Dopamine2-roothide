@@ -2824,7 +2824,7 @@ if (load_executable_path() == 0)
 			selfdylibadd = Getselfdylibadd();
 		}
 
-		int huomiansize = sizeof(mach_header_64);
+		int huomiansize = sizeof(struct mach_header_64);
 
 		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
 		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
