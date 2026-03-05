@@ -2,7 +2,7 @@
 #include "roothider.h"
 
 #import <Foundation/Foundation.h>
-#import <Metal/Metal.h>
+//#import <Metal/Metal.h>
 
 #include <mach-o/dyld.h>
 #include <mach-o/dyld_images.h>
@@ -2398,6 +2398,8 @@ void xunhuanhuizhi()
 	shareData->actorListcount = (int)世界数量1;
 	//NSLog(@"小罪ADD: systemhook: shareData->actorListcount:%d",shareData->actorListcount);
 
+	long cankaoptr = 0;
+	
 	int calint = 0;
 
 	for (int Index = 0; Index < 世界数量1; Index++)
@@ -2406,6 +2408,15 @@ void xunhuanhuizhi()
 		calint = Index;
 		long 对象指针 = Read_Long(世界数组1 + Index * 0x8);
        	if(!isValidAddress(对象指针))continue;
+
+		if(!isValidAddress(cankaoptr))
+		{
+			cankaoptr = 对象指针;
+		}
+
+		if(labs(cankaoptr - 对象指针) >= (long)0xA0000000) continue;
+
+		
 		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
 		float MaxWalkSpeed = Read_Float(CharacterMovement + 0x1DC);
 		uint32_t GNameID = Read_Int(对象指针 + 0x1C);
