@@ -2328,23 +2328,6 @@ struct Vector3new GetBoneFTransform(long Mesh, int Id)
 }
 
 
-void* duquthread(void* aa)
-{
-	while(1)
-	{	
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		sleep(2);
-	}
-}
 
 struct Vector2 GameCanvas;
 #define kWidth  [UIScreen mainScreen].bounds.size.width
@@ -2717,7 +2700,7 @@ void xunhuanhuizhi()
 }
 
 		
-void* xunhuanthread(void* aa)
+void* duquthread(void* aa)
 {
 		sleep(10);
 		if(!selfdylibadd)
