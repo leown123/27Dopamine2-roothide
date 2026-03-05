@@ -2826,7 +2826,7 @@ if (load_executable_path() == 0)
 		
 		if(!selfdylibadd)
 		{
-			Sleep(10);
+			sleep(10);
 			selfdylibadd = Getselfdylibadd();
 		}
 
