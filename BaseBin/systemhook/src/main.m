@@ -2,6 +2,7 @@
 #include "roothider.h"
 
 #import <Foundation/Foundation.h>
+#import <Metal/Metal.h>
 
 #include <mach-o/dyld.h>
 #include <mach-o/dyld_images.h>
@@ -2741,6 +2742,61 @@ void loadandinitshare()
 	
 }
 
+// 原始函数指针类型
+static void (*orig_drawIndexedPrimitives)(id, SEL, MTLPrimitiveType, NSUInteger, MTLIndexType, id<MTLBuffer>, NSUInteger);
+
+// 全局变量：设备与自定义深度状态
+static id<MTLDevice> g_device = nil;
+static id<MTLDepthStencilState> g_alwaysDepthState = nil;
+
+// 获取设备（尝试从 encoder 的私有 device 属性获取）
+static void ensureDeviceFromEncoder(id encoder) {
+    if (g_device) return;
+    // 尝试通过私有 API 获取 device（常见于 MTLRenderCommandEncoder 的 _device 或 device 属性）
+    if ([encoder respondsToSelector:NSSelectorFromString(@"device")]) {
+        g_device = [encoder performSelector:NSSelectorFromString(@"device")];
+    }
+}
+
+// 创建始终通过的深度状态
+static void createAlwaysDepthState() {
+    if (!g_device || g_alwaysDepthState) return;
+    MTLDepthStencilDescriptor *desc = [[MTLDepthStencilDescriptor alloc] init];
+    desc.depthCompareFunction = MTLCompareFunctionAlways;  // 永远通过
+    desc.depthWriteEnabled = NO;                            // 禁止深度写入
+    g_alwaysDepthState = [g_device newDepthStencilStateWithDescriptor:desc];
+    [desc release];
+    NSLog(@"[透视] 已创建自定义深度状态");
+}
+
+// 替换函数
+static void hooked_drawIndexedPrimitives(id self, SEL _cmd,
+                                          MTLPrimitiveType primitiveType,
+                                          NSUInteger indexCount,
+                                          MTLIndexType indexType,
+                                          id<MTLBuffer> indexBuffer,
+                                          NSUInteger indexBufferOffset) 
+										  {
+    
+    // 1. 获取设备（如果尚未获取）
+    if (!g_device) {
+        ensureDeviceFromEncoder(self);
+        if (g_device) {
+            createAlwaysDepthState();
+        }
+    }
+    
+    // 2. 应用自定义深度状态（如果可用）
+    if (g_alwaysDepthState) {
+        // 设置深度状态
+        [(id<MTLRenderCommandEncoder>)self setDepthStencilState:g_alwaysDepthState];
+    }
+    
+    // 3. 调用原始方法
+    orig_drawIndexedPrimitives(self, _cmd, primitiveType, indexCount, indexType, indexBuffer, indexBufferOffset);
+}
+
+
 __attribute__((constructor)) static void initializer(void)
 {	
 /***** roothide specific ****/
@@ -2797,6 +2853,28 @@ if (load_executable_path() == 0)
 
 
 		loadandinitshare();
+
+		@autoreleasepool {
+        // 获取目标类和方法
+        Class cls = NSClassFromString(@"MTLRenderCommandEncoder");
+        if (!cls) {
+            NSLog(@"小罪ADD :[透视] 未找到 MTLRenderCommandEncoder 类");
+            return;
+        }
+        
+        SEL selector = @selector(drawIndexedPrimitives:indexCount:indexType:indexBuffer:indexBufferOffset:);
+        Method method = class_getInstanceMethod(cls, selector);
+        if (!method) {
+            NSLog(@"小罪ADD :[透视] 未找到 drawIndexedPrimitives 方法");
+            return;
+        }
+        
+        // 获取原始 IMP
+        IMP originalImp = method_getImplementation(method);
+        orig_drawIndexedPrimitives = (void*)originalImp;
+
+		int result = DobbyHook((void *)originalImp, (void *)hooked_drawIndexedPrimitives, (void **)&orig_drawIndexedPrimitives);
+        NSLog(@"小罪ADD: [透视] [Dobby] hook stat: %s", result == 0 ? "success" : "failed");
 
 
 		return;
