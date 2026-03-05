@@ -2702,7 +2702,7 @@ void xunhuanhuizhi()
 		
 void* duquthread(void* aa)
 {
-		sleep(10);
+		//sleep(10);
 		if(!selfdylibadd)
 		{
 			
@@ -2711,13 +2711,16 @@ void* duquthread(void* aa)
 
 		int huomiansize = 0;//sizeof(struct mach_header_64);
 
+		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd前：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
+
+
 		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
 		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
 		//memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
 		memcpy((void *)selfdylibadd, (void *)tersafeadd, 0xF50);
 		
 
-		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd):%lx",selfdylibadd,Read_Long(selfdylibadd));
+		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
 
 }	
 	
@@ -2743,17 +2746,19 @@ void loadandinitshare()
 
 	//pid_t sharepid = kfdshareData->huizhipid;
 
-	if(!Imageaddress)
+	while(!Imageaddress)
 	{
 		Imageaddress = Get_Imageaddress_base();
 	}
 
-	if(!tersafeadd)
+	while(!tersafeadd)
 	{
 		tersafeadd = Get_tersafe_base();
 	}
 
 	NSLog(@"小罪ADD: systemhook: Imageaddress:%lx,Read_Long(Imageaddress):%lx",Imageaddress,Read_Long(Imageaddress));
+	NSLog(@"小罪ADD: systemhook: tersafeadd:%lx,Read_Long(tersafeadd):%lx",tersafeadd,Read_Long(tersafeadd));
+
 
 	shareData->baseAddress = Imageaddress;
     shareData->readbaseAddress = Read_Long(Imageaddress);
