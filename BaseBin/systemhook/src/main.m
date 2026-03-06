@@ -2404,7 +2404,7 @@ void xunhuanhuizhi()
 			cankaoptr = 对象指针;
 		}
 
-		if(labs(cankaoptr - 对象指针) >= (long)0xA0000000) continue;
+		//if(labs(cankaoptr - 对象指针) >= (long)0xA0000000) continue;
 
 		
 		long CharacterMovement = Read_Long(对象指针 + 0x3D8);
