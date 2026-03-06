@@ -3010,7 +3010,7 @@ static kern_return_t handle_hw_breakpoint(mach_port_t thread, arm_debug_state64_
     debug_state->__mdscr_el1 |= 1ULL;  // SS=1
 
     // 更新线程状态
-    kr = thread_set_state(thread, ARM_DEBUG_STATE64,
+    kern_return_t kr = thread_set_state(thread, ARM_DEBUG_STATE64,
                           (thread_state_t)debug_state, ARM_DEBUG_STATE64_COUNT);
     if (kr != KERN_SUCCESS) {
         NSLog(@"小罪ADD: Failed to set debug state for single-step: %s", mach_error_string(kr));
@@ -3237,7 +3237,7 @@ void initbreakpoint()
     }
 	
     g_hwbp_set = TRUE;
-    NSLog(@"小罪ADD: initbreakpoint: Hardware breakpoint set at wuhouadd：%lx",wuhouadd);
+    NSLog(@"小罪ADD: initbreakpoint: Hardware breakpoint set at wuhouadd：%lx",g_stat_addr);
 
     // 启动异常处理线程
     pthread_t thread;
