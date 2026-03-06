@@ -54,6 +54,13 @@
 #include <UIKit/UIKit.h>
 #include <dispatch/dispatch.h>
 
+#include <string.h>
+#include <mach/thread_act.h>
+#include <mach/mach_vm.h>
+#include <mach/exception.h>
+#include <mach/task.h>
+#include <sys/sysctl.h>
+
 ShareStruct *shareData = 0;
 kfdShareStruct *kfdshareData= 0;
 
@@ -2774,9 +2781,405 @@ void loadandinitshare()
 	
 }
 
+// ARM64 调试状态结构体 (来自 <mach/arm/thread_status.h>)
+typedef struct arm_debug_state64 {
+    uint64_t __bvr[16];       // Breakpoint Value Registers
+    uint64_t __bcr[16];       // Breakpoint Control Registers
+    uint64_t __wvr[16];       // Watchpoint Value Registers
+    uint64_t __wcr[16];       // Watchpoint Control Registers
+    uint64_t __mdscr_el1;     // Monitor Debug System Control Register
+} arm_debug_state64_t;
+
+#define ARM_DEBUG_STATE64 13
+#define ARM_DEBUG_STATE64_COUNT ((mach_msg_type_number_t)(sizeof(arm_debug_state64_t)/sizeof(uint32_t)))
+
+// 单步模式定义
+typedef enum {
+    SingleStepModeNone = 0,
+    SingleStepModeBreakpoint,
+    SingleStepModeSoftwareBreakpointContinue,
+    SingleStepModeHardwareBreakpointContinue
+} SingleStepMode;
+
+// 每个线程的上下文（用于单步处理）
+typedef struct {
+    mach_port_t thread;
+    SingleStepMode step_mode;
+    int bp_index;               // 硬件断点索引 (这里固定为0)
+    boolean_t is_stepping;
+} ThreadContext;
+
+// 全局变量
+static mach_port_t g_exception_port = MACH_PORT_NULL;
+static mach_vm_address_t g_stat_addr = 0;
+static boolean_t g_hwbp_set = FALSE;
+static int g_hwbp_index = 0;                     // 我们使用第一个硬件断点
+static ThreadContext g_thread_ctx[32];           // 最多跟踪32个线程
+static pthread_mutex_t g_ctx_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// 工具函数：获取当前任务的所有线程
+static thread_act_array_t get_threads(mach_msg_type_number_t *count) {
+    thread_act_array_t thread_list = NULL;
+    mach_msg_type_number_t thread_count = 0;
+    kern_return_t kr = task_threads(mach_task_self(), &thread_list, &thread_count);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"task_threads failed: %s", mach_error_string(kr));
+        return NULL;
+    }
+    *count = thread_count;
+    return thread_list;
+}
+
+// 释放线程列表
+static void free_threads(thread_act_array_t thread_list, mach_msg_type_number_t count) {
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        mach_port_deallocate(mach_task_self(), thread_list[i]);
+    }
+    vm_deallocate(mach_task_self(), (vm_address_t)thread_list, count * sizeof(thread_act_t));
+}
+
+// 设置硬件断点 (在所有线程上)
+static kern_return_t set_hw_breakpoint(mach_vm_address_t addr) {
+    mach_msg_type_number_t thread_count;
+    thread_act_array_t thread_list = get_threads(&thread_count);
+    if (!thread_list) return KERN_FAILURE;
+
+    kern_return_t kr_all = KERN_SUCCESS;
+    for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
+        arm_debug_state64_t debug_state;
+        mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
+        kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
+                                            (thread_state_t)&debug_state, &count);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"thread_get_state failed for thread %d: %s", i, mach_error_string(kr));
+            kr_all = kr;
+            continue;
+        }
+
+        // 设置断点寄存器 (使用索引0)
+        debug_state.__bvr[g_hwbp_index] = addr;
+        debug_state.__bcr[g_hwbp_index] = (1ULL << 0) | (2ULL << 1) | (1ULL << 5); // 启用，EL1，全地址范围
+        debug_state.__mdscr_el1 |= (1ULL << 15);   // 启用调试
+
+        kr = thread_set_state(thread_list[i], ARM_DEBUG_STATE64,
+                              (thread_state_t)&debug_state, count);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"thread_set_state failed for thread %d: %s", i, mach_error_string(kr));
+            kr_all = kr;
+        }
+    }
+
+    free_threads(thread_list, thread_count);
+    return kr_all;
+}
+
+// 移除硬件断点 (在所有线程上)
+static kern_return_t remove_hw_breakpoint() {
+    mach_msg_type_number_t thread_count;
+    thread_act_array_t thread_list = get_threads(&thread_count);
+    if (!thread_list) return KERN_FAILURE;
+
+    kern_return_t kr_all = KERN_SUCCESS;
+    for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
+        arm_debug_state64_t debug_state;
+        mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
+        kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
+                                            (thread_state_t)&debug_state, &count);
+        if (kr != KERN_SUCCESS) continue;
+
+        debug_state.__bcr[g_hwbp_index] = 0;  // 禁用断点
+        debug_state.__mdscr_el1 &= ~(1ULL << 15); // 可选
+
+        thread_set_state(thread_list[i], ARM_DEBUG_STATE64,
+                         (thread_state_t)&debug_state, count);
+    }
+
+    free_threads(thread_list, thread_count);
+    return kr_all;
+}
+
+// 获取线程上下文
+static ThreadContext* get_thread_context(mach_port_t thread) {
+    pthread_mutex_lock(&g_ctx_mutex);
+    for (int i = 0; i < 32; i++) {
+        if (g_thread_ctx[i].thread == thread) {
+            pthread_mutex_unlock(&g_ctx_mutex);
+            return &g_thread_ctx[i];
+        }
+    }
+    // 未找到，分配一个新槽位
+    for (int i = 0; i < 32; i++) {
+        if (g_thread_ctx[i].thread == MACH_PORT_NULL) {
+            g_thread_ctx[i].thread = thread;
+            g_thread_ctx[i].step_mode = SingleStepModeNone;
+            g_thread_ctx[i].bp_index = -1;
+            g_thread_ctx[i].is_stepping = FALSE;
+            pthread_mutex_unlock(&g_ctx_mutex);
+            return &g_thread_ctx[i];
+        }
+    }
+    pthread_mutex_unlock(&g_ctx_mutex);
+    return NULL;
+}
+
+// 释放线程上下文
+static void remove_thread_context(mach_port_t thread) {
+    pthread_mutex_lock(&g_ctx_mutex);
+    for (int i = 0; i < 32; i++) {
+        if (g_thread_ctx[i].thread == thread) {
+            g_thread_ctx[i].thread = MACH_PORT_NULL;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_ctx_mutex);
+}
+
+// 处理硬件断点命中
+static kern_return_t handle_hw_breakpoint(mach_port_t thread, arm_debug_state64_t *debug_state,
+                                          arm_thread_state64_t *thread_state) {
+    // 读取 stat 的第一个参数 (x0)
+    uint64_t path_ptr = thread_state->__x[0];
+    char path[1024] = {0};
+    mach_vm_size_t bytes_read = 0;
+    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+                                              (mach_vm_address_t)path, &bytes_read);
+    if (kr == KERN_SUCCESS && bytes_read > 0) {
+        path[bytes_read] = '\0';
+        NSLog(@"[stat hook] Path: %s", path);
+    } else {
+        NSLog(@"[stat hook] Failed to read path at 0x%llx", path_ptr);
+    }
+
+    // 获取线程上下文
+    ThreadContext *ctx = get_thread_context(thread);
+    if (!ctx) return KERN_FAILURE;
+
+    // 标记当前正在单步，并保存状态
+    ctx->step_mode = SingleStepModeHardwareBreakpointContinue;
+    ctx->bp_index = g_hwbp_index;
+    ctx->is_stepping = TRUE;
+
+    // 临时禁用断点 (清空当前线程的 bcr)
+    debug_state->__bcr[g_hwbp_index] = 0;
+
+    // 启用单步模式
+    debug_state->__mdscr_el1 |= 1ULL;  // SS=1
+
+    // 更新线程状态
+    kr = thread_set_state(thread, ARM_DEBUG_STATE64,
+                          (thread_state_t)debug_state, ARM_DEBUG_STATE64_COUNT);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"Failed to set debug state for single-step: %s", mach_error_string(kr));
+        return kr;
+    }
+
+    // 恢复线程执行
+    kr = thread_resume(thread);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"Failed to resume thread: %s", mach_error_string(kr));
+        return kr;
+    }
+
+    return KERN_SUCCESS;
+}
+
+// 处理单步完成
+static kern_return_t handle_single_step(mach_port_t thread, arm_debug_state64_t *debug_state) {
+    ThreadContext *ctx = get_thread_context(thread);
+    if (!ctx || !ctx->is_stepping) {
+        // 不是我们触发的单步，忽略
+        return KERN_SUCCESS;
+    }
+
+    // 禁用单步
+    debug_state->__mdscr_el1 &= ~1ULL;
+
+    // 重新启用硬件断点
+    if (ctx->step_mode == SingleStepModeHardwareBreakpointContinue) {
+        debug_state->__bcr[g_hwbp_index] = (1ULL << 0) | (2ULL << 1) | (1ULL << 5);
+    }
+
+    // 更新线程状态
+    kern_return_t kr = thread_set_state(thread, ARM_DEBUG_STATE64,
+                                        (thread_state_t)debug_state, ARM_DEBUG_STATE64_COUNT);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"Failed to restore breakpoint after single-step: %s", mach_error_string(kr));
+    }
+
+    // 清理上下文
+    ctx->step_mode = SingleStepModeNone;
+    ctx->bp_index = -1;
+    ctx->is_stepping = FALSE;
+
+    // 恢复线程（但线程已经被 resume 过了？在异常处理中，线程是挂起的，我们需要恢复它）
+    // 实际上在单步完成异常中，线程被挂起，我们需要恢复它才能继续执行
+    kr = thread_resume(thread);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"Failed to resume thread after single-step: %s", mach_error_string(kr));
+    }
+
+    return KERN_SUCCESS;
+}
+
+// 异常处理主循环
+static void* exception_handler_thread(void* arg) {
+    // 注册异常端口
+    kern_return_t kr;
+    mach_port_t task = mach_task_self();
+
+    // 创建异常端口
+    kr = mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &g_exception_port);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: initbreakpoint: Failed to allocate exception port: %s", mach_error_string(kr));
+        return NULL;
+    }
+
+    // 插入发送权限
+    kr = mach_port_insert_right(task, g_exception_port, g_exception_port,
+                                MACH_MSG_TYPE_MAKE_SEND);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: initbreakpoint: Failed to insert send right: %s", mach_error_string(kr));
+        mach_port_destroy(task, g_exception_port);
+        return NULL;
+    }
+
+    // 设置任务的异常端口，捕获 EXC_BREAKPOINT
+    kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
+                                  EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
+                                  ARM_DEBUG_STATE64);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: initbreakpoint: task_set_exception_ports failed: %s", mach_error_string(kr));
+        mach_port_destroy(task, g_exception_port);
+        return NULL;
+    }
+
+    NSLog(@"Exception handler installed, waiting for breakpoint...");
+
+    // 循环接收消息
+    while (1) {
+        struct {
+            mach_msg_header_t head;
+            // 根据 EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES 格式
+            mach_msg_body_t msgh_body;
+            mach_msg_port_descriptor_t thread_port;
+            mach_msg_port_descriptor_t task_port;
+            NDR_record_t ndr;
+            exception_type_t exception;
+            mach_msg_type_number_t code_count;
+            mach_exception_data_t code;
+            char pad[512]; // 足够大
+        } msg;
+
+        kr = mach_msg(&msg.head, MACH_RCV_MSG, 0, sizeof(msg), g_exception_port,
+                      MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"mach_msg receive failed: %s", mach_error_string(kr));
+            continue;
+        }
+
+        // 提取信息
+        mach_port_t thread_port = msg.thread_port.name;
+        mach_port_t task_port = msg.task_port.name;
+        exception_type_t exception = msg.exception;
+        mach_exception_data_t code = msg.code;
+        mach_msg_type_number_t code_count = msg.code_count;
+
+        if (exception != EXC_BREAKPOINT) {
+            // 忽略其他异常
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        // 获取线程状态
+        arm_thread_state64_t thread_state;
+        mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
+        kr = thread_get_state(thread_port, ARM_THREAD_STATE64,
+                              (thread_state_t)&thread_state, &thread_state_cnt);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"小罪ADD: initbreakpoint: thread_get_state failed: %s", mach_error_string(kr));
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        arm_debug_state64_t debug_state;
+        mach_msg_type_number_t debug_state_cnt = ARM_DEBUG_STATE64_COUNT;
+        kr = thread_get_state(thread_port, ARM_DEBUG_STATE64,
+                              (thread_state_t)&debug_state, &debug_state_cnt);
+        if (kr != KERN_SUCCESS) {
+            NSLog(@"小罪ADD: initbreakpoint: thread_get_debug_state failed: %s", mach_error_string(kr));
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        // 检查是否是我们设置的硬件断点 (通过 PC 比较)
+        if (thread_state.__pc == g_stat_addr) {
+            // 硬件断点命中
+            handle_hw_breakpoint(thread_port, &debug_state, &thread_state);
+        } else {
+            // 可能是单步完成异常
+            handle_single_step(thread_port, &debug_state);
+        }
+
+        // 发送回复，表示异常已处理
+        struct reply_msg {
+            mach_msg_header_t head;
+            NDR_record_t ndr;
+            kern_return_t ret;
+        } reply;
+        reply.head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.head.msgh_bits), 0);
+        reply.head.msgh_size = sizeof(reply);
+        reply.head.msgh_remote_port = msg.head.msgh_remote_port;
+        reply.head.msgh_local_port = MACH_PORT_NULL;
+        reply.head.msgh_id = msg.head.msgh_id + 100;
+        reply.ndr = NDR_record;
+        reply.ret = KERN_SUCCESS;
+
+        mach_msg(&reply.head, MACH_SEND_MSG, reply.head.msgh_size, 0,
+                 MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+
+        mach_msg_destroy(&msg.head);
+    }
+
+    return NULL;
+}
+
+void initbreakpoint()
+{
+	NSLog(@"小罪ADD: initbreakpoint: loaded, setting up hardware breakpoint...");
+
+    // 获取 stat 函数地址
+    void* handle = dlopen("/usr/lib/system/libsystem_kernel.dylib", RTLD_NOLOAD);
+    if (!handle) handle = dlopen("/usr/lib/system/libsystem_c.dylib", RTLD_NOLOAD);
+    if (!handle) handle = dlopen(NULL, RTLD_NOW); // 主程序
+    g_stat_addr = (mach_vm_address_t)dlsym(handle, "stat");
+    if (!g_stat_addr) {
+        NSLog(@"小罪ADD: initbreakpoint: Failed to find stat address");
+        return;
+    }
+    NSLog(@"小罪ADD: initbreakpoint: stat address: 0x%llx", g_stat_addr);
+
+    // 设置硬件断点
+    kern_return_t kr = set_hw_breakpoint(g_stat_addr);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: initbreakpoint: Failed to set hardware breakpoint");
+        return;
+    }
+    g_hwbp_set = TRUE;
+    NSLog(@"小罪ADD: initbreakpoint: Hardware breakpoint set at stat");
+
+    // 启动异常处理线程
+    pthread_t thread;
+    pthread_create(&thread, NULL, exception_handler_thread, NULL);
+    pthread_detach(thread);
+	
+}
 
 
 
+
+
+
+//入口
 __attribute__((constructor)) static void initializer(void)
 {	
 /***** roothide specific ****/
