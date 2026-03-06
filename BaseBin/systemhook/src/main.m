@@ -3126,7 +3126,7 @@ static void* exception_handler_thread(void* arg) {
         }
 
 		//struct myARM_THREAD_STATE64 aaa = (struct myARM_THREAD_STATE64)thread_state;
-		struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)thread_state;
+		struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
 
         // 检查是否是我们设置的硬件断点 (通过 PC 比较)
         //if (thread_state.__pc == g_stat_addr) {
