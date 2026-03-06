@@ -56,7 +56,7 @@
 
 #include <string.h>
 #include <mach/thread_act.h>
-#include <mach/mach_vm.h>
+//#include <mach/mach_vm.h>
 #include <mach/exception.h>
 #include <mach/task.h>
 #include <sys/sysctl.h>
@@ -2781,6 +2781,7 @@ void loadandinitshare()
 	
 }
 
+/*
 // ARM64 调试状态结构体 (来自 <mach/arm/thread_status.h>)
 typedef struct arm_debug_state64 {
     uint64_t __bvr[16];       // Breakpoint Value Registers
@@ -2790,8 +2791,10 @@ typedef struct arm_debug_state64 {
     uint64_t __mdscr_el1;     // Monitor Debug System Control Register
 } arm_debug_state64_t;
 
+
 #define ARM_DEBUG_STATE64 13
 #define ARM_DEBUG_STATE64_COUNT ((mach_msg_type_number_t)(sizeof(arm_debug_state64_t)/sizeof(uint32_t)))
+*/
 
 // 单步模式定义
 typedef enum {
