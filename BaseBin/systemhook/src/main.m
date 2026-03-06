@@ -2729,7 +2729,7 @@ void* duquthread(void* aa)
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
 
-		initbreakpoint();
+		//initbreakpoint();
 }	
 	
 
@@ -2992,7 +2992,13 @@ static kern_return_t handle_hw_breakpoint(mach_port_t thread, arm_debug_state64_
     }
 	*/
 
-	set_s0_s1_zero(thread);
+	/* 改pc
+	*thread_state = arm_thread_state64_set_pc(*thread_state, target_addr);
+    NSLog(@"[stat hook] Redirecting PC from 0x%llx to 0x%llx",
+          arm_thread_state64_get_pc(*thread_state), target_addr);
+	*/
+
+	//set_s0_s1_zero(thread);
 	
     // 获取线程上下文
     ThreadContext *ctx = get_thread_context(thread);
