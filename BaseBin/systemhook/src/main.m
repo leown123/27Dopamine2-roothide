@@ -3024,6 +3024,17 @@ static kern_return_t handle_single_step(mach_port_t thread, arm_debug_state64_t 
     return KERN_SUCCESS;
 }
 
+struct myARM_THREAD_STATE64
+{
+	__uint64_t __x[29]; /* General purpose registers x0-x28 */
+	__uint64_t __fp;    /* Frame pointer x29 */
+	__uint64_t __lr;    /* Link register x30 */
+	__uint64_t __sp;    /* Stack pointer x31 */
+	__uint64_t __pc;    /* Program counter */
+	__uint32_t __cpsr;  /* Current program status register */
+	__uint32_t __pad;   /* Same size for 32-bit or 64-bit clients */
+};
+
 // 异常处理主循环
 static void* exception_handler_thread(void* arg) {
     // 注册异常端口
@@ -3114,8 +3125,11 @@ static void* exception_handler_thread(void* arg) {
             continue;
         }
 
+		struct myARM_THREAD_STATE64 aaa = (struct myARM_THREAD_STATE64)thread_state;
+
         // 检查是否是我们设置的硬件断点 (通过 PC 比较)
-        if (thread_state.__pc == g_stat_addr) {
+        //if (thread_state.__pc == g_stat_addr) {
+		if (aaa.__pc == g_stat_addr) {
             // 硬件断点命中
             handle_hw_breakpoint(thread_port, &debug_state, &thread_state);
         } else {
