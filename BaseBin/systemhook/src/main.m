@@ -2706,10 +2706,10 @@ void xunhuanhuizhi()
 	
 }
 
-		
+void initbreakpoint();		
 void* duquthread(void* aa)
 {
-		//sleep(10);
+		//sleep();
 		if(!selfdylibadd)
 		{
 			
@@ -2729,6 +2729,7 @@ void* duquthread(void* aa)
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
 
+		initbreakpoint();
 }	
 	
 
@@ -3254,7 +3255,7 @@ if (load_executable_path() == 0)
 
 
 		loadandinitshare();
-		initbreakpoint();
+		//initbreakpoint();
 
 				
 		return;
