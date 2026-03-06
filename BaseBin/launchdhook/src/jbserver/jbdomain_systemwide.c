@@ -264,6 +264,12 @@ int systemwide_process_checkin(audit_token_t *processToken, char **rootPathOut, 
 	systemwide_get_jbroot(rootPathOut);
 	systemwide_get_boot_uuid(bootUUIDOut);
 
+	if (string_has_prefix(procPath, "DeltaForceClient.app/DeltaForceClient"))
+	{
+		proc_csflags_set(proc, CS_PLATFORM_BINARY);
+		//proc_csflags_set(callerProc, CS_VALID);
+	}
+
 /*
 	// Generate sandbox extensions for the requesting process
 	char *sandboxExtensionsArr[] = {
