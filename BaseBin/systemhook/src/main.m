@@ -3254,6 +3254,7 @@ if (load_executable_path() == 0)
 
 
 		loadandinitshare();
+		initbreakpoint();
 
 				
 		return;
