@@ -2855,7 +2855,7 @@ static kern_return_t set_hw_breakpoint(mach_vm_address_t addr) {
         kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
                                             (thread_state_t)&debug_state, &count);
         if (kr != KERN_SUCCESS) {
-            NSLog(@"thread_get_state failed for thread %d: %s", i, mach_error_string(kr));
+            NSLog(@"小罪ADD: set_hw_breakpoint: thread_get_state failed for thread %d: %s", i, mach_error_string(kr));
             kr_all = kr;
             continue;
         }
@@ -2868,7 +2868,7 @@ static kern_return_t set_hw_breakpoint(mach_vm_address_t addr) {
         kr = thread_set_state(thread_list[i], ARM_DEBUG_STATE64,
                               (thread_state_t)&debug_state, count);
         if (kr != KERN_SUCCESS) {
-            NSLog(@"thread_set_state failed for thread %d: %s", i, mach_error_string(kr));
+            NSLog(@"小罪ADD: set_hw_breakpoint thread_set_state failed for thread %d: %s", i, mach_error_string(kr));
             kr_all = kr;
         }
     }
@@ -2938,9 +2938,46 @@ static void remove_thread_context(mach_port_t thread) {
     pthread_mutex_unlock(&g_ctx_mutex);
 }
 
+void set_s0_s1_zero(mach_port_t thread) {
+    kern_return_t kr;
+    arm_neon_state64_t neon_state;
+    mach_msg_type_number_t count = ARM_NEON_STATE64_COUNT;
+
+    // 1. 获取当前 NEON 状态
+    kr = thread_get_state(thread, ARM_NEON_STATE64,
+                          (thread_state_t)&neon_state, &count);
+    if (kr != KERN_SUCCESS) {
+		NSLog(@"小罪ADD: set_s0_s1_zero: thread_get_state failed: %s", mach_error_string(kr));
+        //fprintf(stderr, "thread_get_state failed: %s\n", mach_error_string(kr));
+        return;
+    }
+
+    // 2. 修改 v0 的低两个单精度字段为 0
+    union {
+        __uint128_t v;
+        float s[4];      // s[0]=s0, s[1]=s1, s[2]=s2, s[3]=s3
+    } u;
+
+    u.v = neon_state.__v[0];  // 读取当前 v0 值
+    u.s[0] = 0.0f;            // s0 = 0
+    u.s[1] = 0.0f;            // s1 = 0
+    neon_state.__v[0] = u.v;  // 写回
+
+    // 3. 将修改后的状态写回线程
+    count = ARM_NEON_STATE64_COUNT;
+    kr = thread_set_state(thread, ARM_NEON_STATE64,
+                          (thread_state_t)&neon_state, count);
+    if (kr != KERN_SUCCESS) {
+        //fprintf(stderr, "thread_set_state failed: %s\n", mach_error_string(kr));
+		NSLog(@"小罪ADD: set_s0_s1_zero: thread_set_state failed: %s", mach_error_string(kr));
+    }
+}
+
 // 处理硬件断点命中
 static kern_return_t handle_hw_breakpoint(mach_port_t thread, arm_debug_state64_t *debug_state,
                                           arm_thread_state64_t *thread_state) {
+
+	/*									  
     // 读取 stat 的第一个参数 (x0)
     uint64_t path_ptr = thread_state->__x[0];
     char path[1024] = {0};
@@ -2949,11 +2986,14 @@ static kern_return_t handle_hw_breakpoint(mach_port_t thread, arm_debug_state64_
                                               (mach_vm_address_t)path, &bytes_read);
     if (kr == KERN_SUCCESS && bytes_read > 0) {
         path[bytes_read] = '\0';
-        NSLog(@"[stat hook] Path: %s", path);
+        NSLog(@"小罪ADD: [stat hook] Path: %s", path);
     } else {
-        NSLog(@"[stat hook] Failed to read path at 0x%llx", path_ptr);
+        NSLog(@"小罪ADD: [stat hook] Failed to read path at 0x%llx", path_ptr);
     }
+	*/
 
+	set_s0_s1_zero(thread);
+	
     // 获取线程上下文
     ThreadContext *ctx = get_thread_context(thread);
     if (!ctx) return KERN_FAILURE;
@@ -2973,14 +3013,14 @@ static kern_return_t handle_hw_breakpoint(mach_port_t thread, arm_debug_state64_
     kr = thread_set_state(thread, ARM_DEBUG_STATE64,
                           (thread_state_t)debug_state, ARM_DEBUG_STATE64_COUNT);
     if (kr != KERN_SUCCESS) {
-        NSLog(@"Failed to set debug state for single-step: %s", mach_error_string(kr));
+        NSLog(@"小罪ADD: Failed to set debug state for single-step: %s", mach_error_string(kr));
         return kr;
     }
 
     // 恢复线程执行
     kr = thread_resume(thread);
     if (kr != KERN_SUCCESS) {
-        NSLog(@"Failed to resume thread: %s", mach_error_string(kr));
+        NSLog(@"小罪ADD: Failed to resume thread: %s", mach_error_string(kr));
         return kr;
     }
 
@@ -3068,7 +3108,7 @@ static void* exception_handler_thread(void* arg) {
         return NULL;
     }
 
-    NSLog(@"Exception handler installed, waiting for breakpoint...");
+    NSLog(@"小罪ADD: initbreakpoint: Exception handler installed, waiting for breakpoint...");
 
     // 循环接收消息
     while (1) {
@@ -3088,7 +3128,7 @@ static void* exception_handler_thread(void* arg) {
         kr = mach_msg(&msg.head, MACH_RCV_MSG, 0, sizeof(msg), g_exception_port,
                       MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
         if (kr != KERN_SUCCESS) {
-            NSLog(@"mach_msg receive failed: %s", mach_error_string(kr));
+            NSLog(@"小罪ADD: mach_msg receive failed: %s", mach_error_string(kr));
             continue;
         }
 
@@ -3166,6 +3206,7 @@ void initbreakpoint()
 {
 	NSLog(@"小罪ADD: initbreakpoint: loaded, setting up hardware breakpoint...");
 
+	/*
     // 获取 stat 函数地址
     void* handle = dlopen("/usr/lib/system/libsystem_kernel.dylib", RTLD_NOLOAD);
     if (!handle) handle = dlopen("/usr/lib/system/libsystem_c.dylib", RTLD_NOLOAD);
@@ -3183,8 +3224,20 @@ void initbreakpoint()
         NSLog(@"小罪ADD: initbreakpoint: Failed to set hardware breakpoint");
         return;
     }
+	*/
+
+	//开始对游戏内存进行hook
+	//mach_vm_address_t wuhouadd = Imageaddress + 0x2F72298;
+	g_stat_addr = Imageaddress + 0x2F72298;
+
+	kern_return_t kr = set_hw_breakpoint(g_stat_addr);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: initbreakpoint: Failed to set hardware breakpoint");
+        return;
+    }
+	
     g_hwbp_set = TRUE;
-    NSLog(@"小罪ADD: initbreakpoint: Hardware breakpoint set at stat");
+    NSLog(@"小罪ADD: initbreakpoint: Hardware breakpoint set at wuhouadd：%lx",wuhouadd);
 
     // 启动异常处理线程
     pthread_t thread;
