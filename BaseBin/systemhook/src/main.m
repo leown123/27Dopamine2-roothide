@@ -62,6 +62,9 @@
 #include <sys/sysctl.h>
 #include <sys/ucontext.h>
 
+#include <mach/thread_status.h>
+#include <mach/arm/thread_status.h>
+
 ShareStruct *shareData = 0;
 kfdShareStruct *kfdshareData= 0;
 
