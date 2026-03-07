@@ -3448,6 +3448,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
+	/*
     g_breakpoints[1] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -3483,7 +3485,10 @@ void initbreakpoint()
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 5;
+	*/
 
+	g_breakpoint_count = 1;
+	
     // 设置硬件断点
     setup_all_breakpoints();
 
