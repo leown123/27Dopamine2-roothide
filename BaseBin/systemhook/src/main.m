@@ -3002,10 +3002,13 @@ static void* exception_handler_thread(void* arg) {
         // 检查 PC 是否等于源地址
         //uint64_t pc = thread_state.__pc;  // 直接访问成员（arm_thread_state64_t 的 __pc 可用）
 		//aaa.__pc == g_target_addr;
-		struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
-		uint64_t pc = aaa.__pc;
+		//struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
+		//uint64_t pc = aaa.__pc;
+		uint64_t pc = thread_state.__pc; 
 		
         if (pc != g_source_addr) {
+			NSLog(@"小罪ADD: exception_handler_thread: pc != g_source_addr ,pc:%llx",pc);
+			
             // 不是我们的断点，忽略并继续
             // 但仍需回复 KERN_SUCCESS 让线程继续
             struct reply_msg {
@@ -3026,6 +3029,8 @@ static void* exception_handler_thread(void* arg) {
             continue;
         }
 
+		NSLog(@"小罪ADD: exception_handler_thread: pc hit ! ,pc:%llx",pc);
+
         // ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
         arm_neon_state64_t neon_state;
         mach_msg_type_number_t neon_state_cnt = ARM_NEON_STATE64_COUNT;
@@ -3045,8 +3050,8 @@ static void* exception_handler_thread(void* arg) {
         }
 
         // ----- 修改 PC 为目标地址（持久跳转，不断开断点）-----
-        //thread_state.__pc = (uint64_t)TARGET_ADDR;
-		aaa.__pc == g_target_addr;
+        thread_state.__pc = (uint64_t)g_target_addr;
+		//aaa.__pc == g_target_addr;
         thread_set_state(thread_port, ARM_THREAD_STATE64,
                          (thread_state_t)&thread_state, ARM_THREAD_STATE64_COUNT);
 
