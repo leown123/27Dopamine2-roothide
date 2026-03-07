@@ -2921,7 +2921,150 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     // 可以在目标地址处的代码中重新设置断点，但本例是单次跳转，故不重新设置。
 }
 
+// =============================================================================
+// Mach 异常处理线程
+// =============================================================================
+static void* exception_handler_thread(void* arg) {
+    kern_return_t kr;
+    mach_port_t task = mach_task_self();
 
+    // 创建异常端口
+    kr = mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &g_exception_port);
+    if (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: exception_handler_thread: Failed to allocate exception port");
+        return NULL;
+    }
+
+    kr = mach_port_insert_right(task, g_exception_port, g_exception_port,
+                                MACH_MSG_TYPE_MAKE_SEND);
+    if (kr != KERN_SUCCESS) {
+        mach_port_destroy(task, g_exception_port);
+        return NULL;
+    }
+
+    // 设置任务异常端口，只捕获 EXC_BREAKPOINT
+    kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
+                                  EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
+                                  ARM_DEBUG_STATE64);
+    if (kr != KERN_SUCCESS) {
+        mach_port_destroy(task, g_exception_port);
+        return NULL;
+    }
+
+   NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler installed, waiting for breakpoint at 0x%llx", g_source_addr);
+
+    while (1) {
+        struct {
+            mach_msg_header_t head;
+            mach_msg_body_t msgh_body;
+            mach_msg_port_descriptor_t thread_port;
+            mach_msg_port_descriptor_t task_port;
+            NDR_record_t ndr;
+            exception_type_t exception;
+            mach_msg_type_number_t code_count;
+            mach_exception_data_t code;
+            char pad[512];
+        } msg;
+
+        kr = mach_msg(&msg.head, MACH_RCV_MSG, 0, sizeof(msg), g_exception_port,
+                      MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+        if (kr != KERN_SUCCESS) {
+            continue;
+        }
+
+        mach_port_t thread_port = msg.thread_port.name;
+        exception_type_t exception = msg.exception;
+
+        if (exception != EXC_BREAKPOINT) {
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        // 获取线程通用寄存器状态
+        arm_thread_state64_t thread_state;
+        mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
+        kr = thread_get_state(thread_port, ARM_THREAD_STATE64,
+                              (thread_state_t)&thread_state, &thread_state_cnt);
+        if (kr != KERN_SUCCESS) {
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        // 检查 PC 是否等于源地址
+        //uint64_t pc = thread_state.__pc;  // 直接访问成员（arm_thread_state64_t 的 __pc 可用）
+		//aaa.__pc == g_target_addr;
+		struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
+		uint64_t pc = aaa.__pc;
+		
+        if (pc != g_source_addr) {
+            // 不是我们的断点，忽略并继续
+            // 但仍需回复 KERN_SUCCESS 让线程继续
+            struct reply_msg {
+                mach_msg_header_t head;
+                NDR_record_t ndr;
+                kern_return_t ret;
+            } reply;
+            reply.head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.head.msgh_bits), 0);
+            reply.head.msgh_size = sizeof(reply);
+            reply.head.msgh_remote_port = msg.head.msgh_remote_port;
+            reply.head.msgh_local_port = MACH_PORT_NULL;
+            reply.head.msgh_id = msg.head.msgh_id + 100;
+            reply.ndr = NDR_record;
+            reply.ret = KERN_SUCCESS;
+            mach_msg(&reply.head, MACH_SEND_MSG, reply.head.msgh_size, 0,
+                     MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        // ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
+        arm_neon_state64_t neon_state;
+        mach_msg_type_number_t neon_state_cnt = ARM_NEON_STATE64_COUNT;
+        kr = thread_get_state(thread_port, ARM_NEON_STATE64,
+                              (thread_state_t)&neon_state, &neon_state_cnt);
+        if (kr == KERN_SUCCESS) {
+            // s0 对应 v0 的低32位，s1 对应 v1 的低32位
+            float new_s0 = -0.01f;
+            float new_s1 = -0.01f;
+            *(float*)&neon_state.__v[0] = new_s0;
+            *(float*)&neon_state.__v[1] = new_s1;
+            // 写回 NEON 状态
+            thread_set_state(thread_port, ARM_NEON_STATE64,
+                             (thread_state_t)&neon_state, neon_state_cnt);
+        } else {
+            // 无法获取 NEON 状态，继续但可能不会修改浮点寄存器
+        }
+
+        // ----- 修改 PC 为目标地址（持久跳转，不断开断点）-----
+        //thread_state.__pc = (uint64_t)TARGET_ADDR;
+		aaa.__pc == g_target_addr;
+        thread_set_state(thread_port, ARM_THREAD_STATE64,
+                         (thread_state_t)&thread_state, ARM_THREAD_STATE64_COUNT);
+
+        // 注意：硬件断点未移除，因此下次执行到源地址时仍会触发
+
+        // ----- 回复异常处理成功，让线程继续执行 -----
+        struct reply_msg {
+            mach_msg_header_t head;
+            NDR_record_t ndr;
+            kern_return_t ret;
+        } reply;
+        reply.head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.head.msgh_bits), 0);
+        reply.head.msgh_size = sizeof(reply);
+        reply.head.msgh_remote_port = msg.head.msgh_remote_port;
+        reply.head.msgh_local_port = MACH_PORT_NULL;
+        reply.head.msgh_id = msg.head.msgh_id + 100;
+        reply.ndr = NDR_record;
+        reply.ret = KERN_SUCCESS;
+
+        mach_msg(&reply.head, MACH_SEND_MSG, reply.head.msgh_size, 0,
+                 MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+
+        mach_msg_destroy(&msg.head);
+    }
+
+    return NULL;
+}
 
 void initbreakpoint()
 {
@@ -2929,6 +3072,7 @@ void initbreakpoint()
 
 	NSLog(@"小罪ADD: initbreakpoint: jump_hook dylib loaded");
 
+	/* 无效
     // 注册 SIGTRAP 信号处理器
     struct sigaction sa;
     sa.sa_flags = SA_SIGINFO | SA_RESTART;
@@ -2938,7 +3082,14 @@ void initbreakpoint()
         NSLog(@"小罪ADD: initbreakpoint: Failed to install SIGTRAP handler");
         return;
     }
+	*/
 
+	// 启动异常处理线程
+    pthread_t thread;
+    pthread_create(&thread, NULL, exception_handler_thread, NULL);
+    pthread_detach(thread);
+
+	
 	//开始对游戏内存进行hook
 	//mach_vm_address_t wuhouadd = Imageaddress + 0x2F72298;
 	g_source_addr = Imageaddress + 0x2F72298;
