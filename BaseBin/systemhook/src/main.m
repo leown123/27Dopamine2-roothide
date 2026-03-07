@@ -2975,11 +2975,15 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	while (thread_count < 40) 
 	{ 
+		
+		
+		//pthread_mutex_unlock(&g_hwbp_mutex); 
+		free_threads(thread_list, thread_count);
+
 		sleep(5);
 		thread_list = get_threads(&thread_count);
 		NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
-		//pthread_mutex_unlock(&g_hwbp_mutex); 
-		//free_threads(thread_list, thread_count);
+		
 		//return KERN_FAILURE; 
 	}
 
