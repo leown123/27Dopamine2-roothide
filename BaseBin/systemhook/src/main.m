@@ -2674,7 +2674,7 @@ void xunhuanhuizhi()
             
 	            struct Vector2 屏幕ImVec2 = 获取对象屏幕ImVec2(RelativeLocation, MinimalViewInfo, Rotation矩阵, 屏幕中心);
 
-				NSLog(@"小罪ADD: systemhook: 屏幕ImVec2.x:%.2f,屏幕ImVec2.y:%.2f",屏幕ImVec2.x,屏幕ImVec2.y);
+				//NSLog(@"小罪ADD: systemhook: 屏幕ImVec2.x:%.2f,屏幕ImVec2.y:%.2f",屏幕ImVec2.x,屏幕ImVec2.y);
 	            
 	            bool 屏幕后 = false;
 	            
