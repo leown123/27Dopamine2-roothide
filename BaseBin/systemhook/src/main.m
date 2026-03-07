@@ -2730,7 +2730,7 @@ void* duquthread(void* aa)
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
 
-		//initbreakpoint();
+		initbreakpoint();
 }	
 	
 
