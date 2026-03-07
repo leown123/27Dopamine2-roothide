@@ -2784,7 +2784,7 @@ void loadandinitshare()
 	pthread_t thread2;
     pthread_create(&thread2, NULL, duquthread, NULL);
 
-	long linshitersafe = tesrsafeadd+0x2AA880;
+	long linshitersafe = tersafeadd+0x2AA880;
 
 	while(Read_Int(linshitersafe) < 1000)
 	{
@@ -2792,7 +2792,7 @@ void loadandinitshare()
 	}
 
     NSLog(@"小罪ADD: systemhook : linshitersafe Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
-    forcewritenew(linshitersafe, CFSwapInt32(0x00002103);
+    forcewritenew(linshitersafe, CFSwapInt32(0x00002103));
     NSLog(@"小罪ADD: systemhook : linshitersafe SUCCESS !Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
 	
 }
@@ -2940,7 +2940,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	//thread_state->__pc = (uint64_t)g_target_addr;
 	struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
 	//if (aaa.__pc == g_stat_addr) {
-	aaa.__pc == g_target_addr;
+	aaa.__pc = g_target_addr;
 	
 
     // 注意：信号返回后，线程将从新 PC 开始执行。
@@ -3028,17 +3028,6 @@ static void setup_all_breakpoints(void)
     }
 }
 
-// =============================================================================
-// 移除所有断点
-// =============================================================================
-static void remove_all_breakpoints(void) {
-    for (int i = 0; i < g_breakpoint_count; i++) {
-        if (g_breakpoints[i].used && g_breakpoints[i].hw_index != -1) {
-            remove_hw_breakpoint_at_index(g_breakpoints[i].hw_index);
-            g_breakpoints[i].hw_index = -1;
-        }
-    }
-}
 
 // =============================================================================
 // 移除指定索引的硬件断点（辅助函数）
@@ -3072,6 +3061,17 @@ static kern_return_t remove_hw_breakpoint_at_index(int idx) {
 }
 
 
+// =============================================================================
+// 移除所有断点
+// =============================================================================
+static void remove_all_breakpoints(void) {
+    for (int i = 0; i < g_breakpoint_count; i++) {
+        if (g_breakpoints[i].used && g_breakpoints[i].hw_index != -1) {
+            remove_hw_breakpoint_at_index(g_breakpoints[i].hw_index);
+            g_breakpoints[i].hw_index = -1;
+        }
+    }
+}
 
 // =============================================================================
 // Mach 异常处理线程
@@ -3359,27 +3359,29 @@ static void* exception_handler_thread(void* arg) {
         // 修改 PC 为目标地址（断点持续有效）
         //arm_thread_state64_set_pc(thread_state, bp->target);
 		thread_state2.__pc = (uint64_t)bp->target;
-        thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state, ARM_THREAD_STATE64_COUNT);
+        thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
 
-    send_reply:
+    	send_reply:
         // 回复异常已处理
-        struct {
-            mach_msg_header_t head;
-            NDR_record_t ndr;
-            kern_return_t ret;
-        } reply;
-        reply.head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.head.msgh_bits), 0);
-        reply.head.msgh_size = sizeof(reply);
-        reply.head.msgh_remote_port = msg.head.msgh_remote_port;
-        reply.head.msgh_local_port = MACH_PORT_NULL;
-        reply.head.msgh_id = msg.head.msgh_id + 100;
-        reply.ndr = NDR_record;
-        reply.ret = KERN_SUCCESS;
-
-        mach_msg(&reply.head, MACH_SEND_MSG, reply.head.msgh_size, 0,
-                 MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
-
-        mach_msg_destroy(&msg.head);
+		{
+	        struct {
+	            mach_msg_header_t head;
+	            NDR_record_t ndr;
+	            kern_return_t ret;
+	        } reply;
+	        reply.head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.head.msgh_bits), 0);
+	        reply.head.msgh_size = sizeof(reply);
+	        reply.head.msgh_remote_port = msg.head.msgh_remote_port;
+	        reply.head.msgh_local_port = MACH_PORT_NULL;
+	        reply.head.msgh_id = msg.head.msgh_id + 100;
+	        reply.ndr = NDR_record;
+	        reply.ret = KERN_SUCCESS;
+	
+	        mach_msg(&reply.head, MACH_SEND_MSG, reply.head.msgh_size, 0,
+	                 MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+	
+	        mach_msg_destroy(&msg.head);
+		}
     }
 
     return NULL;
@@ -3433,7 +3435,7 @@ void initbreakpoint()
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
-        .s0_val = -0,01f,             // 要写入 s0 的值
+        .s0_val = -0.01f,             // 要写入 s0 的值
         .s1_val = -0.01f,             // 要写入 s1 的值
         .used = 1,
         .hw_index = -1
