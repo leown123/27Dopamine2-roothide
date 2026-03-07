@@ -2991,9 +2991,10 @@ static void* exception_handler_thread(void* arg) {
 
         // 获取线程通用寄存器状态
         arm_thread_state64_t thread_state;
+		struct myARM_THREAD_STATE64 thread_state2;
         mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
-        kr = thread_get_state(thread_port, ARM_THREAD_STATE64,
-                              (thread_state_t)&thread_state, &thread_state_cnt);
+        //kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state, &thread_state_cnt);
+		kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, &thread_state_cnt);
         if (kr != KERN_SUCCESS) {
             mach_msg_destroy(&msg.head);
             continue;
@@ -3004,7 +3005,7 @@ static void* exception_handler_thread(void* arg) {
 		//aaa.__pc == g_target_addr;
 		//struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
 		//uint64_t pc = aaa.__pc;
-		uint64_t pc = thread_state.__pc; 
+		uint64_t pc = thread_state2.__pc; 
 		
         if (pc != g_source_addr) {
 			NSLog(@"小罪ADD: exception_handler_thread: pc != g_source_addr ,pc:%llx",pc);
@@ -3050,10 +3051,11 @@ static void* exception_handler_thread(void* arg) {
         }
 
         // ----- 修改 PC 为目标地址（持久跳转，不断开断点）-----
-        thread_state.__pc = (uint64_t)g_target_addr;
+        //thread_state.__pc = (uint64_t)g_target_addr;
+		thread_state2.__pc = (uint64_t)g_target_addr;
 		//aaa.__pc == g_target_addr;
-        thread_set_state(thread_port, ARM_THREAD_STATE64,
-                         (thread_state_t)&thread_state, ARM_THREAD_STATE64_COUNT);
+        //thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state, ARM_THREAD_STATE64_COUNT);
+		thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
 
         // 注意：硬件断点未移除，因此下次执行到源地址时仍会触发
 
