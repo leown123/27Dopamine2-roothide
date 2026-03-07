@@ -2931,15 +2931,19 @@ static void* exception_handler_thread(void* arg) {
 
     // 创建异常端口
     kr = mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &g_exception_port);
-    if (kr != KERN_SUCCESS) {
+    while (kr != KERN_SUCCESS) {
         NSLog(@"小罪ADD: exception_handler_thread: Failed to allocate exception port");
+		kr = mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &g_exception_port);
         return NULL;
     }
 
     kr = mach_port_insert_right(task, g_exception_port, g_exception_port,
                                 MACH_MSG_TYPE_MAKE_SEND);
-    if (kr != KERN_SUCCESS) {
-        mach_port_destroy(task, g_exception_port);
+    while (kr != KERN_SUCCESS) {
+		NSLog(@"小罪ADD: exception_handler_thread: Failed to mach_port_insert_right");
+		kr = mach_port_insert_right(task, g_exception_port, g_exception_port,
+                                MACH_MSG_TYPE_MAKE_SEND);
+        //mach_port_destroy(task, g_exception_port);
         return NULL;
     }
 
@@ -2947,8 +2951,12 @@ static void* exception_handler_thread(void* arg) {
     kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
                                   EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
                                   ARM_DEBUG_STATE64);
-    if (kr != KERN_SUCCESS) {
-        mach_port_destroy(task, g_exception_port);
+    while (kr != KERN_SUCCESS) {
+		NSLog(@"小罪ADD: exception_handler_thread: Failed to task_set_exception_ports");
+		kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
+                                  EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
+                                  ARM_DEBUG_STATE64);
+        //mach_port_destroy(task, g_exception_port);
         return NULL;
     }
 
