@@ -2646,7 +2646,7 @@ void xunhuanhuizhi()
 			
 		}
 
-		/*
+		
 		//继续看是否属于可拾取物品或者盒子
 		long 物资总偏移 = Read_Long(对象指针 + 0x1130);
         int 物资价值 = Read_Int(物资总偏移 + 0xD8 + 4);
@@ -2701,7 +2701,7 @@ void xunhuanhuizhi()
 			
                
         }
-		*/
+		
 
 		
 	
@@ -3030,7 +3030,7 @@ static void* exception_handler_thread(void* arg) {
             continue;
         }
 
-		NSLog(@"小罪ADD: exception_handler_thread: pc hit ! ,pc:%llx",pc);
+		//NSLog(@"小罪ADD: exception_handler_thread: pc hit ! ,pc:%llx",pc);
 
         // ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
         arm_neon_state64_t neon_state;
