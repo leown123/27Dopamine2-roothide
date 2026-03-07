@@ -2900,7 +2900,12 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     *(float*)&neon->__v[1] = -0.01f;
 
     // 修改 PC 为目标地址
-    *thread_state = arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
+    //*thread_state = arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
+	//thread_state->__pc = (uint64_t)g_target_addr;
+	struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
+	//if (aaa.__pc == g_stat_addr) {
+	aaa.__pc == g_target_addr;
+	
 
     // 注意：信号返回后，线程将从新 PC 开始执行。
     // 如果希望断点持续生效（例如，再次执行到源地址时再次跳转），
