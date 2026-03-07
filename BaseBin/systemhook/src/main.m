@@ -2805,6 +2805,7 @@ static mach_vm_address_t g_source_addr = 0;
 static mach_vm_address_t g_target_addr = 0;
 static int g_hwbp_index = 0;          // 使用第0个硬件断点
 static pthread_mutex_t g_hwbp_mutex = PTHREAD_MUTEX_INITIALIZER;
+static mach_port_t g_exception_port = MACH_PORT_NULL;
 
 // 获取所有线程
 static thread_act_array_t get_threads(mach_msg_type_number_t *count) {
