@@ -3093,12 +3093,6 @@ void initbreakpoint()
     }
 	*/
 
-	// 启动异常处理线程
-    pthread_t thread;
-    pthread_create(&thread, NULL, exception_handler_thread, NULL);
-    pthread_detach(thread);
-
-	
 	//开始对游戏内存进行hook
 	//mach_vm_address_t wuhouadd = Imageaddress + 0x2F72298;
 	g_source_addr = Imageaddress + 0x2F72298;
@@ -3116,6 +3110,11 @@ void initbreakpoint()
 	
     NSLog(@"小罪ADD: initbreakpoint: Persistent hardware breakpoint set at 0x%llx, will jump to 0x%llx on each hit",
           g_source_addr, g_target_addr);
+
+	// 启动异常处理线程
+    pthread_t thread;
+    pthread_create(&thread, NULL, exception_handler_thread, NULL);
+    pthread_detach(thread);
 
 	
 }
