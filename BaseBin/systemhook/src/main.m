@@ -2831,16 +2831,18 @@ static kern_return_t set_hw_breakpoint(mach_vm_address_t addr) {
 
 	NSLog(@"小罪ADD: set_hw_breakpoint: thread_count:%d",thread_count);
 
-	if (!thread_count < 20) 
+	if (thread_count < 40) 
 	{ 
 		pthread_mutex_unlock(&g_hwbp_mutex); 
 		free_threads(thread_list, thread_count);
 		return KERN_FAILURE; 
 	}
 
+	NSLog(@"小罪ADD: set_hw_breakpoint: prepare to set breakpoint");
+
     kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
-	for (mach_msg_type_number_t i = 0; i < 20; i++) {
+	for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
         kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
