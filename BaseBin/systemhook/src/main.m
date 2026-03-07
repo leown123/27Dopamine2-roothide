@@ -2735,6 +2735,7 @@ void* duquthread(void* aa)
 
 		initbreakpoint();
 
+		/*
 		long linshitersafe = tersafeadd+0x2AA880;
 
 		while(Read_Int(linshitersafe) < 1000)
@@ -2745,6 +2746,7 @@ void* duquthread(void* aa)
 	    NSLog(@"小罪ADD: systemhook : linshitersafe Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
 	    forcewritenew(linshitersafe, CFSwapInt32(0x00002103));
 	    NSLog(@"小罪ADD: systemhook : linshitersafe SUCCESS !Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
+		*/
 		
 }	
 	
@@ -3449,7 +3451,7 @@ void initbreakpoint()
     g_breakpoints[1] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
-        .s0_val = 32.0f,
+        .s0_val = 30.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3457,7 +3459,7 @@ void initbreakpoint()
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
-        .s0_val = 32.0f,
+        .s0_val = 30.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3465,7 +3467,7 @@ void initbreakpoint()
 	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
-        .s0_val = 32.0f,
+        .s0_val = 30.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3473,7 +3475,7 @@ void initbreakpoint()
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd4,
         .target = fanweiadd4 + 4,
-        .s0_val = 32.0f,
+        .s0_val = 30.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
