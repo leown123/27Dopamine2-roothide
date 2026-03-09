@@ -3505,22 +3505,12 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
-	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd1,
-        .target = tersafetsadd1ret,
-        .s0_val = 30.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
-	/*
+	
     g_breakpoints[1] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
-        .s0_val = 30.0f,
+        .s0_val = 31.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3528,7 +3518,7 @@ void initbreakpoint()
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
-        .s0_val = 30.0f,
+        .s0_val = 31.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3536,7 +3526,7 @@ void initbreakpoint()
 	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
-        .s0_val = 30.0f,
+        .s0_val = 31.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3544,15 +3534,15 @@ void initbreakpoint()
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd4,
         .target = fanweiadd4 + 4,
-        .s0_val = 30.0f,
+        .s0_val = 31.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 2;
+    g_breakpoint_count = 5;
 	
 
 	//g_breakpoint_count = 1;
