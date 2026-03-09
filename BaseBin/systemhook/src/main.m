@@ -2977,7 +2977,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
-	while (thread_count < 40) 
+	while (thread_count < 100) 
 	{ 
 		
 		
@@ -2995,7 +2995,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
     kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
-	for (mach_msg_type_number_t i = 0; i < 40; i++) {
+	for (mach_msg_type_number_t i = 0; i < 100; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
         kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
@@ -3120,7 +3120,7 @@ static void* exception_handler_threadold(void* arg) {
     }
 
    NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler installed, waiting for breakpoint at 0x%llx", g_source_addr);
-
+	
     while (1) {
         struct {
             mach_msg_header_t head;
@@ -3339,11 +3339,14 @@ static void* exception_handler_thread(void* arg) {
         //uint64_t pc = arm_thread_state64_get_pc(thread_state);
 		uint64_t pc = thread_state2.__pc; 
 
+		bool istersafebp = false;
+
         // 查找匹配的断点
         Breakpoint *bp = NULL;
         for (int i = 0; i < g_breakpoint_count; i++) {
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) {
                 bp = &g_breakpoints[i];
+				if(i == 1) istersafebp = true;
                 break;
             }
         }
@@ -3353,17 +3356,37 @@ static void* exception_handler_thread(void* arg) {
             goto send_reply;
         }
 
-        // 修改浮点寄存器 s0/s1
-        arm_neon_state64_t neon_state;
-        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
-        kr = thread_get_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, &neon_cnt);
-        if (kr == KERN_SUCCESS) 
+		if(istersafebp)
 		{
-            *(float*)&neon_state.__v[0] = bp->s0_val;
-            *(float*)&neon_state.__v[1] = bp->s1_val;
-            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
-        }
+			// 读取 stat 的第一个参数 (x0)
+		    uint64_t path_ptr = thread_state2.__x[0];
+		    char path[1024] = {0};
+		    mach_vm_size_t bytes_read = 0;
+		    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+		                                              (mach_vm_address_t)path, &bytes_read);
+		    if (kr == KERN_SUCCESS && bytes_read > 0) {
+		        path[bytes_read] = '\0';
+		        NSLog(@"小罪ADD: [tersafe hook] Path: %s", path);
+		    } else {
+		        NSLog(@"小罪ADD: [tersafe hook] Failed to read path at 0x%llx", path_ptr);
+		    }
 
+			thread_state2.__x[0] = 0;
+
+		}
+		else
+		{
+	        // 修改浮点寄存器 s0/s1
+	        arm_neon_state64_t neon_state;
+	        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
+	        kr = thread_get_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, &neon_cnt);
+	        if (kr == KERN_SUCCESS) 
+			{
+	            *(float*)&neon_state.__v[0] = bp->s0_val;
+	            *(float*)&neon_state.__v[1] = bp->s1_val;
+	            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
+	        }
+		}
         // 修改 PC 为目标地址（断点持续有效）
         //arm_thread_state64_set_pc(thread_state, bp->target);
 		thread_state2.__pc = (uint64_t)bp->target;
@@ -3440,6 +3463,9 @@ void initbreakpoint()
     mach_vm_address_t fanweiadd3 = Imageaddress + 0x16C9F98 ;
     mach_vm_address_t fanweiadd4 = Imageaddress + 0x16C9FC0 ;
 
+	mach_vm_address_t tersafetsadd1 = Imageaddress + 0x585D0;
+	mach_vm_address_t tersafetsadd1ret = Imageaddress + 0x5871C;
+
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -3449,7 +3475,16 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd1,
+        .target = tersafetsadd1ret,
+        .s0_val = 30.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
     g_breakpoints[1] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -3482,9 +3517,10 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 5;
+    g_breakpoint_count = 2;
 	
 
 	//g_breakpoint_count = 1;
