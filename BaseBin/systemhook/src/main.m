@@ -2977,7 +2977,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
-	while (thread_count < 100) 
+	while (thread_count < 80) 
 	{ 
 		
 		
@@ -2995,7 +2995,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
     kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
-	for (mach_msg_type_number_t i = 0; i < 100; i++) {
+	for (mach_msg_type_number_t i = 0; i < 80; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
         kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
