@@ -3632,8 +3632,8 @@ if (load_executable_path() == 0)
 		loadandinitshare();
 		//initbreakpoint();
 
-		pthread_t thread1;
-        pthread_create(&thread1, NULL, crchackthread, NULL);
+		pthread_t thread2;
+        pthread_create(&thread2, NULL, crchackthread, NULL);
 
 				
 		return;
