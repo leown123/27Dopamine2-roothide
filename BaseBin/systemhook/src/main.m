@@ -1531,6 +1531,25 @@ uint64_t hooked_sub_2327EC(uint64_t a1, uint8_t *data, int len)
     //return 0x12345678;
 }
 
+// 定义原始函数类型
+typedef int64_t (*orig_sub_585D0_t)(const char *, int64_t, uint64_t);
+static orig_sub_585D0_t orig_sub_585D0 = NULL;
+
+// 替换函数实现
+int64_t hooked_sub_585D0(const char *a1, int64_t a2, uint64_t a3) {
+    // 在这里可以添加你的逻辑，例如打印参数或修改行为
+    NSLog(@"小罪ADD tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
+    
+    // 调用原始函数（可选）
+    //int64_t result = orig_sub_585D0(a1, a2, a3);
+    
+    // 修改返回值（如果需要）
+    int64_t result = 0;
+    
+    //NSLog(@"小罪ADD tmpfun: [+] Original result: %lld", result);
+    return result;
+}
+
 void* crchackthread(void* aa)
 {
 
@@ -1554,7 +1573,7 @@ void* crchackthread(void* aa)
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
 		
 		
-		/*
+		
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
@@ -1574,7 +1593,10 @@ void* crchackthread(void* aa)
 		long crcfunc_addr5 = tersafeadd + 0x2327EC;
 		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
-		*/
+
+		long tmpfunadd1 = tersafeadd + 0x585D0;
+		ret = DobbyHook((void *)tmpfunadd1, (void *)hooked_sub_585D0, (void **)&orig_sub_585D0);
+		NSLog(@"小罪ADD: [Dobby] hook tersafe tmpfunadd1: %s", ret == 0 ? "success" : "failed");
 		
 		/*
 		long hashptr = tersafeadd+0x133124;
@@ -2977,7 +2999,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
-	while (thread_count < 80) 
+	while (thread_count < 40) 
 	{ 
 		
 		
@@ -2995,7 +3017,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
     kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
-	for (mach_msg_type_number_t i = 0; i < 80; i++) {
+	for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
         kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
@@ -3346,7 +3368,7 @@ static void* exception_handler_thread(void* arg) {
         for (int i = 0; i < g_breakpoint_count; i++) {
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) {
                 bp = &g_breakpoints[i];
-				if(i == 1) istersafebp = true;
+				//if(i == 1) istersafebp = true;
                 break;
             }
         }
@@ -3356,6 +3378,7 @@ static void* exception_handler_thread(void* arg) {
             goto send_reply;
         }
 
+		/*
 		if(istersafebp)
 		{
 			// 读取 stat 的第一个参数 (x0)
@@ -3375,6 +3398,7 @@ static void* exception_handler_thread(void* arg) {
 
 		}
 		else
+		*/
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3475,6 +3499,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -3483,6 +3508,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
     g_breakpoints[1] = (Breakpoint){
@@ -3599,6 +3625,9 @@ if (load_executable_path() == 0)
 
 		loadandinitshare();
 		//initbreakpoint();
+
+		pthread_t thread1;
+        pthread_create(&thread1, NULL, crchackthread, NULL);
 
 				
 		return;
