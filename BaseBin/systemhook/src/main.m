@@ -1538,7 +1538,13 @@ static orig_sub_585D0_t orig_sub_585D0 = NULL;
 // 替换函数实现
 int64_t hooked_sub_585D0(const char *a1, int64_t a2, uint64_t a3) {
     // 在这里可以添加你的逻辑，例如打印参数或修改行为
-    NSLog(@"小罪ADD tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
+    
+	@autoreleasepool 
+	{
+		NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
+        // 打印堆栈信息（推荐使用 [NSThread callStackSymbols]）
+        NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	}
     
     // 调用原始函数（可选）
     //int64_t result = orig_sub_585D0(a1, a2, a3);
