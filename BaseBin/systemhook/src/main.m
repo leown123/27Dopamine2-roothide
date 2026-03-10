@@ -1639,6 +1639,7 @@ void* crchackthread(void* aa)
 		ret = DobbyHook((void *)jiqimafunadd1, (void *)hooked_sub_417CC, (void **)&orig_sub_417CC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe jiqimafunadd1: %s", ret == 0 ? "success" : "failed");
 
+		/*
 		long tersafehookptr1 = tersafeadd + 0x168504;
 		long tersafehookptr2 = tersafeadd + 0x1E1E28;
 		long tersafehookptr3 = tersafeadd + 0x1555B8;
@@ -1650,7 +1651,7 @@ void* crchackthread(void* aa)
 		passptrmov1(tersafehookptr3);
 
 		passptrmov1(taskhackptr);
-   
+   		*/
 		
 		/*
 		long hashptr = tersafeadd+0x133124;
