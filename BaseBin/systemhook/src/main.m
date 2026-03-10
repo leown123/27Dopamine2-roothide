@@ -1556,6 +1556,37 @@ int64_t hooked_sub_585D0(const char *a1, int64_t a2, uint64_t a3) {
     return result;
 }
 
+typedef int64_t (*orig_sub_417CC_t)(int64_t a1, int64_t a2, int64_t a3);
+static orig_sub_417CC_t orig_sub_417CC = NULL;
+
+// 自定义替换函数
+int64_t hooked_sub_417CC(int64_t a1, int64_t a2, int64_t a3) {
+    @autoreleasepool {
+        // --- 打印参数基本信息 ---
+        NSLog(@"小罪ADD: [+] hooked_sub_417CC hooked !,a1:%llx,a2:%s,a3:%lld",a1,a2,a3);
+
+        // 调用原始函数
+        int64_t result = orig_sub_417CC(a1, a2, a3);
+        小罪ADD: [+] hooked_sub_417CC Original result = %lld,maketo:%lld", result,result+80);
+
+		result = result + 80;
+        
+        return result;
+    }
+}
+
+void passptrmov1(long add1)
+{
+    if(Read_Int(add1) != CFSwapInt32(0x200080D2))
+    {
+        forcewritenew(add1, CFSwapInt32(0x200080D2));
+        forcewritenew(add1 + 4, CFSwapInt32(0xC0035FD6));
+        
+        NSLog(@"小罪ADD: PASS 0x%lx SUCCESS !Read_Int() :0x%x",add1-tesrsafeadd,Read_Int(add1));
+
+    }
+}
+
 void* crchackthread(void* aa)
 {
 
@@ -1603,6 +1634,23 @@ void* crchackthread(void* aa)
 		long tmpfunadd1 = tersafeadd + 0x585D0;
 		ret = DobbyHook((void *)tmpfunadd1, (void *)hooked_sub_585D0, (void **)&orig_sub_585D0);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe tmpfunadd1: %s", ret == 0 ? "success" : "failed");
+
+		long jiqimafunadd1 = tersafeadd + 0x417CC;
+		ret = DobbyHook((void *)jiqimafunadd1, (void *)hooked_sub_417CC, (void **)&orig_sub_417CC);
+		NSLog(@"小罪ADD: [Dobby] hook tersafe jiqimafunadd1: %s", ret == 0 ? "success" : "failed");
+
+		long tersafehookptr1 = tersafeadd + 0x168504;
+		long tersafehookptr2 = tersafeadd + 0x1E1E28;
+		long tersafehookptr3 = tersafeadd + 0x1555B8;
+
+		long taskhackptr = tersafeadd + 0x133124;
+
+		passptrmov1(tersafehookptr1);
+		passptrmov1(tersafehookptr2);
+		passptrmov1(tersafehookptr3);
+
+		passptrmov1(taskhackptr);
+   
 		
 		/*
 		long hashptr = tersafeadd+0x133124;
@@ -2763,7 +2811,7 @@ void* duquthread(void* aa)
 
 		initbreakpoint();
 
-		
+		/*
 		long linshitersafe = tersafeadd+0x2AA880;
 
 		while(Read_Int(linshitersafe) < 1000)
@@ -2774,7 +2822,7 @@ void* duquthread(void* aa)
 	    NSLog(@"小罪ADD: systemhook : linshitersafe Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
 	    forcewritenew(linshitersafe, CFSwapInt32(0x00002103));
 	    NSLog(@"小罪ADD: systemhook : linshitersafe SUCCESS !Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
-		
+		*/
 		
 }	
 	
