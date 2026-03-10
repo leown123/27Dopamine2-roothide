@@ -3066,11 +3066,11 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
 
-	if(thread_count > 40)isover100 = true;
+	if(thread_count > 100)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
-    //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
-	for (mach_msg_type_number_t i = 0; i < 40; i++) {
+    for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
+	//for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
         kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
