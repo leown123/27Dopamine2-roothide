@@ -1601,7 +1601,7 @@ void* crchackthread(void* aa)
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
 		
 		
-		
+		/*
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
 		int ret = DobbyHook((void *)crcfunc_addr1, (void *)my_crc_func1, (void **)&orig_crc_func1);
         NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr1: %s", ret == 0 ? "success" : "failed");
@@ -1625,6 +1625,7 @@ void* crchackthread(void* aa)
 		long tmpfunadd1 = tersafeadd + 0x585D0;
 		ret = DobbyHook((void *)tmpfunadd1, (void *)hooked_sub_585D0, (void **)&orig_sub_585D0);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe tmpfunadd1: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		/*
 		long jiqimafunadd1 = tersafeadd + 0x417CC;
@@ -3027,7 +3028,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 
 	
-
+bool isover100 = false;
     
 
 // =============================================================================
@@ -3047,6 +3048,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
+	/*
 	while (thread_count < 40) 
 	{ 
 		
@@ -3060,8 +3062,11 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 		
 		//return KERN_FAILURE; 
 	}
+	*/
 
-	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
+	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
+
+	if(thread_count > 40)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
@@ -3538,11 +3543,23 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd1 = Imageaddress + 0x585D0;
 	mach_vm_address_t tersafetsadd1ret = Imageaddress + 0x5871C;
 
+	mach_vm_address_t tersafetsadd2 = Imageaddress + 0x585D0;
+	mach_vm_address_t tersafetsadd2ret = (void*)hooked_sub_585D0;
+
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
         .s0_val = -0.01f,             // 要写入 s0 的值
         .s1_val = -0.01f,             // 要写入 s1 的值
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd2,
+        .target = tersafetsadd2ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
@@ -3587,15 +3604,21 @@ void initbreakpoint()
     g_breakpoint_count = 5;
 	*/
 
-	g_breakpoint_count = 1;
-	
-    // 设置硬件断点
-    setup_all_breakpoints();
+	g_breakpoint_count = 2;
 
+	
 	// 启动异常处理线程
     pthread_t thread;
     pthread_create(&thread, NULL, exception_handler_thread, NULL);
     pthread_detach(thread);
+	
+    // 设置硬件断点
+
+	while(!isover100)
+	{
+    	setup_all_breakpoints();
+	}
+
 
 	
 }
