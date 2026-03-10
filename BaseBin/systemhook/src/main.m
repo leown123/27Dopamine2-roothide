@@ -1567,9 +1567,9 @@ int64_t hooked_sub_417CC(int64_t a1, int64_t a2, int64_t a3) {
 
         // 调用原始函数
         int64_t result = orig_sub_417CC(a1, a2, a3);
-        NSLog(@"小罪ADD: [+] hooked_sub_417CC Original result = %lld,fakeresult:%lld", result,result+80);
+        NSLog(@"小罪ADD: [+] hooked_sub_417CC Original result = %lld", result);
 
-		result = result + 80;
+		//result = result + 80;
         
         return result;
     }
