@@ -3156,6 +3156,7 @@ static void remove_all_breakpoints(void) {
     }
 }
 
+
 // =============================================================================
 // Mach 异常处理线程
 // =============================================================================
@@ -3316,6 +3317,8 @@ static void* exception_handler_threadold(void* arg) {
     return NULL;
 }
 
+int bptype = 0;
+
 static void* exception_handler_thread(void* arg) {
     kern_return_t kr;
     mach_port_t task = mach_task_self();
@@ -3422,6 +3425,7 @@ static void* exception_handler_thread(void* arg) {
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) {
                 bp = &g_breakpoints[i];
 				//if(i == 1) istersafebp = true;
+				bptype = i;
                 break;
             }
         }
@@ -3452,6 +3456,8 @@ static void* exception_handler_thread(void* arg) {
 		}
 		else
 		*/
+		
+		if(bptype == 0)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3464,6 +3470,23 @@ static void* exception_handler_thread(void* arg) {
 	            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
 	        }
 		}
+
+		if(bptype == 1)
+		{
+			uint64_t path_ptr = thread_state2.__x[0];
+		    char path[1024] = {0};
+		    mach_vm_size_t bytes_read = 0;
+		    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+		                                              (mach_vm_address_t)path, &bytes_read);
+		    if (kr == KERN_SUCCESS && bytes_read > 0) {
+		        path[bytes_read] = '\0';
+		        NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Path: %s", path);
+		    } else {
+		        NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
+		    }
+		}
+
+		
         // 修改 PC 为目标地址（断点持续有效）
         //arm_thread_state64_set_pc(thread_state, bp->target);
 		thread_state2.__pc = (uint64_t)bp->target;
