@@ -3543,7 +3543,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd1 = Imageaddress + 0x585D0;
 	mach_vm_address_t tersafetsadd1ret = Imageaddress + 0x5871C;
 
-	mach_vm_address_t tersafetsadd2 = Imageaddress + 0x585D0;
+	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
 	g_breakpoints[0] = (Breakpoint){
