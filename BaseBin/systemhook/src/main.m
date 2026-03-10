@@ -1419,15 +1419,16 @@ orig_crc_func_type1 orig_crc_func1 = NULL;
 uint16_t my_crc_func1(uint8_t *data, int len) {
 
 
-	/*
+	
 	NSLog(@"小罪ADD: systemhook : tersafe: my_crc_func1: data:0x%lx,len: %d)", data, len);
 	if(tersafeadd == (long)data)
 	{
 		NSLog(@"小罪ADD: systemhook : tersafe: my_crc_func1(sub_245F04): 正在检测tersafe地址,data:0x%lx,len: %d)", data, len);
 		return 0xcf81;
 	}
-	*/
+	
 
+	/*
 	if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
 	{
 		long ptr = (long)data - tersafeadd;
@@ -1436,7 +1437,7 @@ uint16_t my_crc_func1(uint8_t *data, int len) {
 		
 		return orig_crc_func1((uint8_t *)fakedylibptr, len);
     }
-	
+	*/
 	
     // 其他地址，正常调用原始函数
     return orig_crc_func1(data, len);
@@ -1625,9 +1626,11 @@ void* crchackthread(void* aa)
 		ret = DobbyHook((void *)tmpfunadd1, (void *)hooked_sub_585D0, (void **)&orig_sub_585D0);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe tmpfunadd1: %s", ret == 0 ? "success" : "failed");
 
+		/*
 		long jiqimafunadd1 = tersafeadd + 0x417CC;
 		ret = DobbyHook((void *)jiqimafunadd1, (void *)hooked_sub_417CC, (void **)&orig_sub_417CC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe jiqimafunadd1: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		/*
 		long tersafehookptr1 = tersafeadd + 0x168504;
