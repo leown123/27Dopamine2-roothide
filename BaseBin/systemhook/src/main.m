@@ -1431,7 +1431,7 @@ uint16_t my_crc_func1(uint8_t *data, int len) {
 	if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
 	{
 		long ptr = (long)data - tersafeadd;
-        NSLog(@"小罪ADD: systemhook : tersafe my_crc_func1: crc正在检查tersafe：0x%lx)", ptr);
+        //NSLog(@"小罪ADD: systemhook : tersafe my_crc_func1: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 		
 		return orig_crc_func1((uint8_t *)fakedylibptr, len);
@@ -1462,7 +1462,7 @@ uint64_t hooked_sub_A2B60(uint64_t a1, uint64_t a2, uint64_t a3, int a4) {
     if (a2 >= tersafeadd && a2 <= (tersafeadd + tersafesize) ) 
 	{
 		long ptr = a2 - tersafeadd;
-        NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_A2B60: crc正在检查tersafe：0x%lx)", ptr);
+        //NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_A2B60: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 		
 		return orig_sub_A2B60(a1, fakedylibptr, a3, a4);
@@ -1483,7 +1483,7 @@ uint64_t hooked_sub_D3F08(uint8_t *data, uint64_t len) {
     if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
 	{
 		long ptr = (long)data - tersafeadd;
-        NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_D3F08: crc正在检查tersafe：0x%lx)", ptr);
+        //NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_D3F08: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 		
 		return orig_sub_D3F08((uint8_t*)fakedylibptr, len);
@@ -1503,7 +1503,7 @@ uint64_t hooked_sub_2327EC(uint64_t a1, uint8_t *data, int len)
     if ((long)data >= tersafeadd && (long)data <= (tersafeadd + tersafesize) ) 
 	{
 		long ptr = (long)data - tersafeadd;
-        NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_2327EC: crc正在检查tersafe：0x%lx)", ptr);
+        //NSLog(@"小罪ADD: systemhook : tersafe hooked_sub_2327EC: crc正在检查tersafe：0x%lx)", ptr);
 		long fakedylibptr = tersafebakadd + ptr;
 
 		return orig_sub_2327EC(a1, (uint8_t*)fakedylibptr, len);
@@ -1556,6 +1556,8 @@ int64_t hooked_sub_417CC(int64_t a1, int64_t a2, int64_t a3) {
         // 调用原始函数
         int64_t result = orig_sub_417CC(a1, a2, a3);
         NSLog(@"小罪ADD: [+] hooked_sub_417CC Original result = %lld", result);
+
+		NSLog(@"小罪ADD: [+] hooked_sub_417CC called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
 		//result = result + 80;
         
