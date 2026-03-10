@@ -1567,7 +1567,7 @@ int64_t hooked_sub_417CC(int64_t a1, int64_t a2, int64_t a3) {
 
         // 调用原始函数
         int64_t result = orig_sub_417CC(a1, a2, a3);
-        小罪ADD: [+] hooked_sub_417CC Original result = %lld,maketo:%lld", result,result+80);
+        NSLog(@"小罪ADD: [+] hooked_sub_417CC Original result = %lld,fakeresult:%lld", result,result+80);
 
 		result = result + 80;
         
@@ -1582,7 +1582,7 @@ void passptrmov1(long add1)
         forcewritenew(add1, CFSwapInt32(0x200080D2));
         forcewritenew(add1 + 4, CFSwapInt32(0xC0035FD6));
         
-        NSLog(@"小罪ADD: PASS 0x%lx SUCCESS !Read_Int() :0x%x",add1-tesrsafeadd,Read_Int(add1));
+        NSLog(@"小罪ADD: PASS 0x%lx SUCCESS !Read_Int() :0x%x",add1-tersafeadd,Read_Int(add1));
 
     }
 }
