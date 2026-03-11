@@ -3066,7 +3066,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
 
-	if(thread_count > 100)isover100 = true;
+	if(thread_count > 90)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
     for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
@@ -3587,6 +3587,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
     g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -3623,7 +3624,7 @@ void initbreakpoint()
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
-	
+	*/
 
 	//g_breakpoint_count = 2;
 
