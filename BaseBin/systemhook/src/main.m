@@ -3457,7 +3457,7 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(bptype == 0)
+		if(bptype == 0 || bptype >= 2)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3587,9 +3587,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-
-	/*
-    g_breakpoints[1] = (Breakpoint){
+    g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
         .s0_val = 31.0f,
@@ -3597,7 +3595,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	g_breakpoints[2] = (Breakpoint){
+	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
         .s0_val = 31.0f,
@@ -3605,7 +3603,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	g_breakpoints[3] = (Breakpoint){
+	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
         .s0_val = 31.0f,
@@ -3613,7 +3611,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	g_breakpoints[4] = (Breakpoint){
+	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd4,
         .target = fanweiadd4 + 4,
         .s0_val = 31.0f,
@@ -3624,10 +3622,10 @@ void initbreakpoint()
 	
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 5;
-	*/
+    g_breakpoint_count = 6;
+	
 
-	g_breakpoint_count = 2;
+	//g_breakpoint_count = 2;
 
 	
 	// 启动异常处理线程
