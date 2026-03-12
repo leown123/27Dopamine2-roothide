@@ -3457,7 +3457,7 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(bptype == 0 || bptype >= 2)
+		if(bptype == 0 || bptype >= 3)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3484,6 +3484,12 @@ static void* exception_handler_thread(void* arg) {
 		    } else {
 		        NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
 		    }
+		}
+
+		if(bptype == 2)
+		{
+			uint64_t retlong = thread_state2.__x[0];
+		    NSLog(@"小罪ADD: [tersafe 0x266528 hook] retlong: %llx", retlong);
 		}
 
 		
@@ -3569,6 +3575,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x266528;//范围检测
+	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x267494;
+
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -3587,6 +3596,16 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd3,
+        .target = tersafetsadd3ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	
+
 	/*
     g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
@@ -3596,6 +3615,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	
+	
 	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
@@ -3626,7 +3647,7 @@ void initbreakpoint()
     g_breakpoint_count = 6;
 	*/
 
-	//g_breakpoint_count = 2;
+	g_breakpoint_count = 3;
 
 	
 	// 启动异常处理线程
