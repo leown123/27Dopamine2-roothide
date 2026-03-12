@@ -1566,6 +1566,35 @@ int64_t hooked_sub_417CC(int64_t a1, int64_t a2, int64_t a3) {
     }
 }
 
+typedef uint64_t (*Sub_22ED6C_t)(uint64_t a1, uint64_t a2, uint64_t a3);
+// ==================== 全局变量 ====================
+static Sub_22ED6C_t orig_sub_22ED6C = NULL; // 用于保存原始函数指针
+
+uint64_t hooked_sub_22ED6C(uint64_t a1, uint64_t a2, uint64_t a3) 
+{
+	if(!orig_sub_22ED6C) orig_sub_22ED6C = (Sub_22ED6C_t)(tersafeadd + 0x22ED70);
+	
+	 @autoreleasepool 
+	 {
+        // --- 打印参数基本信息 ---
+        NSLog(@"小罪ADD: [+] hooked_sub_22ED6C hooked !,a1:%llx,a2:%s,a3:%lld",a1,a2,a3);
+
+        // 调用原始函数
+        int64_t result = orig_sub_22ED6C(a1, a2, a3);
+        NSLog(@"小罪ADD: [+] hooked_sub_22ED6C Original result = %lld", result);
+
+		NSLog(@"小罪ADD: [+] hooked_sub_22ED6C called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+		//result = result + 80;
+        
+        return result;
+    }
+
+}
+
+
+
+
 void passptrmov1(long add1)
 {
     if(Read_Int(add1) != CFSwapInt32(0x200080D2))
@@ -3457,7 +3486,7 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(bptype == 0 || bptype >= 3)
+		if(bptype == 0 || bptype >= 4)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3490,6 +3519,12 @@ static void* exception_handler_thread(void* arg) {
 		{
 			uint64_t retlong = thread_state2.__x[0];
 		    NSLog(@"小罪ADD: [tersafe 0x266528 hook] retlong: %llx", retlong);
+		}
+
+		if(bptype == 3)
+		{
+			uint64_t retlong = thread_state2.__x[0];
+		    NSLog(@"小罪ADD: [tersafe sub_22ED6C hook] retlong: %llx", retlong);
 		}
 
 		
@@ -3578,6 +3613,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x266528;//范围检测
 	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x267494;
 
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x22ED6C;//范围检测
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub_22ED6C;
+
+	
+	
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -3599,6 +3639,15 @@ void initbreakpoint()
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd3,
         .target = tersafetsadd3ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
