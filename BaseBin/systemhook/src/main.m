@@ -3517,8 +3517,9 @@ static void* exception_handler_thread(void* arg) {
 
 		if(bptype == 2)
 		{
-			uint64_t retlong = thread_state2.__x[0];
-		    NSLog(@"小罪ADD: [tersafe 0x249FDC hook] retlong: %llx", retlong);
+			//uint64_t retlong = thread_state2.__x[0];
+			thread_state2.__x[0] = 1 ;
+			NSLog(@"小罪ADD: [tersafe 0x249FDC hook] fake x0: %llx", retlong);
 
 		}
 
@@ -3605,8 +3606,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
-	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x249FDC;//范围检测
-	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x24A570;
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x249FD8;//范围检测
+	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x249FDC;
 
 	
 	g_breakpoints[0] = (Breakpoint){
@@ -3647,7 +3648,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd2,
@@ -3677,9 +3678,9 @@ void initbreakpoint()
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
-	*/
+	
 
-	g_breakpoint_count = 3;
+	//g_breakpoint_count = 3;
 
 	
 	// 启动异常处理线程
