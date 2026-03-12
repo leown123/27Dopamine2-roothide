@@ -3519,7 +3519,7 @@ static void* exception_handler_thread(void* arg) {
 		{
 			//uint64_t retlong = thread_state2.__x[0];
 			thread_state2.__x[0] = 1 ;
-			NSLog(@"小罪ADD: [tersafe 0x249FDC hook] fake x0: %llx", retlong);
+			NSLog(@"小罪ADD: [tersafe 0x249FDC hook] fake x0: %llx", thread_state2.__x[0]);
 
 		}
 
