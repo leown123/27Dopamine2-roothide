@@ -3486,7 +3486,7 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(bptype == 0 || bptype >= 4)
+		if(bptype == 0 || bptype >= 3)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3517,14 +3517,17 @@ static void* exception_handler_thread(void* arg) {
 
 		if(bptype == 2)
 		{
-			uint64_t retlong = thread_state2.__x[0];
-		    NSLog(@"小罪ADD: [tersafe 0x266528 hook] retlong: %llx", retlong);
-		}
-
-		if(bptype == 3)
-		{
-			uint64_t retlong = thread_state2.__x[0];
-		    NSLog(@"小罪ADD: [tersafe sub_22ED6C hook] retlong: %llx", retlong);
+			uint64_t retlong = thread_state2.__x[8];
+		    NSLog(@"小罪ADD: [tersafe 0x249FB8 hook] retlong: %llx", retlong);
+			if(retlong == 1)
+			{
+				bp->target = (uint64_t)tersafeadd + 0x24A5EC;
+			}
+			else
+			{
+				bp->target = (uint64_t)tersafeadd + 0x249FC4;
+			}
+			
 		}
 
 		
@@ -3610,13 +3613,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
-	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x266528;//范围检测
-	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x267494;
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x249FB8;//范围检测
+	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x249FC0;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x22ED6C;//范围检测
-	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub_22ED6C;
-
-	
 	
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
@@ -3645,14 +3644,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	g_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd4,
-        .target = tersafetsadd4ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 	
 
 	/*
