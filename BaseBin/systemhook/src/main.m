@@ -1530,9 +1530,9 @@ int64_t hooked_sub_585D0(const char *a1, int64_t a2, uint64_t a3) {
     
 	@autoreleasepool 
 	{
-		NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
+		//NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
         // 打印堆栈信息（推荐使用 [NSThread callStackSymbols]）
-        NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+        //NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	}
     
     // 调用原始函数（可选）
@@ -1592,7 +1592,42 @@ uint64_t hooked_sub_22ED6C(uint64_t a1, uint64_t a2, uint64_t a3)
 
 }
 
+// ==================== 原始函数类型声明 ====================
+typedef uint64_t (*Sub241578_t)(uint64_t a1, uint64_t a2, unsigned int a3);
+typedef bool (*Sub241618_t)(uint64_t a1);
 
+// ==================== 原始函数指针（由 Dobby 填充） ====================
+static Sub241578_t orig_sub241578 = NULL;
+static Sub241618_t orig_sub241618 = NULL;
+
+// Hook for sub_241578 (offset 0x241578)
+uint64_t hooked_sub241578(uint64_t a1, uint64_t a2, unsigned int a3) 
+{
+    NSLog(@"小罪ADD: [+] hooked_sub241578 called: a1=0x%llx, a2=0x%llx, a3=%u", a1, a2, a3);
+
+	NSLog(@"小罪ADD: [+] hooked_sub241578 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    // 调用原始函数
+    uint64_t result = orig_sub241578(a1, a2, a3);
+
+    NSLog(@"小罪ADD: sub_241578 returned: 0x%llx", result);
+    return result;
+
+    // 如果想完全替换返回值，可注释掉上面两行并直接返回自定义值，例如：
+    // return 0x12345678;
+}
+
+// Hook for sub_241618 (offset 0x241618)
+bool hooked_sub241618(uint64_t a1) {
+    NSLog(@"小罪ADD: [+] hooked_sub241618 called: a1=0x%llx", a1);
+
+	NSLog(@"小罪ADD: [+] hooked_sub241618 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    bool result = orig_sub241618(a1);
+
+   NSLog(@"小罪ADD: [+] sub_241618 returned: %s", result ? "true" : "false");
+    return result;
+}
 
 
 void passptrmov1(long add1)
@@ -3520,7 +3555,7 @@ static void* exception_handler_thread(void* arg) {
 			//uint64_t retlong = thread_state2.__x[0];
 			//thread_state2.__x[0] = 1 ; 改1会三天
 			//thread_state2.__x[0] = 0;
-			NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
+			//NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
 
 		}
 
@@ -3530,19 +3565,10 @@ static void* exception_handler_thread(void* arg) {
 			//thread_state2.__x[0] = 1 ; 改1会三天
 			//thread_state2.__x[0] = 0;
 
-			uint64_t retlong = thread_state2.__x[8];
+			//uint64_t retlong = thread_state2.__x[0];
 			
-			NSLog(@"小罪ADD: [tersafe 0x241910 hook] ptr: 0x%llx,retlong:%lld", tersafeadd - pc,retlong);
+			//NSLog(@"小罪ADD: [tersafe 0x241910 hook] ptr: 0x%llx,retlong:%lld", tersafeadd - pc,retlong);
 
-			
-			if ( (retlong & 1) != 0 )
-			{
-				bp->target = tersafeadd + 0x241920;
-			}
-			else
-			{
-				bp->target = tersafeadd + 0x241914;
-			}
 			
 
 		}
@@ -3630,12 +3656,15 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
-	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241784;//范围检测1
-	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x241814;
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
+	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241910;//范围检测2
-	mach_vm_address_t tersafetsadd4ret = tersafeadd + 0x241914;
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241618;;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241618;//tersafeadd + 0x241914;
 
+	
+
+	
 	
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
