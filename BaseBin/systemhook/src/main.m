@@ -3765,8 +3765,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
 	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
-	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x244894;//范围检测3
-	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x241914;
+	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x23A448;//范围检测3 禁止启动县城
+	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
 
 	
