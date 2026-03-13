@@ -3486,7 +3486,7 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(bptype == 0 || bptype >= 3)
+		if(bptype == 0 || bptype >= 4)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3515,12 +3515,12 @@ static void* exception_handler_thread(void* arg) {
 		    }
 		}
 
-		if(bptype == 2)
+		if(bptype == 2 || bptype == 3)
 		{
 			//uint64_t retlong = thread_state2.__x[0];
 			//thread_state2.__x[0] = 1 ; 改1会三天
-			thread_state2.__x[0] = 0;
-			NSLog(@"小罪ADD: [tersafe 0x249FDC hook] fake x0: %llx", thread_state2.__x[0]);
+			//thread_state2.__x[0] = 0;
+			NSLog(@"小罪ADD: [tersafe 0x2417E8 || 0x241784 hook] ptr: %llx", tersafeadd - pc);
 
 		}
 
@@ -3607,8 +3607,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
-	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x249FD8;//范围检测
-	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x249FDC;
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x2417E8;//范围检测1
+	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x241814;
+
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241784;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = tersafeadd + 0x241814;
 
 	
 	g_breakpoints[0] = (Breakpoint){
@@ -3638,6 +3641,32 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[4] = (Breakpoint){
+        .source = fanweiadd1,
+        .target = fanweiadd1 + 4,
+        .s0_val = 31.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	g_breakpoints[5] = (Breakpoint){
+        .source = fanweiadd3,
+        .target = fanweiadd3 + 4,
+        .s0_val = 31.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	
 
 	/*
@@ -3649,7 +3678,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd2,
@@ -3659,6 +3688,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	
+	
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -3675,6 +3706,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 	
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
