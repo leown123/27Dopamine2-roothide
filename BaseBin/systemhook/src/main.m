@@ -3109,7 +3109,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	
 bool isover100 = false;
 
-    
+bool maindone = false;
 
 // =============================================================================
 // 设置指定索引的硬件断点 (在所有线程上)
@@ -3148,9 +3148,10 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	//if(thread_count > 90)isover100 = true;
 
-    kern_return_t kr_all = KERN_SUCCESS;
+	if(thread_count < 40) return KERN_FAILURE;
 
-	if(thread_count < 40) return kr_all;
+	maindone = true;
+	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: 有40个线程，prepare to set breakpoint");
 	
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
 	for (mach_msg_type_number_t i = 0; i < 40; i++) {
@@ -3188,6 +3189,8 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: thread_count:%d",thread_count);
 
+	if(thread_count < 41) return KERN_FAILURE;
+
 	if(thread_count > 90)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
@@ -3218,17 +3221,21 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 // =============================================================================
 static void setup_all_breakpoints(void) 
 {
-    for (int i = 0; i < g_breakpoint_count; i++) {
-        if (!g_breakpoints[i].used) continue;
-        g_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
-        kern_return_t kr = set_hw_breakpoint_at_index(i, g_breakpoints[i].source);
-        if (kr != KERN_SUCCESS) 
-		{
-            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, g_breakpoints[i].source);
-        } else {
-            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
-        }
-    }
+
+	if(!maindone)
+	{
+	    for (int i = 0; i < g_breakpoint_count; i++) {
+	        if (!g_breakpoints[i].used) continue;
+	        g_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
+	        kern_return_t kr = set_hw_breakpoint_at_index(i, g_breakpoints[i].source);
+	        if (kr != KERN_SUCCESS) 
+			{
+	            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, g_breakpoints[i].source);
+	        } else {
+	            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
+	        }
+	    }
+	}
 
 	for (int i = 0; i < ter_breakpoint_count; i++) {
         if (!ter_breakpoints[i].used) continue;
@@ -3561,7 +3568,6 @@ static void* exception_handler_thread(void* arg) {
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) 
 			{
                 bp = &g_breakpoints[i];
-				//if(i == 1) istersafebp = true;
 				bptype = i;
                 break;
             }
