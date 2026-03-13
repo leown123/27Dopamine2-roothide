@@ -1607,6 +1607,8 @@ uint64_t hooked_sub241578(uint64_t a1, uint64_t a2, unsigned int a3)
 
 	NSLog(@"小罪ADD: [+] hooked_sub241578 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
+	if(!orig_sub241578) orig_sub241578 = (Sub241578_t)(tersafeadd + 0x24157C);
+
     // 调用原始函数
     uint64_t result = orig_sub241578(a1, a2, a3);
 
@@ -1627,6 +1629,11 @@ bool hooked_sub241618(uint64_t a1) {
 
    NSLog(@"小罪ADD: [+] sub_241618 returned: %s", result ? "true" : "false");
     return result;
+}
+
+uint64_t hooked_ret0()
+{
+	return 0;
 }
 
 
@@ -3556,6 +3563,19 @@ static void* exception_handler_thread(void* arg) {
 			//thread_state2.__x[0] = 1 ; 改1会三天
 			//thread_state2.__x[0] = 0;
 			//NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
+			
+			//1、获取sp
+			uint64_t current_sp = thread_state2.__sp;
+		    // 2. 计算新栈指针 (注意 16 字节对齐)
+		    //  SUB SP, SP, #0x60 后，需要确保 sp & 0xf == 0
+		    uint64_t new_sp = current_sp - 0x60;
+		    if (new_sp & 0xf) {
+		        // 如果不对齐，向上取整到 16 的倍数（但通常编译生成的指令会保证对齐）
+		        // 这里仅作防御，实际使用中如果减后不对齐，可能需要调整值
+		        new_sp = new_sp & ~0xfULL;
+   			 }
+			// 3. 修改线程状态
+			thread_state2.__sp = new_sp;
 
 		}
 
@@ -3659,8 +3679,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241618;;//范围检测2
-	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241618;//tersafeadd + 0x241914;
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
 	
 
