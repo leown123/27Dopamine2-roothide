@@ -2985,7 +2985,7 @@ static Breakpoint g_breakpoints[MAX_HW_BREAKPOINTS];
 static int g_breakpoint_count = 0;
 
 static Breakpoint ter_breakpoints[MAX_HW_BREAKPOINTS];
-static int ter_breakpoint_count = 0;
+static int ter_breakpoint_count = 60;
 
 
 // 获取所有线程
@@ -3228,6 +3228,7 @@ static void setup_all_breakpoints(void)
 	if(!maindone)
 	{
 	    for (int i = 0; i < g_breakpoint_count; i++) {
+			NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 g_breakpoint g_breakpoint_count：%d",g_breakpoint_count);
 	        if (!g_breakpoints[i].used) continue;
 	        g_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
 	        kern_return_t kr = set_hw_breakpoint_at_index(i, g_breakpoints[i].source);
@@ -3240,17 +3241,17 @@ static void setup_all_breakpoints(void)
 	    }
 	}
 
-	for (int i = 0; i < ter_breakpoint_count; i++) 
+	for (int n = 0; n < ter_breakpoint_count; n++) 
 	{
 		NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 ter_breakpoint ter_breakpoint_count：%d",ter_breakpoint_count);
-        if (!ter_breakpoints[i].used) continue;
-        ter_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
-        kern_return_t kr = set_hw_breakpoint_at_index_ter(i, ter_breakpoints[i].source);
+        if (!ter_breakpoints[n].used) continue;
+        ter_breakpoints[n].hw_index = n;   // 硬件索引与数组下标一致
+        kern_return_t kr = set_hw_breakpoint_at_index_ter(n, ter_breakpoints[n].source);
         if (kr != KERN_SUCCESS) 
 		{
-            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, ter_breakpoints[i].source);
+            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, ter_breakpoints[n].source);
         } else {
-            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, ter_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
+            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, ter_breakpoints[n].source, ter_breakpoints[n].target, ter_breakpoints[n].s0_val, ter_breakpoints[n].s1_val);
         }
     }
 
