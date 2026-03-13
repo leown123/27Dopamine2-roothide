@@ -1636,6 +1636,11 @@ uint64_t hooked_ret0()
 	return 0;
 }
 
+uint64_t hooked_ret1()
+{
+	return 1;
+}
+
 
 void passptrmov1(long add1)
 {
@@ -2978,6 +2983,9 @@ typedef struct {
 static Breakpoint g_breakpoints[MAX_HW_BREAKPOINTS];
 static int g_breakpoint_count = 0;
 
+static Breakpoint ter_breakpoints[MAX_HW_BREAKPOINTS];
+static int ter_breakpoint_count = 0;
+
 
 // 获取所有线程
 static thread_act_array_t get_threads(mach_msg_type_number_t *count) {
@@ -3100,6 +3108,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	
 bool isover100 = false;
+
     
 
 // =============================================================================
@@ -3137,10 +3146,52 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
 
+	//if(thread_count > 90)isover100 = true;
+
+    kern_return_t kr_all = KERN_SUCCESS;
+
+	if(thread_count < 40) return kr_all;
+	
+    //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
+	for (mach_msg_type_number_t i = 0; i < 40; i++) {
+        arm_debug_state64_t debug_state;
+        mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
+        kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
+                                            (thread_state_t)&debug_state, &count);
+        if (kr != KERN_SUCCESS) { kr_all = kr; continue; }
+
+        debug_state.__bvr[idx] = addr;
+        debug_state.__bcr[idx] = (1ULL << 0) | (2ULL << 1) | (1ULL << 5); // 启用
+        debug_state.__mdscr_el1 |= (1ULL << 15);   // 全局调试启用
+
+        kr = thread_set_state(thread_list[i], ARM_DEBUG_STATE64,
+                              (thread_state_t)&debug_state, count);
+        if (kr != KERN_SUCCESS) kr_all = kr;
+    }
+
+    free_threads(thread_list, thread_count);
+    pthread_mutex_unlock(&g_hwbp_mutex);
+    return kr_all;
+}
+
+static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t addr) {
+    if (idx < 0 || idx >= MAX_HW_BREAKPOINTS)
+        return KERN_INVALID_ARGUMENT;
+
+    pthread_mutex_lock(&g_hwbp_mutex);
+    mach_msg_type_number_t thread_count;
+    thread_act_array_t thread_list = get_threads(&thread_count);
+    if (!thread_list) {
+        pthread_mutex_unlock(&g_hwbp_mutex);
+        return KERN_FAILURE;
+    }
+
+	NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: thread_count:%d",thread_count);
+
 	if(thread_count > 90)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
-    for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
+    for (mach_msg_type_number_t i = 41; i < thread_count; i++) {
 	//for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
@@ -3173,13 +3224,25 @@ static void setup_all_breakpoints(void)
         kern_return_t kr = set_hw_breakpoint_at_index(i, g_breakpoints[i].source);
         if (kr != KERN_SUCCESS) 
 		{
-            NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, g_breakpoints[i].source);
+            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, g_breakpoints[i].source);
         } else {
-            NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",
-                  i, g_breakpoints[i].source, g_breakpoints[i].target,
-                  g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
+            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
         }
     }
+
+	for (int i = 0; i < ter_breakpoint_count; i++) {
+        if (!ter_breakpoints[i].used) continue;
+        ter_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
+        kern_return_t kr = set_hw_breakpoint_at_index_ter(i, ter_breakpoints[i].source);
+        if (kr != KERN_SUCCESS) 
+		{
+            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, ter_breakpoints[i].source);
+        } else {
+            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, ter_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
+        }
+    }
+
+	
 }
 
 
@@ -3388,7 +3451,8 @@ static void* exception_handler_threadold(void* arg) {
     return NULL;
 }
 
-int bptype = 0;
+int bptype = -1;
+int terbptype = -1;
 
 static void* exception_handler_thread(void* arg) {
     kern_return_t kr;
@@ -3492,13 +3556,24 @@ static void* exception_handler_thread(void* arg) {
 
         // 查找匹配的断点
         Breakpoint *bp = NULL;
-        for (int i = 0; i < g_breakpoint_count; i++) {
-            if (g_breakpoints[i].used && g_breakpoints[i].source == pc) {
+        for (int i = 0; i < g_breakpoint_count; i++) 
+		{
+            if (g_breakpoints[i].used && g_breakpoints[i].source == pc) 
+			{
                 bp = &g_breakpoints[i];
 				//if(i == 1) istersafebp = true;
 				bptype = i;
                 break;
             }
+
+			if (ter_breakpoints[i].used && ter_breakpoints[i].source == pc) 
+			{
+                bp = &ter_breakpoints[i];
+				terbptype = i;
+				istersafebp = true;
+                break;
+            }
+			
         }
 
         if (!bp) {
@@ -3528,7 +3603,7 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(bptype == 0 || bptype >= 4)
+		if(istersafebp == false && bptype >= 0)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3542,56 +3617,49 @@ static void* exception_handler_thread(void* arg) {
 	        }
 		}
 
-		if(bptype == 1)
+		if(istersafebp == true)
 		{
-			uint64_t path_ptr = thread_state2.__x[0];
-		    char path[1024] = {0};
-		    mach_vm_size_t bytes_read = 0;
-		    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-		                                              (mach_vm_address_t)path, &bytes_read);
-		    if (kr == KERN_SUCCESS && bytes_read > 0) {
-		        path[bytes_read] = '\0';
-		        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Path: %s", path);
-		    } else {
-		        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
-		    }
-		}
+			if(terbptype == 0 || terbptype == 1)
+			{
+				uint64_t path_ptr = thread_state2.__x[0];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) {
+			        path[bytes_read] = '\0';
+			        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Path: %s", path);
+			    } else 
+				{
+			        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
+			    }
+			}
 
-		if(bptype == 2)
-		{
-			//uint64_t retlong = thread_state2.__x[0];
-			//thread_state2.__x[0] = 1 ; 改1会三天
-			//thread_state2.__x[0] = 0;
-			//NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
-			
-			//1、获取sp
-			uint64_t current_sp = thread_state2.__sp;
-		    // 2. 计算新栈指针 (注意 16 字节对齐)
-		    //  SUB SP, SP, #0x60 后，需要确保 sp & 0xf == 0
-		    uint64_t new_sp = current_sp - 0x60;
-		    if (new_sp & 0xf) {
-		        // 如果不对齐，向上取整到 16 的倍数（但通常编译生成的指令会保证对齐）
-		        // 这里仅作防御，实际使用中如果减后不对齐，可能需要调整值
-		        new_sp = new_sp & ~0xfULL;
-   			 }
-			// 3. 修改线程状态
-			thread_state2.__sp = new_sp;
-
-		}
-
-		if(bptype == 3)
-		{
-			//uint64_t retlong = thread_state2.__x[0];
-			//thread_state2.__x[0] = 1 ; 改1会三天
-			//thread_state2.__x[0] = 0;
-
-			//uint64_t retlong = thread_state2.__x[0];
-			
-			//NSLog(@"小罪ADD: [tersafe 0x241910 hook] ptr: 0x%llx,retlong:%lld", tersafeadd - pc,retlong);
+			if(terbptype == 2)
+			{
+				//uint64_t retlong = thread_state2.__x[0];
+				//thread_state2.__x[0] = 1 ; 改1会三天
+				//thread_state2.__x[0] = 0;
+				//NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
+				
+				//1、获取sp
+				uint64_t current_sp = thread_state2.__sp;
+			    // 2. 计算新栈指针 (注意 16 字节对齐)
+			    //  SUB SP, SP, #0x60 后，需要确保 sp & 0xf == 0
+			    uint64_t new_sp = current_sp - 0x60;
+			    if (new_sp & 0xf) {
+			        // 如果不对齐，向上取整到 16 的倍数（但通常编译生成的指令会保证对齐）
+			        // 这里仅作防御，实际使用中如果减后不对齐，可能需要调整值
+			        new_sp = new_sp & ~0xfULL;
+	   			 }
+				// 3. 修改线程状态
+				thread_state2.__sp = new_sp;
+	
+			}
 
 			
-
 		}
+
 
 		
         // 修改 PC 为目标地址（断点持续有效）
@@ -3671,7 +3739,7 @@ void initbreakpoint()
     mach_vm_address_t fanweiadd4 = Imageaddress + 0x16C9FC0 ;
 
 	mach_vm_address_t tersafetsadd1 = Imageaddress + 0x585D0;
-	mach_vm_address_t tersafetsadd1ret = Imageaddress + 0x5871C;
+	mach_vm_address_t tersafetsadd1ret = (mach_vm_address_t)hooked_sub_585D0;
 
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
@@ -3682,7 +3750,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
 	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
-	
+	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x244E48;;//范围检测3
+	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x241914;
+
 
 	
 	
@@ -3696,63 +3766,15 @@ void initbreakpoint()
     };
 
 	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd2,
-        .target = tersafetsadd2ret,
-        .s0_val = 0.0f,
+        .source = fanweiadd1,
+        .target = fanweiadd1 + 4,
+        .s0_val = 31.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
 
 	g_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd3,
-        .target = tersafetsadd3ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	g_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd4,
-        .target = tersafetsadd4ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	g_breakpoints[4] = (Breakpoint){
-        .source = fanweiadd1,
-        .target = fanweiadd1 + 4,
-        .s0_val = 31.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	g_breakpoints[5] = (Breakpoint){
-        .source = fanweiadd3,
-        .target = fanweiadd3 + 4,
-        .s0_val = 31.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	
-
-	/*
-    g_breakpoints[2] = (Breakpoint){
-        .source = fanweiadd1,
-        .target = fanweiadd1 + 4,
-        .s0_val = 31.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	
-	
-	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
         .s0_val = 31.0f,
@@ -3762,7 +3784,7 @@ void initbreakpoint()
     };
 	
 	
-	g_breakpoints[4] = (Breakpoint){
+	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
         .s0_val = 31.0f,
@@ -3770,7 +3792,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	g_breakpoints[5] = (Breakpoint){
+	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd4,
         .target = fanweiadd4 + 4,
         .s0_val = 31.0f,
@@ -3778,12 +3800,74 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-	
-	
+
+	g_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
-	
+
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd1,
+        .target = tersafetsadd1ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd2,
+        .target = tersafetsadd2ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd3,
+        .target = tersafetsadd3ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd5,
+        .target = tersafetsadd5ret,
+        .s0_val = 31.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd5,
+        .target = tersafetsadd5ret,
+        .s0_val = 31.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoint_count = 6;
+
 
 	//g_breakpoint_count = 3;
 
