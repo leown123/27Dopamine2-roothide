@@ -3475,9 +3475,9 @@ static void* exception_handler_thread(void* arg) {
 		                                              (mach_vm_address_t)path, &bytes_read);
 		    if (kr == KERN_SUCCESS && bytes_read > 0) {
 		        path[bytes_read] = '\0';
-		        NSLog(@"小罪ADD: [tersafe hook] Path: %s", path);
+		        //NSLog(@"小罪ADD: [tersafe hook] Path: %s", path);
 		    } else {
-		        NSLog(@"小罪ADD: [tersafe hook] Failed to read path at 0x%llx", path_ptr);
+		        //NSLog(@"小罪ADD: [tersafe hook] Failed to read path at 0x%llx", path_ptr);
 		    }
 
 			thread_state2.__x[0] = 0;
@@ -3509,18 +3509,27 @@ static void* exception_handler_thread(void* arg) {
 		                                              (mach_vm_address_t)path, &bytes_read);
 		    if (kr == KERN_SUCCESS && bytes_read > 0) {
 		        path[bytes_read] = '\0';
-		        NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Path: %s", path);
+		        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Path: %s", path);
 		    } else {
-		        NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
+		        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
 		    }
 		}
 
-		if(bptype == 2 || bptype == 3)
+		if(bptype == 2)
 		{
 			//uint64_t retlong = thread_state2.__x[0];
 			//thread_state2.__x[0] = 1 ; 改1会三天
 			//thread_state2.__x[0] = 0;
-			NSLog(@"小罪ADD: [tersafe 0x2417E8 || 0x241784 hook] ptr: %llx", tersafeadd - pc);
+			NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
+
+		}
+
+		if(bptype == 3)
+		{
+			//uint64_t retlong = thread_state2.__x[0];
+			//thread_state2.__x[0] = 1 ; 改1会三天
+			//thread_state2.__x[0] = 0;
+			NSLog(@"小罪ADD: [tersafe 0x2415D0 hook] ptr: %llx", tersafeadd - pc);
 
 		}
 
@@ -3607,11 +3616,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
-	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x2417E8;//范围检测1
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241784;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x241814;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241784;//范围检测2
-	mach_vm_address_t tersafetsadd4ret = tersafeadd + 0x241814;
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x2415D0;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = tersafeadd + 0x2415FC;
 
 	
 	g_breakpoints[0] = (Breakpoint){
