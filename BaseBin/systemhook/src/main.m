@@ -3529,7 +3529,21 @@ static void* exception_handler_thread(void* arg) {
 			//uint64_t retlong = thread_state2.__x[0];
 			//thread_state2.__x[0] = 1 ; 改1会三天
 			//thread_state2.__x[0] = 0;
-			NSLog(@"小罪ADD: [tersafe 0x2415D0 hook] ptr: %llx", tersafeadd - pc);
+
+			uint64_t retlong = thread_state2.__x[8];
+			
+			NSLog(@"小罪ADD: [tersafe 0x241910 hook] ptr: 0x%llx,retlong:%lld", tersafeadd - pc,retlong);
+
+			
+			if ( (retlong & 1) != 0 )
+			{
+				bp->target = tersafeadd + 0x241920;
+			}
+			else
+			{
+				bp->target = tersafeadd + 0x241914;
+			}
+			
 
 		}
 
@@ -3619,8 +3633,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241784;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = tersafeadd + 0x241814;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x2415D0;//范围检测2
-	mach_vm_address_t tersafetsadd4ret = tersafeadd + 0x2415FC;
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241910;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = tersafeadd + 0x241914;
 
 	
 	g_breakpoints[0] = (Breakpoint){
