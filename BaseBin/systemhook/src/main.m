@@ -2967,6 +2967,7 @@ static mach_vm_address_t g_source_addr = 0;
 static mach_vm_address_t g_target_addr = 0;
 static int g_hwbp_index = 0;          // 使用第0个硬件断点
 static pthread_mutex_t g_hwbp_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t ter_hwbp_mutex = PTHREAD_MUTEX_INITIALIZER;
 static mach_port_t g_exception_port = MACH_PORT_NULL;
 
 #define MAX_HW_BREAKPOINTS 6
@@ -3180,11 +3181,12 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     if (idx < 0 || idx >= MAX_HW_BREAKPOINTS)
         return KERN_INVALID_ARGUMENT;
 
-    pthread_mutex_lock(&g_hwbp_mutex);
+    pthread_mutex_lock(&ter_hwbp_mutex);
     mach_msg_type_number_t thread_count;
     thread_act_array_t thread_list = get_threads(&thread_count);
     if (!thread_list) {
-        pthread_mutex_unlock(&g_hwbp_mutex);
+		NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: get thread_list fail!");
+        pthread_mutex_unlock(&ter_hwbp_mutex);
         return KERN_FAILURE;
     }
 
@@ -3213,7 +3215,7 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     }
 
     free_threads(thread_list, thread_count);
-    pthread_mutex_unlock(&g_hwbp_mutex);
+    pthread_mutex_unlock(&ter_hwbp_mutex);
     return kr_all;
 }
 
@@ -3238,7 +3240,9 @@ static void setup_all_breakpoints(void)
 	    }
 	}
 
-	for (int i = 0; i < ter_breakpoint_count; i++) {
+	for (int i = 0; i < ter_breakpoint_count; i++) 
+	{
+		NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 ter_breakpoint ter_breakpoint_count：%d",ter_breakpoint_count);
         if (!ter_breakpoints[i].used) continue;
         ter_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
         kern_return_t kr = set_hw_breakpoint_at_index_ter(i, ter_breakpoints[i].source);
