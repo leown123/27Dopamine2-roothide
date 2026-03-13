@@ -3152,7 +3152,8 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	maindone = true;
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: 有40个线程，prepare to set breakpoint");
-	
+
+	kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
 	for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
