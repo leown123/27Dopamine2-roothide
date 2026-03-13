@@ -3129,7 +3129,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
-	/*
+	
 	while (thread_count < 40) 
 	{ 
 		
@@ -3137,19 +3137,19 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 		//pthread_mutex_unlock(&g_hwbp_mutex); 
 		free_threads(thread_list, thread_count);
 
-		sleep(5);
+		//sleep(5);
 		thread_list = get_threads(&thread_count);
 		NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 		
 		//return KERN_FAILURE; 
 	}
-	*/
+	
 
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
 
 	//if(thread_count > 90)isover100 = true;
 
-	if(thread_count < 40) return KERN_FAILURE;
+	//if(thread_count < 40) return KERN_FAILURE;
 
 	maindone = true;
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: 有40个线程，prepare to set breakpoint");
@@ -3192,7 +3192,8 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 
 	NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: thread_count:%d",thread_count);
 
-	if(thread_count < 41) return KERN_FAILURE;
+	
+	//if(thread_count < 41) return KERN_FAILURE;
 
 	if(thread_count > 90)isover100 = true;
 
