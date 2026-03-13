@@ -1633,11 +1633,13 @@ bool hooked_sub241618(uint64_t a1) {
 
 uint64_t hooked_ret0()
 {
+	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
 uint64_t hooked_ret1()
 {
+	NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 1;
 }
 
@@ -3127,7 +3129,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
         return KERN_FAILURE;
     }
 
-	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
+	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
 	
 	while (thread_count < 40) 
@@ -3139,7 +3141,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 		//sleep(5);
 		thread_list = get_threads(&thread_count);
-		NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
+		//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 		
 		//return KERN_FAILURE; 
 	}
@@ -3152,7 +3154,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 	//if(thread_count < 40) return KERN_FAILURE;
 
 	maindone = true;
-	NSLog(@"小罪ADD: set_hw_breakpoint_at_index: 有40个线程，prepare to set breakpoint");
+	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: 有40个线程，prepare to set breakpoint");
 
 	kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
@@ -3190,7 +3192,7 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
         return KERN_FAILURE;
     }
 
-	NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: thread_count:%d",thread_count);
+	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: thread_count:%d",thread_count);
 
 	
 	//if(thread_count < 41) return KERN_FAILURE;
@@ -3244,7 +3246,7 @@ static void setup_all_breakpoints(void)
 
 	for (int n = 0; n < ter_breakpoint_count; n++) 
 	{
-		NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 ter_breakpoint ter_breakpoint_count：%d",ter_breakpoint_count);
+		//NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 ter_breakpoint ter_breakpoint_count：%d",ter_breakpoint_count);
         if (!ter_breakpoints[n].used) continue;
         ter_breakpoints[n].hw_index = n;   // 硬件索引与数组下标一致
         kern_return_t kr = set_hw_breakpoint_at_index_ter(n, ter_breakpoints[n].source);
@@ -3763,7 +3765,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
 	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
-	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x244E48;;//范围检测3
+	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x244894;//范围检测3
 	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x241914;
 
 
