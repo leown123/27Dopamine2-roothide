@@ -1633,7 +1633,7 @@ uint64_t hooked_sub241578(uint64_t a1, uint64_t a2, unsigned int a3)
     //NSLog(@"小罪ADD: sub_241578 returned: 0x%llx", result);
     //return result;
 
-	return 1
+	return 1;
 
     // 如果想完全替换返回值，可注释掉上面两行并直接返回自定义值，例如：
     // return 0x12345678;
