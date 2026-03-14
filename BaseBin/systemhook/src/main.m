@@ -1354,7 +1354,7 @@ static long Get_Imageaddress_base_smoba() {
         if([res hasSuffix:@"UnityFramework"])// && linshiptr < 0x100000000
         {
             //continue;
-            return linshiptr + 0x100000000;
+            return linshiptr;// + 0x100000000
         }
     }
     return 0;
