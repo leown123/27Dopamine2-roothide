@@ -1548,9 +1548,9 @@ int64_t hooked_sub_585D0(const char *a1, int64_t a2, uint64_t a3) {
     
 	@autoreleasepool 
 	{
-		//NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
+		NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
         // 打印堆栈信息（推荐使用 [NSThread callStackSymbols]）
-        //NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+        NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	}
     
     // 调用原始函数（可选）
@@ -2917,6 +2917,34 @@ void* duquthread(void* aa)
 		*/
 		
 }	
+
+void* duquthread_smoba(void* aa)
+{
+		//sleep();
+		if(!selfdylibadd)
+		{
+			
+			selfdylibadd = Getselfdylibadd();
+		}
+
+		int huomiansize = 0;//sizeof(struct mach_header_64);
+
+		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd前：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
+
+
+		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
+		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
+		//memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
+		memcpy((void *)selfdylibadd, (void *)tersafeadd, 0xF50);
+		
+
+		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
+
+		initbreakpoint_smoba();
+
+	
+		
+}	
 	
 
 void* xunhuanthread(void* aa)
@@ -2943,7 +2971,8 @@ void smobainit()
 	NSLog(@"小罪ADD: smobainit: Imageaddress:%lx,Read_Long(Imageaddress):%lx",Imageaddress,Read_Long(Imageaddress));
 	NSLog(@"小罪ADD: smobainit: tersafeadd:%lx,Read_Long(tersafeadd):%lx",tersafeadd,Read_Long(tersafeadd));
 
-
+	pthread_t thread2;
+    pthread_create(&thread2, NULL, duquthread_smoba, NULL);
 
 	
 }
@@ -3957,6 +3986,42 @@ void initbreakpoint()
 	
 }
 
+void initbreakpoint_smoba()
+{
+	NSLog(@"小罪ADD: initbreakpoint_smoba: loaded, setting up hardware breakpoint...");
+
+	NSLog(@"小罪ADD: initbreinitbreakpoint_smobaakpoint: jump_hook dylib loaded");
+
+	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x57B58;
+	mach_vm_address_t tersafetsadd1ret = (mach_vm_address_t)hooked_sub_585D0;
+
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd1,
+        .target = tersafetsadd1ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	
+	ter_breakpoint_count = 1;
+
+	
+	// 启动异常处理线程
+    pthread_t thread;
+    pthread_create(&thread, NULL, exception_handler_thread, NULL);
+    pthread_detach(thread);
+	
+    // 设置硬件断点
+
+	while(!isover100)
+	{
+    	setup_all_breakpoints();
+	}
+
+
+	
+}
 
 
 
@@ -4013,6 +4078,7 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 
+		smobainit();
 
 		//loadandinitshare();
 		//initbreakpoint();
