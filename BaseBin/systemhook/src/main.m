@@ -1342,6 +1342,24 @@ static long Get_Imageaddress_base() {
     return 0;
 }
 
+static long Get_Imageaddress_base_smoba() {
+    uint32_t count = _dyld_image_count();
+    for (int i = 0; i < count; i++) {
+        const char * path = (const char *)_dyld_get_image_name(i);
+        
+        NSString *res = [NSString stringWithUTF8String:path];
+        
+        long linshiptr = (long)_dyld_get_image_vmaddr_slide(i);
+        
+        if([res hasSuffix:@"UnityFramework"])// && linshiptr < 0x100000000
+        {
+            //continue;
+            return linshiptr + 0x100000000;
+        }
+    }
+    return 0;
+}
+
 static long tersafeadd = 0;
 static int tersafesize = 0;
 static long tersafebakadd = 0;
@@ -2910,6 +2928,26 @@ void* xunhuanthread(void* aa)
 	}
 }
 
+void smobainit()
+{
+	while(!Imageaddress)
+	{
+		Imageaddress = Get_Imageaddress_base_smoba();
+	}
+
+	while(!tersafeadd)
+	{
+		tersafeadd = Get_tersafe_base();
+	}
+
+	NSLog(@"小罪ADD: smobainit: Imageaddress:%lx,Read_Long(Imageaddress):%lx",Imageaddress,Read_Long(Imageaddress));
+	NSLog(@"小罪ADD: smobainit: tersafeadd:%lx,Read_Long(tersafeadd):%lx",tersafeadd,Read_Long(tersafeadd));
+
+
+
+	
+}
+
 void loadandinitshare()
 {
 	if(!hadgongxiang)
@@ -3933,6 +3971,68 @@ __attribute__((constructor)) static void initializer(void)
 
 if (load_executable_path() == 0) 
 {
+
+	if (string_has_suffix(gExecutablePath, "/smoba")) 
+	{
+		NSLog(@"小罪ADD: systemhook: smoba 启动！：%s", gExecutablePath);
+
+		gFullyDebugged = true;
+		if (jbclient_process_checkin(&JB_RootPath, &JB_BootUUID, &JB_SandboxExtensions, &gFullyDebugged) == 0) 
+		{
+			//consume_tokenized_sandbox_extensions(JB_SandboxExtensions);
+		}
+
+		NSLog(@"小罪ADD: systemhook: smoba jbclient_process_checkin：JB_RootPath:%s,JB_BootUUID:%s,JB_SandboxExtensions:%s,gFullyDebugged:%d", JB_RootPath, JB_BootUUID, JB_SandboxExtensions, gFullyDebugged);
+
+		// Unset DYLD_INSERT_LIBRARIES attempt at making jailbreak detection harder
+		const char *dyldInsertLibraries = getenv("DYLD_INSERT_LIBRARIES");
+		if (dyldInsertLibraries) 
+		{
+			unsetenv("DYLD_INSERT_LIBRARIES");
+			NSLog(@"小罪ADD: systemhook: unsetenv DYLD_INSERT_LIBRARIES success,getenv(DYLD_INSERT_LIBRARIES):%s",getenv("DYLD_INSERT_LIBRARIES"));
+		}
+
+		const char *SafeModestr = getenv("_SafeMode");
+		if (SafeModestr) 
+		{
+			unsetenv("_SafeMode");
+			NSLog(@"小罪ADD: systemhook: unsetenv _SafeMode success");
+		}
+
+		const char *MSSafeModestr = getenv("_MSSafeMode");
+		if (MSSafeModestr) 
+		{
+			unsetenv("_MSSafeMode");
+			NSLog(@"小罪ADD: systemhook: unsetenv MSSafeModestr success");
+		}
+
+		const char *DISABLE_TWEAKSstr = getenv("DISABLE_TWEAKS");
+		if (DISABLE_TWEAKSstr) 
+		{
+			unsetenv("DISABLE_TWEAKS");
+			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
+		}
+
+
+		//loadandinitshare();
+		//initbreakpoint();
+
+		//pthread_t thread2;
+        //pthread_create(&thread2, NULL, crchackthread, NULL);
+
+				
+		return;
+
+		
+	}
+
+
+
+
+
+
+
+
 		
 	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
 	{
