@@ -3749,21 +3749,39 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 				NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
-				uint64_t sp = thread_state2.__sp;  // 栈指针（栈顶地址）
-			    uint64_t stack_values[4] = {0};   // 存放读取的3个值
-			    mach_vm_size_t bytes_read = 0;
-			
-			    // 从 sp 开始读取 24 字节（4 * 8）
-			    kr = mach_vm_read_overwrite(mach_task_self(), sp, sizeof(stack_values),
-			                                (mach_vm_address_t)stack_values, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read == sizeof(stack_values)) {
-			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[0] at 0x%llx = 0x%llx", sp, stack_values[0]);
-			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[1] at 0x%llx = 0x%llx", sp + 8, stack_values[1]);
-			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[2] at 0x%llx = 0x%llx", sp + 16, stack_values[2]);
-					NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[3] at 0x%llx = 0x%llx", sp + 24, stack_values[3]);
-			    } else {
-			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read stack memory at SP=0x%llx", sp);
-			    }
+				uint64_t pc = thread_state2.__pc;
+				uint64_t lr = thread_state2.__lr;
+				uint64_t fp = thread_state2.__fp;   // x29
+				uint64_t sp = thread_state2.__sp;
+
+				int depth = 0;
+				uint64_t current_fp = fp;
+				while (current_fp != 0 && depth < 4) { // 限制最大深度，避免无限循环
+				    uint64_t next_fp = 0;
+				    uint64_t ret_addr = 0;
+				    mach_vm_size_t bytes_read = 0;
+				
+				    // 读取 [current_fp] 处的前一个 FP
+				    kr = mach_vm_read_overwrite(mach_task_self(), current_fp, sizeof(next_fp),
+				                                (mach_vm_address_t)&next_fp, &bytes_read);
+				    if (kr != KERN_SUCCESS || bytes_read != sizeof(next_fp)) {
+				        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read next FP at 0x%llx", current_fp);
+				        break;
+				    }
+				
+				    // 读取 [current_fp + 8] 处的返回地址
+				    kr = mach_vm_read_overwrite(mach_task_self(), current_fp + 8, sizeof(ret_addr),
+				                                (mach_vm_address_t)&ret_addr, &bytes_read);
+				    if (kr != KERN_SUCCESS || bytes_read != sizeof(ret_addr)) {
+				        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read return address at 0x%llx", current_fp + 8);
+				        break;
+				    }
+				
+				    NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx", depth, current_fp, ret_addr);
+				
+				    current_fp = next_fp;
+				    depth++;
+				}
 
 				
 			}
