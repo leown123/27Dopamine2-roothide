@@ -3748,7 +3748,13 @@ static void* exception_handler_thread(void* arg) {
 				}
 				*/
 
-				NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
+				
+
+				//NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
+
+				bool istargetadd = false;
+		
+				
 				uint64_t pc = thread_state2.__pc;
 				uint64_t lr = thread_state2.__lr;
 				uint64_t fp = thread_state2.__fp;   // x29
@@ -3756,7 +3762,7 @@ static void* exception_handler_thread(void* arg) {
 
 				int depth = 0;
 				uint64_t current_fp = fp;
-				while (current_fp != 0 && depth < 4) { // 限制最大深度，避免无限循环
+				while (current_fp != 0 && depth < 5) { // 限制最大深度，避免无限循环
 				    uint64_t next_fp = 0;
 				    uint64_t ret_addr = 0;
 				    mach_vm_size_t bytes_read = 0;
@@ -3765,7 +3771,7 @@ static void* exception_handler_thread(void* arg) {
 				    kr = mach_vm_read_overwrite(mach_task_self(), current_fp, sizeof(next_fp),
 				                                (mach_vm_address_t)&next_fp, &bytes_read);
 				    if (kr != KERN_SUCCESS || bytes_read != sizeof(next_fp)) {
-				        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read next FP at 0x%llx", current_fp);
+				        //NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read next FP at 0x%llx", current_fp);
 				        break;
 				    }
 				
@@ -3773,14 +3779,36 @@ static void* exception_handler_thread(void* arg) {
 				    kr = mach_vm_read_overwrite(mach_task_self(), current_fp + 8, sizeof(ret_addr),
 				                                (mach_vm_address_t)&ret_addr, &bytes_read);
 				    if (kr != KERN_SUCCESS || bytes_read != sizeof(ret_addr)) {
-				        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read return address at 0x%llx", current_fp + 8);
+				        //NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read return address at 0x%llx", current_fp + 8);
 				        break;
 				    }
 				
-				    NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx", depth, current_fp, ret_addr);
-				
-				    current_fp = next_fp;
+				    
+				    if(ret_addr == (uint64_t)(tersafeadd + 0x249FDC))
+					{
+						NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx,ptr:0x%llx", depth, current_fp, ret_addr,ret_addr - tersafeadd);
+						istargetadd = true;
+						break;
+					}
+					
+					current_fp = next_fp;
 				    depth++;
+				}
+
+				uint64_t a3  = thread_state2.__x[2];
+
+				
+				if(!istargetadd)
+				{
+					// 模拟 SUB SP, SP, #0x60
+				    thread_state2.__sp -= 0x60;
+				    // 跳过当前指令
+				    //thread_state2.__pc += 4;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+				}
+				else
+				{
+					bp->target = (uint64_t)(hooked_sub241578);
 				}
 
 				
