@@ -3762,8 +3762,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
-	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
+	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
+	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
+
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241578;//范围检测1
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
 	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x23A448;//范围检测3 禁止启动县城
 	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
