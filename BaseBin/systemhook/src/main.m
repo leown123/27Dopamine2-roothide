@@ -3750,7 +3750,7 @@ static void* exception_handler_thread(void* arg) {
 
 				
 
-				//NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
+				NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
 
 				bool istargetadd = false;
 		
@@ -3783,7 +3783,7 @@ static void* exception_handler_thread(void* arg) {
 				        break;
 				    }
 				
-				    
+				    NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx", depth, current_fp, ret_addr);
 				    if(ret_addr == (uint64_t)(tersafeadd + 0x249FDC))
 					{
 						NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx,ptr:0x%llx", depth, current_fp, ret_addr,ret_addr - tersafeadd);
