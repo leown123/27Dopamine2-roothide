@@ -1631,8 +1631,9 @@ bool hooked_sub241618(uint64_t a1) {
     return result;
 }
 
-uint64_t hooked_ret0()
+uint64_t hooked_ret0(uint64_t a1)
 {
+	NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
 	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
@@ -3187,7 +3188,7 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     mach_msg_type_number_t thread_count;
     thread_act_array_t thread_list = get_threads(&thread_count);
     if (!thread_list) {
-		NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: get thread_list fail!");
+		//NSLog(@"小罪ADD: set_hw_breakpoint_at_index_ter: get thread_list fail!");
         pthread_mutex_unlock(&ter_hwbp_mutex);
         return KERN_FAILURE;
     }
@@ -3820,8 +3821,8 @@ void initbreakpoint()
     };
 
 	g_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd4,
-        .target = tersafetsadd4ret,
+        .source = tersafetsadd1,
+        .target = tersafetsadd1ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -3840,6 +3841,16 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	ter_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd5,
+        .target = tersafetsadd5ret,
+        .s0_val = 31.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd2,
         .target = tersafetsadd2ret,
@@ -3883,12 +3894,14 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	ter_breakpoint_count = 6;
-
+	ter_breakpoint_count = 2;
+	
 
 	//g_breakpoint_count = 3;
-
+	//ter_breakpoint_count = 6;
+	
 	
 	// 启动异常处理线程
     pthread_t thread;
