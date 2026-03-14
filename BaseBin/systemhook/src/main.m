@@ -3734,7 +3734,7 @@ static void* exception_handler_thread(void* arg) {
 			{
 				uint64_t a3  = thread_state2.__x[2];
 
-				if(a3 >= 100)
+				if(a3 < 100)
 				{
 					// 模拟 SUB SP, SP, #0x60
 				    thread_state2.__sp -= 0x60;
