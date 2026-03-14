@@ -2957,7 +2957,7 @@ void* xunhuanthread(void* aa)
 	}
 }
 
-void smobainit()
+void* smobainit(void* aa)
 {
 	while(!Imageaddress)
 	{
@@ -4079,7 +4079,9 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 
-		smobainit();
+		//smobainit();
+		pthread_t thread3;
+    	pthread_create(&thread3, NULL, smobainit, NULL);
 
 		//loadandinitshare();
 		//initbreakpoint();
