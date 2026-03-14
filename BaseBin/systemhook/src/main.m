@@ -2878,7 +2878,8 @@ void xunhuanhuizhi()
 	
 }
 
-void initbreakpoint();		
+void initbreakpoint();	
+void initbreakpoint_smoba();
 void* duquthread(void* aa)
 {
 		//sleep();
