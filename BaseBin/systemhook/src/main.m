@@ -3749,7 +3749,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 				NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
-				uint64_t sp = thread_state.__sp;  // 栈指针（栈顶地址）
+				uint64_t sp = thread_state2.__sp;  // 栈指针（栈顶地址）
 			    uint64_t stack_values[4] = {0};   // 存放读取的3个值
 			    mach_vm_size_t bytes_read = 0;
 			
