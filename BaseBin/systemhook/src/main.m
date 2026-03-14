@@ -1625,13 +1625,15 @@ uint64_t hooked_sub241578(uint64_t a1, uint64_t a2, unsigned int a3)
 
 	NSLog(@"小罪ADD: [+] hooked_sub241578 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
-	if(!orig_sub241578) orig_sub241578 = (Sub241578_t)(tersafeadd + 0x24157C);
+	//if(!orig_sub241578) orig_sub241578 = (Sub241578_t)(tersafeadd + 0x24157C);
 
     // 调用原始函数
-    uint64_t result = orig_sub241578(a1, a2, a3);
+    //uint64_t result = orig_sub241578(a1, a2, a3);
 
-    NSLog(@"小罪ADD: sub_241578 returned: 0x%llx", result);
-    return result;
+    //NSLog(@"小罪ADD: sub_241578 returned: 0x%llx", result);
+    //return result;
+
+	return 1
 
     // 如果想完全替换返回值，可注释掉上面两行并直接返回自定义值，例如：
     // return 0x12345678;
@@ -3848,7 +3850,7 @@ void initbreakpoint()
     mach_vm_address_t fanweiadd3 = Imageaddress + 0x16C9F98 ;
     mach_vm_address_t fanweiadd4 = Imageaddress + 0x16C9FC0 ;
 
-	mach_vm_address_t tersafetsadd1 = Imageaddress + 0x585D0;
+	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x585D0;
 	mach_vm_address_t tersafetsadd1ret = (mach_vm_address_t)hooked_sub_585D0;
 
 	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
@@ -3881,7 +3883,7 @@ void initbreakpoint()
 	g_breakpoints[1] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
-        .s0_val = 31.0f,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3890,7 +3892,7 @@ void initbreakpoint()
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
-        .s0_val = 31.0f,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3900,7 +3902,7 @@ void initbreakpoint()
 	g_breakpoints[3] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
-        .s0_val = 31.0f,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3908,7 +3910,7 @@ void initbreakpoint()
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd4,
         .target = fanweiadd4 + 4,
-        .s0_val = 31.0f,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -3936,9 +3938,9 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd5,
-        .target = tersafetsadd5ret,
-        .s0_val = 31.0f,
+        .source = tersafetsadd3,
+        .target = tersafetsadd3ret,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
