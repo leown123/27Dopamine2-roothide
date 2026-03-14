@@ -3732,8 +3732,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 1)
 			{
+				/*
 				uint64_t a3  = thread_state2.__x[2];
-
 				if(a3 < 100)
 				{
 					// 模拟 SUB SP, SP, #0x60
@@ -3746,7 +3746,24 @@ static void* exception_handler_thread(void* arg) {
 				{
 					bp->target = (uint64_t)(hooked_sub241578);
 				}
+				*/
 
+				NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
+				uint64_t sp = thread_state.__sp;  // 栈指针（栈顶地址）
+			    uint64_t stack_values[4] = {0};   // 存放读取的3个值
+			    mach_vm_size_t bytes_read = 0;
+			
+			    // 从 sp 开始读取 24 字节（4 * 8）
+			    kr = mach_vm_read_overwrite(mach_task_self(), sp, sizeof(stack_values),
+			                                (mach_vm_address_t)stack_values, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read == sizeof(stack_values)) {
+			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[0] at 0x%llx = 0x%llx", sp, stack_values[0]);
+			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[1] at 0x%llx = 0x%llx", sp + 8, stack_values[1]);
+			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[2] at 0x%llx = 0x%llx", sp + 16, stack_values[2]);
+					NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Stack[3] at 0x%llx = 0x%llx", sp + 24, stack_values[3]);
+			    } else {
+			        NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Failed to read stack memory at SP=0x%llx", sp);
+			    }
 
 				
 			}
