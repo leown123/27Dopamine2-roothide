@@ -1662,6 +1662,14 @@ uint64_t hooked_ret1()
 	return 1;
 }
 
+typedef double (*subD9424_t)();
+static subD9424_t orig_subD9424 = NULL;
+
+double hooked_sub_D9424()
+{
+	return (double)1.0;
+}
+
 
 void passptrmov1(long add1)
 {
@@ -3047,6 +3055,7 @@ typedef struct {
     mach_vm_address_t target;   // 目标地址（跳转位置）
     float s0_val;               // 要写入 s0 的值
     float s1_val;               // 要写入 s1 的值
+	double d0_val;              // 用于 D0
     int used;                   // 该断点是否启用
     int hw_index;               // 分配的硬件断点索引（内部使用）
 } Breakpoint;
@@ -3703,7 +3712,7 @@ static void* exception_handler_thread(void* arg) {
 
 		if(istersafebp == true)
 		{
-			if(terbptype == 0 || terbptype == 1)
+			if(terbptype == 0)
 			{
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
@@ -3712,33 +3721,50 @@ static void* exception_handler_thread(void* arg) {
 			                                              (mach_vm_address_t)path, &bytes_read);
 			    if (kr == KERN_SUCCESS && bytes_read > 0) {
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Path: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0或王者0x57B58 hook] Path: %s", path);
 			    } else 
 				{
-			        //NSLog(@"小罪ADD: [tersafe sub_585D0 hook] Failed to read path at 0x%llx", path_ptr);
+			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0或王者0x57B58 hook] Failed to read path at 0x%llx", path_ptr);
 			    }
 			}
 
 			if(terbptype == 2)
 			{
-				//uint64_t retlong = thread_state2.__x[0];
-				//thread_state2.__x[0] = 1 ; 改1会三天
-				//thread_state2.__x[0] = 0;
-				//NSLog(@"小罪ADD: [tersafe 0x241784 hook] ptr: %llx", tersafeadd - pc);
-				
-				//1、获取sp
-				uint64_t current_sp = thread_state2.__sp;
-			    // 2. 计算新栈指针 (注意 16 字节对齐)
-			    //  SUB SP, SP, #0x60 后，需要确保 sp & 0xf == 0
-			    uint64_t new_sp = current_sp - 0x60;
-			    if (new_sp & 0xf) {
-			        // 如果不对齐，向上取整到 16 的倍数（但通常编译生成的指令会保证对齐）
-			        // 这里仅作防御，实际使用中如果减后不对齐，可能需要调整值
-			        new_sp = new_sp & ~0xfULL;
-	   			 }
-				// 3. 修改线程状态
-				thread_state2.__sp = new_sp;
+				// 修改浮点寄存器 s0/s1
+		        arm_neon_state64_t neon_state;
+		        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
+		        kr = thread_get_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, &neon_cnt);
+		        if (kr == KERN_SUCCESS) 
+				{
+					// 修改 D0（双精度，使用联合体保护高 64 位）
+				    union {
+				        __uint128_t v;
+				        double d;
+				    } u;
+				    u.v = neon_state.__v[0];
+				    u.d = bp->d0_val;
+				    neon_state.__v[0] = u.v;
+
+		            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
+					
+		        }
 	
+			}
+
+			if(terbptype == 3)
+			{
+				uint64_t path_ptr = thread_state2.__x[0];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) {
+			        path[bytes_read] = '\0';
+			        //NSLog(@"小罪ADD: [tersafe 王者0x57B58 hook] Path: %s", path);
+			    } else 
+				{
+			        //NSLog(@"小罪ADD: [tersafe 王者sub_116FC hook] Failed to read file path at 0x%llx", path_ptr);
+			    }
 			}
 
 			
@@ -3996,6 +4022,16 @@ void initbreakpoint_smoba()
 	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x57B58;
 	mach_vm_address_t tersafetsadd1ret = (mach_vm_address_t)hooked_sub_585D0;
 
+	mach_vm_address_t tersafetsadd2 = tersafeadd + 0xD9424;
+	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_D9424;
+
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x857C0;
+	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)(tersafeadd + 0x857C8);
+
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x116FC;
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)(tersafeadd + 0x11758);
+	
+
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4004,8 +4040,36 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+
+	ter_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd2,
+        .target = tersafetsadd2ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd3,
+        .target = tersafetsadd3ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+		.d0_val = (double)1.0,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
-	ter_breakpoint_count = 1;
+	ter_breakpoint_count = 4;
 
 	
 	// 启动异常处理线程
