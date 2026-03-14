@@ -3730,6 +3730,27 @@ static void* exception_handler_thread(void* arg) {
 			    }
 			}
 
+			if(terbptype == 1)
+			{
+				uint64_t a3  = thread_state2.__x[2];
+
+				if(a3 >= 100)
+				{
+					// 模拟 SUB SP, SP, #0x60
+				    thread_state2.__sp -= 0x60;
+				    // 跳过当前指令
+				    //thread_state2.__pc += 4;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+				}
+				else
+				{
+					bp->target = (uint64_t)(hooked_sub241578);
+				}
+
+
+				
+			}
+
 			if(terbptype == 2)
 			{
 				// 修改浮点寄存器 s0/s1
