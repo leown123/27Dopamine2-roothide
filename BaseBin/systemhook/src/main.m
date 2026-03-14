@@ -3797,7 +3797,7 @@ static void* exception_handler_thread(void* arg) {
 
 				uint64_t a3  = thread_state2.__x[2];
 
-				
+				/*
 				if(!istargetadd)
 				{
 					// 模拟 SUB SP, SP, #0x60
@@ -3810,7 +3810,22 @@ static void* exception_handler_thread(void* arg) {
 				{
 					bp->target = (uint64_t)(hooked_sub241578);
 				}
+				*/
 
+				if(!istargetadd)
+				{
+					bp->target = (uint64_t)(hooked_sub241578);
+				}
+				else
+				{
+					// 模拟 SUB SP, SP, #0x60
+				    thread_state2.__sp -= 0x60;
+				    // 跳过当前指令
+				    //thread_state2.__pc += 4;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+				}
+
+				
 				
 			}
 
