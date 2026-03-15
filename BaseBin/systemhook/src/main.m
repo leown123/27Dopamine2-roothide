@@ -3856,7 +3856,7 @@ static void* exception_handler_thread(void* arg) {
 		        }
 				*/
 
-				NSLog(@"小罪ADD: [tersafe sub_23DA74 hook] 线程被调用，拟返回！");
+				NSLog(@"小罪ADD: [tersafe sub_215954 call] 线程被调用，拟直接返回！");
 
 				
 			}
@@ -3967,11 +3967,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
-	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
-	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241578;//范围检测1
-	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
+	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241578;//范围检测1
+	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
 	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x23A448;//范围检测3 禁止启动县城
 	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
@@ -4049,7 +4049,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd3,
         .target = tersafetsadd3ret,
@@ -4060,14 +4060,14 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd6,
-        .target = tersafetsadd6ret,
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 	/*
 	ter_breakpoints[1] = (Breakpoint){
