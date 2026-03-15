@@ -1548,9 +1548,9 @@ int64_t hooked_sub_585D0(const char *a1, int64_t a2, uint64_t a3) {
     
 	@autoreleasepool 
 	{
-		NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
+		//NSLog(@"小罪ADD: tmpfun: Hooked sub_585D0: a1=%s, a2=%lld, a3=%llu", a1, a2, a3);
         // 打印堆栈信息（推荐使用 [NSThread callStackSymbols]）
-        NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+        //NSLog(@"小罪ADD: [+] Hooked sub_585D0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	}
     
     // 调用原始函数（可选）
@@ -3831,6 +3831,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2)
 			{
+				/*
 				// 修改浮点寄存器 s0/s1
 		        arm_neon_state64_t neon_state;
 		        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
@@ -3845,11 +3846,13 @@ static void* exception_handler_thread(void* arg) {
 				    u.v = neon_state.__v[0];
 				    u.d = bp->d0_val;
 				    neon_state.__v[0] = u.v;
-
 		            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
-					
 		        }
-	
+				*/
+
+				NSLog(@"小罪ADD: [tersafe sub_23DA74 hook] 线程被调用，拟返回！");
+
+				
 			}
 
 			if(terbptype == 3)
@@ -3967,7 +3970,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x23A448;//范围检测3 禁止启动县城
 	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
 
-
+	mach_vm_address_t tersafetsadd6 = tersafeadd + 0x23DA74;//范围检测3 禁止启动县城
+	mach_vm_address_t tersafetsadd6ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x23DA74;
 	
 	
 	g_breakpoints[0] = (Breakpoint){
@@ -4039,6 +4043,15 @@ void initbreakpoint()
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd3,
         .target = tersafetsadd3ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd6,
+        .target = tersafetsadd6ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
