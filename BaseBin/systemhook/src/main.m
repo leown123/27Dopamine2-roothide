@@ -3815,6 +3815,12 @@ static void* exception_handler_thread(void* arg) {
 				if(!istargetadd)
 				{
 					bp->target = (uint64_t)(hooked_sub241578);
+					kern_return_t kr = thread_suspend(thread_port);
+					if (kr == KERN_SUCCESS) {
+					    NSLog(@"小罪ADD: Thread 0x%x suspended at breakpoint", thread_port);
+					} else {
+					    NSLog(@"小罪ADD: Failed to suspend thread: %s", mach_error_string(kr));
+					}
 				}
 				else
 				{
