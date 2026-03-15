@@ -3652,7 +3652,8 @@ static void* exception_handler_thread(void* arg) {
 
         // 查找匹配的断点
         Breakpoint *bp = NULL;
-        for (int i = 0; i < g_breakpoint_count; i++) 
+        //for (int i = 0; i < g_breakpoint_count; i++) 
+		for (int i = 0; i < g_breakpoint_count; i++) 
 		{
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) 
 			{
@@ -3698,7 +3699,8 @@ static void* exception_handler_thread(void* arg) {
 		else
 		*/
 		
-		if(istersafebp == false && bptype >= 0)
+		//if(istersafebp == false && bptype >= 0 //范围
+		if(istersafebp == false && bptype == 0)
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
