@@ -3653,7 +3653,7 @@ static void* exception_handler_thread(void* arg) {
         // 查找匹配的断点
         Breakpoint *bp = NULL;
         //for (int i = 0; i < g_breakpoint_count; i++) 
-		for (int i = 0; i < g_breakpoint_count; i++) 
+		for (int i = 0; i < 6; i++) 
 		{
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) 
 			{
