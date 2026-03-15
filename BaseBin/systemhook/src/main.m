@@ -4075,6 +4075,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd7,
         .target = tersafetsadd7ret,
@@ -4092,9 +4093,10 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
-	ter_breakpoints[4] = (Breakpoint){
+	
+	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd9,
         .target = tersafetsadd9ret,
         .s0_val = 29.0f,
@@ -4103,7 +4105,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	ter_breakpoints[5] = (Breakpoint){
+	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd10,
         .target = tersafetsadd10ret,
         .s0_val = 29.0f,
@@ -4111,7 +4113,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 	
 	/*
