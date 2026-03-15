@@ -3863,6 +3863,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 3)
 			{
+				/*
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -3875,6 +3876,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 王者sub_116FC hook] Failed to read file path at 0x%llx", path_ptr);
 			    }
+				*/
 			}
 
 			
@@ -3978,6 +3980,20 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd6 = tersafeadd + 0x23DA74;//范围检测3 禁止启动县城
 	mach_vm_address_t tersafetsadd6ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x23DA74;
+
+	//新增过检测
+
+	mach_vm_address_t tersafetsadd7 = tersafeadd + 0x134DC8;//
+	mach_vm_address_t tersafetsadd7ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x23DA74;
+
+	mach_vm_address_t tersafetsadd8 = tersafeadd + 0x17ECDC;//
+	mach_vm_address_t tersafetsadd8ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x23DA74;
+
+	mach_vm_address_t tersafetsadd9 = tersafeadd + 0x1BB584;//
+	mach_vm_address_t tersafetsadd9ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x23DA74;
+
+	mach_vm_address_t tersafetsadd10 = tersafeadd + 0x133124;//
+	mach_vm_address_t tersafetsadd10ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x23DA74;
 	
 	
 	g_breakpoints[0] = (Breakpoint){
@@ -4060,13 +4076,41 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd4,
-        .target = tersafetsadd4ret,
+        .source = tersafetsadd7,
+        .target = tersafetsadd7ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
+
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd8,
+        .target = tersafetsadd8ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd9,
+        .target = tersafetsadd9ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd10,
+        .target = tersafetsadd10ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	
 	
 	/*
@@ -4115,7 +4159,7 @@ void initbreakpoint()
     };
 	*/
 
-	ter_breakpoint_count = 1;
+	ter_breakpoint_count = 6;
 	
 
 	//g_breakpoint_count = 3;
