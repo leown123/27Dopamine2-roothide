@@ -2914,7 +2914,7 @@ void* duquthread(void* aa)
 
 		initbreakpoint();
 
-		/*
+		
 		long linshitersafe = tersafeadd+0x2AA880;
 
 		while(Read_Int(linshitersafe) < 1000)
@@ -2925,7 +2925,7 @@ void* duquthread(void* aa)
 	    NSLog(@"小罪ADD: systemhook : linshitersafe Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
 	    forcewritenew(linshitersafe, CFSwapInt32(0x00002103));
 	    NSLog(@"小罪ADD: systemhook : linshitersafe SUCCESS !Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
-		*/
+		
 		
 }	
 
@@ -3700,7 +3700,7 @@ static void* exception_handler_thread(void* arg) {
 		*/
 		
 		//if(istersafebp == false && bptype >= 0 //范围
-		if(istersafebp == false && bptype == 0)
+		if(istersafebp == false && (bptype == 0 || bptype > 1))
 		{
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
@@ -3753,10 +3753,8 @@ static void* exception_handler_thread(void* arg) {
 				
 
 				//NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] 命中！");
-
+				/*
 				bool istargetadd = false;
-		
-				
 				uint64_t pc = thread_state2.__pc;
 				uint64_t lr = thread_state2.__lr;
 				uint64_t fp = thread_state2.__fp;   // x29
@@ -3799,20 +3797,6 @@ static void* exception_handler_thread(void* arg) {
 
 				uint64_t a3  = thread_state2.__x[2];
 
-				/*
-				if(!istargetadd)
-				{
-					// 模拟 SUB SP, SP, #0x60
-				    thread_state2.__sp -= 0x60;
-				    // 跳过当前指令
-				    //thread_state2.__pc += 4;
-					bp->target = (uint64_t)(thread_state2.__pc + 4);
-				}
-				else
-				{
-					bp->target = (uint64_t)(hooked_sub241578);
-				}
-				*/
 
 				if(!istargetadd)
 				{
@@ -3832,7 +3816,7 @@ static void* exception_handler_thread(void* arg) {
 				    //thread_state2.__pc += 4;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 				}
-
+				*/
 				
 				
 			}
@@ -3858,7 +3842,7 @@ static void* exception_handler_thread(void* arg) {
 		        }
 				*/
 
-				NSLog(@"小罪ADD: [tersafe sub_215954 call] 线程被调用，拟直接返回！");
+				//NSLog(@"小罪ADD: [tersafe sub_215954 call] 线程被调用，拟直接返回！");
 
 				
 			}
@@ -3879,6 +3863,15 @@ static void* exception_handler_thread(void* arg) {
 			        //NSLog(@"小罪ADD: [tersafe 王者sub_116FC hook] Failed to read file path at 0x%llx", path_ptr);
 			    }
 				*/
+			}
+
+			if(terbptype == 3)
+			{
+				uint64_t gamestate_ptr = thread_state2.__x[1];
+				int oldgamestate = Read_Int(gamestate_ptr + 4);
+				forcewritenew(gamestate_ptr+4,3);
+				int fakegamestate = Read_Int(gamestate_ptr + 4);
+				NSLog(@"小罪ADD: [tersafe sub_F9584 hook] oldgamestate: %d,fakegamestate: %d", path);
 			}
 
 			
@@ -3996,7 +3989,23 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd10 = tersafeadd + 0x133124;//
 	mach_vm_address_t tersafetsadd10ret = (mach_vm_address_t)hooked_ret1;//tersafeadd + 0x23DA74;
-	
+
+	//ai过检测
+
+	mach_vm_address_t tersafetsadd11 = tersafeadd + 0x9998;//
+	mach_vm_address_t tersafetsadd11ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd12 = tersafeadd + 0x3FCE8;//
+	mach_vm_address_t tersafetsadd12ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd13= tersafeadd + 0x41F10;//
+	mach_vm_address_t tersafetsadd13ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd14 = tersafeadd + 0xF9584;//
+	mach_vm_address_t tersafetsadd14ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd15 = tersafeadd + 0x100B3C;//
+	mach_vm_address_t tersafetsadd15ret = (mach_vm_address_t)hooked_ret0;
 	
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
@@ -4007,7 +4016,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4016,6 +4024,25 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
+	g_breakpoints[2] = (Breakpoint){
+        .source = fanweiadd1,
+        .target = fanweiadd1 + 4,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[3] = (Breakpoint){
+        .source = fanweiadd3,
+        .target = fanweiadd3 + 4,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 
 	/*
 	g_breakpoints[1] = (Breakpoint){
@@ -4069,8 +4096,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd3,
-        .target = tersafetsadd3ret,
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4079,8 +4106,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd7,
-        .target = tersafetsadd7ret,
+        .source = tersafetsadd12,
+        .target = tersafetsadd12ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4088,8 +4115,8 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd8,
-        .target = tersafetsadd8ret,
+        .source = tersafetsadd13,
+        .target = tersafetsadd13ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4099,8 +4126,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd9,
-        .target = tersafetsadd9ret,
+        .source = tersafetsadd14,
+        .target = tersafetsadd14ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4108,61 +4135,13 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd10,
-        .target = tersafetsadd10ret,
+        .source = tersafetsadd15,
+        .target = tersafetsadd15ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
-	
-	
-	
-	/*
-	ter_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd2,
-        .target = tersafetsadd2ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd3,
-        .target = tersafetsadd3ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd4,
-        .target = tersafetsadd4ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	ter_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd5,
-        .target = tersafetsadd5ret,
-        .s0_val = 31.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd5,
-        .target = tersafetsadd5ret,
-        .s0_val = 31.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
 	ter_breakpoint_count = 6;
 	
