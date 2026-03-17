@@ -4083,7 +4083,7 @@ void initbreakpoint()
 	*/
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 2;
+    g_breakpoint_count = 4;
 
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
