@@ -3871,7 +3871,7 @@ static void* exception_handler_thread(void* arg) {
 				int oldgamestate = Read_Int(gamestate_ptr + 4);
 				forcewritenew(gamestate_ptr+4,3);
 				int fakegamestate = Read_Int(gamestate_ptr + 4);
-				NSLog(@"小罪ADD: [tersafe sub_F9584 hook] oldgamestate: %d,fakegamestate: %d", path);
+				NSLog(@"小罪ADD: [tersafe sub_F9584 hook] oldgamestate: %d,fakegamestate: %d", oldgamestate,fakegamestate);
 			}
 
 			
