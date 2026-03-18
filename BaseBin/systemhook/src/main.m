@@ -3918,7 +3918,7 @@ static void* exception_handler_thread(void* arg) {
 
 				if(ndchange)
 				{
-					thread_state2.__x[1] = fakestr;
+					thread_state2.__x[1] = (uint64_t)fakestr;
 					NSLog(@"小罪ADD: [tersafe 三角洲sub_F9200 hook] fakestr: %s", fakestr);
 				}
 
