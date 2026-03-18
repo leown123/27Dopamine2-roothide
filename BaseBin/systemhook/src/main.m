@@ -3867,65 +3867,18 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4)
 			{
-				/*
+				
 				uint64_t gamestate_ptr = thread_state2.__x[1];
 				int oldgamestate = Read_Int(gamestate_ptr + 4);
 				forcewritenew(gamestate_ptr+4,3);
 				int fakegamestate = Read_Int(gamestate_ptr + 4);
 				NSLog(@"小罪ADD: [tersafe sub_F9584 hook] oldgamestate: %d,fakegamestate: %d", oldgamestate,fakegamestate);
-				*/
+				
 			}
 
 			if(terbptype == 5)
 			{
-				uint64_t path_ptr = thread_state2.__x[1];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) {
-			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 三角洲sub_F9200 hook] Path: %s", path);
-			    } else 
-				{
-			        NSLog(@"小罪ADD: [tersafe 三角洲sub_F9200 hook] Failed to read path at 0x%llx", path_ptr);
-			    }
 
-				bool ndchange = false;
-
-				const char* fakestr = "";
-
-    			if (strstr(path," __ENABLE_DATA_ENC__") != NULL) 
-				{	fakestr = " __DISABLE_DATA_ENC__";
-					ndchange = true;
-				}
-				if (strstr(path," __ENABLE_MPRCS__") != NULL) 
-				{	fakestr = " __DISABLE_MPRCS__";
-					ndchange = true;
-				}
-				if (strstr(path," __ENABLE_TPSTL__") != NULL) 
-				{
-					fakestr = " __DISABLE_TPSTL__";
-					ndchange = true;
-				}
-				if (strstr(path," __ENABLE_TPLIBC__") != NULL) 
-				{
-					fakestr = " __DISABLE_TPLIBC__";
-					ndchange = true;
-				}
-
-				thread_state2.__sp -= 0x30;
-
-				if(ndchange)
-				{
-					thread_state2.__x[1] = (uint64_t)fakestr;
-					NSLog(@"小罪ADD: [tersafe 三角洲sub_F9200 hook] fakestr: %s", fakestr);
-				}
-
-				
-
-
-				
 			}
 
 			
@@ -4065,9 +4018,6 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd16 = tersafeadd + 0x413AC;//
 	mach_vm_address_t tersafetsadd16ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd17 = tersafeadd + 0xF9200;//
-	mach_vm_address_t tersafetsadd17ret = tersafeadd + 0xF9204;//
-	
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -4189,8 +4139,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd16,
-        .target = tersafetsadd16ret,
+        .source = tersafetsadd14,
+        .target = tersafetsadd14ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4198,8 +4148,8 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd17,
-        .target = tersafetsadd17ret,
+        .source = tersafetsadd16,
+        .target = tersafetsadd16ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
