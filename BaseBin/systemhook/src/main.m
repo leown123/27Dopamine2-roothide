@@ -3867,7 +3867,7 @@ static void* exception_handler_thread(void* arg) {
 			    }
 
 				// 模拟 SUB SP, SP, #0x40
-				thread_state2.__sp -= 0x0x40;
+				thread_state2.__sp -= 0x40;
 				
 			}
 
