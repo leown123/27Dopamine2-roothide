@@ -3863,15 +3863,6 @@ static void* exception_handler_thread(void* arg) {
 			        path[bytes_read] = '\0';
 			        NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
 
-					const char *result = strstr(path, ".img");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "mrpcs");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
-
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -3881,79 +3872,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "report");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "sc_");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "filt");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "gs_");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cache");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "dl_");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "mrmoni");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ios");
-					if (result != NULL) iscontainstr = true;
-
 					result = strstr(path, "screenshot");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "enc");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "force");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "mt_");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ms_");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cs_");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "game");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "Game");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tcj");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "anti");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "info");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "sys");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "am");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "af");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "fc");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cs");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "crk");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "auto");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "file");
@@ -3984,6 +3903,21 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tfp");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
 
 					if(iscontainstr == true)
