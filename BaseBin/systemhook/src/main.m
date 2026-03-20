@@ -1651,16 +1651,16 @@ bool hooked_sub241618(uint64_t a1) {
     return result;
 }
 
-uint64_t hooked_ret0(uint64_t a1)
+uint64_t hooked_ret0()//uint64_t a1
 {
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
 uint64_t hooked_ret1()
 {
-	NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 1;
 }
 
@@ -3718,6 +3718,7 @@ static void* exception_handler_thread(void* arg) {
 		{
 			if(terbptype == 0)
 			{
+				/*
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -3730,6 +3731,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0或王者0x57B58 hook] Failed to read path at 0x%llx", path_ptr);
 			    }
+				*/
 			}
 
 			if(terbptype == 1)
@@ -3849,30 +3851,44 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 3)
 			{
-				/*
-				uint64_t path_ptr = thread_state2.__x[0];
+				
+				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
 			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
 			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) {
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 王者0x57B58 hook] Path: %s", path);
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
 			    } else 
 				{
-			        //NSLog(@"小罪ADD: [tersafe 王者sub_116FC hook] Failed to read file path at 0x%llx", path_ptr);
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
-				*/
+
+				// 模拟 SUB SP, SP, #0x40
+				thread_state2.__sp -= 0x0x40;
+				
 			}
 
 			if(terbptype == 4)
 			{
 				
-				uint64_t gamestate_ptr = thread_state2.__x[1];
-				int oldgamestate = Read_Int(gamestate_ptr + 4);
-				forcewritenew(gamestate_ptr+4,3);
-				int fakegamestate = Read_Int(gamestate_ptr + 4);
-				NSLog(@"小罪ADD: [tersafe sub_F9584 hook] oldgamestate: %d,fakegamestate: %d", oldgamestate,fakegamestate);
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] 检测类型: %s", path);
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
+			    }
+
+				
 				
 			}
 
@@ -4018,6 +4034,20 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd16 = tersafeadd + 0x413AC;//
 	mach_vm_address_t tersafetsadd16ret = (mach_vm_address_t)hooked_ret0;
 
+	//ai过检测3
+	mach_vm_address_t tersafetsadd17 = tersafeadd + 0x108DC4;//
+	mach_vm_address_t tersafetsadd17ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd18 = tersafeadd + 0xAAB64;//
+	mach_vm_address_t tersafetsadd18ret = tersafeadd + 0xAAB68;//
+
+	mach_vm_address_t tersafetsadd19 = tersafeadd + 0x824AC;//
+	mach_vm_address_t tersafetsadd19ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd20 = tersafeadd + 0x93D34;//
+	mach_vm_address_t tersafetsadd20ret = (mach_vm_address_t)hooked_ret0;
+	
+
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -4119,8 +4149,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd12,
-        .target = tersafetsadd12ret,
+        .source = tersafetsadd17,
+        .target = tersafetsadd17ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4128,8 +4158,8 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd13,
-        .target = tersafetsadd13ret,
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4139,8 +4169,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd14,
-        .target = tersafetsadd14ret,
+        .source = tersafetsadd19,
+        .target = tersafetsadd19ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4148,8 +4178,8 @@ void initbreakpoint()
     };
 
 	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd16,
-        .target = tersafetsadd16ret,
+        .source = tersafetsadd20,
+        .target = tersafetsadd20ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
