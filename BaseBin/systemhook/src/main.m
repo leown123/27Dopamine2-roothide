@@ -1695,7 +1695,7 @@ void* crchackthread(void* aa)
 		}
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd,Read_Long(tersafeadd));
 
-		
+		/*
 		while(tersafebakadd < 1000)
 		{
 			tersafebakadd = Get_tersafe_bak();
@@ -1706,7 +1706,7 @@ void* crchackthread(void* aa)
 		//对比
 		NSLog(@"小罪ADD: systemhook : tersafeadd: 0x%lx,Read_Long(tersafeadd): 0x%lx)", tersafeadd + 0x245F04,Read_Long(tersafeadd + 0x245F04));
 		NSLog(@"小罪ADD: systemhook : tersafebakadd + 0x245F04: 0x%lx,Read_Long(tersafebakadd + 0x245F04): 0x%lx)", tersafebakadd + 0x245F04,Read_Long(tersafebakadd + 0x245F04));
-		
+		*/
 		
 		/*
 		long crcfunc_addr1 = tersafeadd + 0x245F04;
