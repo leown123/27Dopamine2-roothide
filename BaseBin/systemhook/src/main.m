@@ -3919,7 +3919,9 @@ static void* exception_handler_thread(void* arg) {
 					if(iscontainstr == true)
 					{
 						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 准备干掉字符串并返回0: %s", path);
-						bp->target = (uint64_t)(hooked_ret0);
+						//bp->target = (uint64_t)(hooked_ret0);
+						thread_state2.__sp -= 0x40;
+						bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
 					else
 					{
