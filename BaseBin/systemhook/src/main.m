@@ -3868,16 +3868,10 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "anti");
-					if (result != NULL) iscontainstr = true;
-
 					result = strstr(path, "report");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "screenshot");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "file");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "process");
@@ -3924,7 +3918,7 @@ static void* exception_handler_thread(void* arg) {
 
 					if(iscontainstr == true)
 					{
-						NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 准备干掉字符串并返回0: %s", path);
+						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 					}
 					else
@@ -3936,7 +3930,7 @@ static void* exception_handler_thread(void* arg) {
 					
 			    } else 
 				{
-			        NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] Failed to read 检测类型 at 0x%llx", path_ptr);
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] Failed to read 检测类型 at 0x%llx", path_ptr);
 					// 模拟 SUB SP, SP, #0x40
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
