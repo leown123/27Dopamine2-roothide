@@ -3717,6 +3717,10 @@ static void* exception_handler_thread(void* arg) {
         return NULL;
     }
 
+	NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate mach_port_insert_right");
+
+	return;
+
     // 设置任务异常端口，只捕获 EXC_BREAKPOINT
     kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
                                   EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
@@ -4147,7 +4151,8 @@ void initbreakpoint()
 
 	NSLog(@"小罪ADD: initbreakpoint: jump_hook dylib loaded");
 
-	
+
+	/*
     // 注册 SIGTRAP 信号处理器
 	stack_t sig_stack;
     sig_stack.ss_sp = malloc(SIGSTKSZ);
@@ -4170,7 +4175,7 @@ void initbreakpoint()
 	{
 		NSLog(@"小罪ADD: initbreakpoint: install SIGTRAP handler success !");
 	}
-	
+	*/
 
 	/*
 	//开始对游戏内存进行hook
@@ -4418,12 +4423,12 @@ void initbreakpoint()
 	//g_breakpoint_count = 3;
 	//ter_breakpoint_count = 6;
 	
-	/*
+	
 	// 启动异常处理线程 拉闸30天
     pthread_t thread;
     pthread_create(&thread, NULL, exception_handler_thread, NULL);
     pthread_detach(thread);
-	*/
+	
 	
     // 设置硬件断点
 
