@@ -3153,13 +3153,20 @@ static kern_return_t remove_hw_breakpoint() {
 
 // SIGTRAP 信号处理函数
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
+
+	NSLog(@"小罪ADD: sigtrap_handler 触发！");
+	
     ucontext_t *uc = (ucontext_t *)context;
     arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
 	arm_neon_state64_t *neon = &uc->uc_mcontext->__ns;
 
     uint64_t pc = arm_thread_state64_get_pc(*thread_state);
+
+	NSLog(@"小罪ADD: sigtrap_handler 目前pc = %llx",pc);
+	
     if (pc != g_source_addr) {
         // 不是我们设置的断点，忽略
+		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
         return;
     }
 
@@ -3179,7 +3186,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
 	//if (aaa.__pc == g_stat_addr) {
 	aaa.__pc = g_target_addr;
-	
+	thread_state->__pc = (uint64_t)g_target_addr;
 
     // 注意：信号返回后，线程将从新 PC 开始执行。
     // 如果希望断点持续生效（例如，再次执行到源地址时再次跳转），
@@ -4003,17 +4010,22 @@ void initbreakpoint()
 
 	NSLog(@"小罪ADD: initbreakpoint: jump_hook dylib loaded");
 
-	/* 无效
+	
     // 注册 SIGTRAP 信号处理器
     struct sigaction sa;
     sa.sa_flags = SA_SIGINFO | SA_RESTART;
     sa.sa_sigaction = sigtrap_handler;
     sigemptyset(&sa.sa_mask);
-    if (sigaction(SIGTRAP, &sa, NULL) == -1) {
+    if (sigaction(SIGTRAP, &sa, NULL) == -1)
+	{
         NSLog(@"小罪ADD: initbreakpoint: Failed to install SIGTRAP handler");
         return;
     }
-	*/
+	else
+	{
+		NSLog(@"小罪ADD: initbreakpoint: install SIGTRAP handler success !");
+	}
+	
 
 	/*
 	//开始对游戏内存进行hook
@@ -4109,6 +4121,9 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd20 = tersafeadd + 0x93D34;//
 	mach_vm_address_t tersafetsadd20ret = (mach_vm_address_t)hooked_ret0;
+
+	g_source_addr = wuhouadd;
+	g_target_addr = wuhouadd + 4;
 	
 
 	g_breakpoints[0] = (Breakpoint){
@@ -4258,17 +4273,18 @@ void initbreakpoint()
 	//g_breakpoint_count = 3;
 	//ter_breakpoint_count = 6;
 	
-	
-	// 启动异常处理线程
+	/*
+	// 启动异常处理线程 拉闸30天
     pthread_t thread;
     pthread_create(&thread, NULL, exception_handler_thread, NULL);
     pthread_detach(thread);
+	*/
 	
     // 设置硬件断点
 
 	//while(!isover100)
 	{
-    	//setup_all_breakpoints();
+    	setup_all_breakpoints();
 	}
 
 
