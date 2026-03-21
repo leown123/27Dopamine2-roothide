@@ -1651,7 +1651,7 @@ bool hooked_sub241618(uint64_t a1) {
     return result;
 }
 
-uint64_t hooked_ret0()//uint64_t a1
+uint64_t hooked_ret0(uint64_t a1)//
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
@@ -3823,23 +3823,8 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 2)
-			{
-				uint64_t path_ptr = thread_state2.__x[1];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) 
-				{
-			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 警告上报：sub_824AC hook] 检测类型: %s", path);
-				}
-
-			}
-
 			bool iscontainstr = false;
-			if(terbptype == 3)
+			if(terbptype == 2)
 			{
 				
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -3929,6 +3914,21 @@ static void* exception_handler_thread(void* arg) {
 
 				
 				
+			}
+
+			if(terbptype == 3)
+			{
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 警告上报：sub_824AC hook] 检测类型: %s", path);
+				}
+
 			}
 
 			if(terbptype == 4)
@@ -4209,8 +4209,17 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
 	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
+	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
         .s0_val = 29.0f,
@@ -4220,17 +4229,6 @@ void initbreakpoint()
     };
 
 	
-	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd18,
-        .target = tersafetsadd18ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	
-
-	/*
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
@@ -4250,7 +4248,7 @@ void initbreakpoint()
     };
 	*/
 
-	ter_breakpoint_count = 4;
+	ter_breakpoint_count = 3;
 	
 
 	//g_breakpoint_count = 3;
