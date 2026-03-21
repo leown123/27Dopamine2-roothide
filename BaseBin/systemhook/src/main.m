@@ -3586,7 +3586,7 @@ static void* exception_handler_thread(void* arg) {
         return NULL;
     }
 
-    NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started");
+    NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started,g_breakpoint_count:%d,ter_breakpoints:%d",g_breakpoint_count,ter_breakpoints);
 
     while (1) {
         struct {
@@ -4268,7 +4268,7 @@ void initbreakpoint()
 
 	//while(!isover100)
 	{
-    	setup_all_breakpoints();
+    	//setup_all_breakpoints();
 	}
 
 
