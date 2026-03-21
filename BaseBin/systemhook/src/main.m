@@ -3168,6 +3168,9 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	ucontext_t *uc = (ucontext_t *)context;
     arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
 	arm_neon_state64_t *neon_state = &uc->uc_mcontext->__ns;
+
+	//arm_thread_state64_t thread_state;
+	//struct myARM_THREAD_STATE64 *thread_state2;
 	
 	// 使用兼容宏获取 PC
     uint64_t pc = arm_thread_state64_get_pc(*thread_state);
@@ -3196,7 +3199,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
 	//thread_state->__pc = (uint64_t)g_target_addr;
 	//thread_state->pc = (uint64_t)g_target_addr;
-	arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
+	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
+	thread_state.__pc = (uint64_t)g_target_addr;
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
