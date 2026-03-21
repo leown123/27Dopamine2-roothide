@@ -3183,6 +3183,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
         return; // 不是我们的断点
     }
 
+	/*
 	// ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
 	float new_val = -0.01f;
     // 通过 union 或直接内存拷贝修改，确保不破坏高 96 位
@@ -3198,12 +3199,29 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     u1.v = arm_neon_state64_get_v(*neon_state, 1);
     u1.f = new_val;
     arm_neon_state64_set_v(*neon_state, 1, u1.v);
+	*/
 
 	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
 	//thread_state->__pc = (uint64_t)g_target_addr;
 	//thread_state->pc = (uint64_t)g_target_addr;
 	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
+	
+	NSLog(@"小罪ADD: sigtrap_handler: 修改前的pc: 0x%llx", thread_state2->__pc);
 	thread_state2->__pc = (uint64_t)g_target_addr;
+	NSLog(@"小罪ADD: sigtrap_handler: 修改后的pc: 0x%llx", thread_state2->__pc);
+
+	//调试测试版本
+	mach_port_t thread_port = mach_thread_self();
+	struct myARM_THREAD_STATE64 thread_state3;
+    mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
+	kern_return_t kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state3, &thread_state_cnt);
+    if (kr != KERN_SUCCESS) 
+	{
+        mach_port_deallocate(mach_task_self(), thread_port);
+    }
+    uint64_t cmppc = thread_state3.__pc;
+
+	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,thread_state3.__pc:0x%llx", thread_state2->__pc,thread_state3.__pc:0x%llx);
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
