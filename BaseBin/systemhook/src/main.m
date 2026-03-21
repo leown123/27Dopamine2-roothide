@@ -3210,6 +3210,16 @@ static void setmypc(mach_port_t thread_port,uint64_t newpc)
 
 }
 
+static void setmypcnew(mach_port_t thread_port,struct myARM_THREAD_STATE64 thread_state2)
+{
+		
+		NSLog(@"小罪ADD: setmypcnew: thread_port:%llx, thread_state2:%llx",thread_port,thread_state2);
+
+		thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
+	
+
+}
+
 // 标记是否正在处理 SIGTRAP，防止重入
 static volatile int g_is_handling_sigtrap = 0;
 
@@ -3301,7 +3311,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	// 3. 立即恢复断点（保证下次还能触发）
     toggle_hw_breakpoint(curr_thread, 1,g_source_addr);
 
-	setmypc(curr_thread,g_target_addr);
+	//setmypc(curr_thread,g_target_addr);
+	setmypcnew(curr_thread,thread_state2);
 
 	// 重置标记
     g_is_handling_sigtrap = 0;
