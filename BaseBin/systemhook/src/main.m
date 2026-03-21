@@ -3850,7 +3850,7 @@ static void* exception_handler_thread(void* arg) {
 			}
 
 			bool iscontainstr = false;
-			if(terbptype == 3)
+			if(terbptype == 6)
 			{
 				
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4230,6 +4230,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -4249,8 +4250,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
-	ter_breakpoints[5] = (Breakpoint){
+	*/
+	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd20,
         .target = tersafetsadd20ret,
         .s0_val = 29.0f,
@@ -4259,7 +4260,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	ter_breakpoint_count = 6;
+	ter_breakpoint_count = 4;
 	
 
 	//g_breakpoint_count = 3;
