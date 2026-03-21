@@ -3717,9 +3717,8 @@ static void* exception_handler_thread(void* arg) {
         return NULL;
     }
 
-	NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate mach_port_insert_right");
-
-	return NULL;
+	//到这里都没拉闸
+	
 
     // 设置任务异常端口，只捕获 EXC_BREAKPOINT
     kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
@@ -3734,8 +3733,14 @@ static void* exception_handler_thread(void* arg) {
         return NULL;
     }
 
+	NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate \ mach_port_insert_right \task_set_exception_ports");
+
     NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started,g_breakpoint_count:%d,ter_breakpoints:%d",g_breakpoint_count,ter_breakpoints);
 
+	
+	return NULL;
+
+	
     while (1) {
         struct {
             mach_msg_header_t head;
