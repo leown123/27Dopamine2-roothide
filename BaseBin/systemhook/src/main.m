@@ -3182,6 +3182,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	ucontext_t *uc = (ucontext_t *)context;
     arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
+	arm_neon_state64_t *neon_state = &uc->uc_mcontext->__ns;
 	
 	// 使用兼容宏获取 PC
     uint64_t pc = arm_thread_state64_get_pc(*thread_state);
