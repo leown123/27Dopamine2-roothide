@@ -65,6 +65,8 @@
 #include <mach/thread_status.h>
 #include <mach/arm/thread_status.h>
 
+#include <mach/thread_status.h>
+
 ShareStruct *shareData = 0;
 kfdShareStruct *kfdshareData= 0;
 
@@ -3193,7 +3195,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
 	//thread_state->__pc = (uint64_t)g_target_addr;
-	thread_state->pc = (uint64_t)g_target_addr;
+	//thread_state->pc = (uint64_t)g_target_addr;
+	arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
