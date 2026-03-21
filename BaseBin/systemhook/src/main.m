@@ -3154,7 +3154,7 @@ static kern_return_t remove_hw_breakpoint() {
 // =============================================================================
 // 兼容宏：根据 SDK 版本自动适配 PC/SP 访问
 // =============================================================================
-#ifndef arm_thread_state64_get_pc
+
     #if defined(__LP64__) && defined(__arm64__)
         // 新版 SDK 可能使用 pc 而不是 __pc
         #define arm_thread_state64_get_pc(ts) ((ts).pc)
@@ -3168,7 +3168,7 @@ static kern_return_t remove_hw_breakpoint() {
         #define arm_thread_state64_get_sp(ts) ((ts).__sp)
         #define arm_thread_state64_set_sp(ts, sp) do { (ts).__sp = (sp); } while(0)
     #endif
-#endif
+
 
 // 兼容访问 NEON 寄存器 __v 数组（通常成员名不变）
 #define arm_neon_state64_get_v(neon, idx) ((neon).__v[idx])
