@@ -3176,9 +3176,10 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	
 	// 使用兼容宏获取 PC
     uint64_t pc = arm_thread_state64_get_pc(*thread_state);
-	NSLog(@"小罪ADD: sigtrap_handler: pc: 0x%llx, g_source_addr:0x%llx", pc, (uint64_t)g_target_addr);
-    if (pc != g_target_addr) {
+	NSLog(@"小罪ADD: sigtrap_handler: pc: 0x%llx, g_source_addr:0x%llx", pc, (uint64_t)g_source_addr);
+    if (pc != g_source_addr) {
 		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
+		thread_state2->__pc += 4;
         return; // 不是我们的断点
     }
 
