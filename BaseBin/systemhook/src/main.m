@@ -3156,6 +3156,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
 
+	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
 	mach_port_t thread_port = mach_thread_self();
 	struct myARM_THREAD_STATE64 thread_state2;
     mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
