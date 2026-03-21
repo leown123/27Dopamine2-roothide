@@ -3166,7 +3166,7 @@ static volatile int g_is_handling_sigtrap = 0;
 // SIGTRAP 信号处理函数
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
-	/ 防止信号重入（SIGTRAP 可能多次触发）
+	// 防止信号重入（SIGTRAP 可能多次触发）
     if (g_is_handling_sigtrap) {
         return;
     }
@@ -3174,7 +3174,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
 
-	/ 安全校验：context 不能为空
+	// 安全校验：context 不能为空
     if (context == NULL) {
         NSLog(@"小罪ADD: context 为空，处理失败");
         g_is_handling_sigtrap = 0;
