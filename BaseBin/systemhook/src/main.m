@@ -3221,7 +3221,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     }
     uint64_t cmppc = thread_state3.__pc;
 
-	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,thread_state3.__pc:0x%llx", thread_state2->__pc,thread_state3.__pc:0x%llx);
+	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,thread_state3.__pc:0x%llx", thread_state2->__pc,thread_state3.__pc);
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
