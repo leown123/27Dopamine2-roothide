@@ -3155,42 +3155,56 @@ static kern_return_t remove_hw_breakpoint() {
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
-	
-    ucontext_t *uc = (ucontext_t *)context;
-    arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
-	arm_neon_state64_t *neon = &uc->uc_mcontext->__ns;
 
-    uint64_t pc = arm_thread_state64_get_pc(*thread_state);
+	mach_port_t thread_port = mach_thread_self();
+    arm_thread_state64_t thread_state2;
 
-	NSLog(@"小罪ADD: sigtrap_handler 目前pc = %llx",pc);
-	
+	struct myARM_THREAD_STATE64 thread_state2;
+    mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
+	kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, &thread_state_cnt);
+    if (kr != KERN_SUCCESS) 
+	{
+		NSLog(@"小罪ADD: sigtrap_handler : thread_get_state fail");
+        mach_port_deallocate(mach_task_self(), thread_port);
+        return;
+    }
+
+    uint64_t pc = thread_state2.__pc;
     if (pc != g_source_addr) {
         // 不是我们设置的断点，忽略
 		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
+		mach_port_deallocate(mach_task_self(), thread_port);
         return;
     }
 
     // 在这里可以插入自定义代码，比如日志输出
-   	NSLog(@"小罪ADD: initbreakpoint: Breakpoint hit at 0x%llx, jumping to 0x%llx", pc, (uint64_t)g_target_addr);
+   	NSLog(@"小罪ADD: sigtrap_handler: Breakpoint hit at 0x%llx, jumping to 0x%llx", pc, (uint64_t)g_target_addr);
 
-    // 临时移除硬件断点，避免无限递归（因为断点处指令还未执行） 我要持续生效，不移除
-    //remove_hw_breakpoint();
+	// ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
+        arm_neon_state64_t neon_state;
+        mach_msg_type_number_t neon_state_cnt = ARM_NEON_STATE64_COUNT;
+        kr = thread_get_state(thread_port, ARM_NEON_STATE64,
+                              (thread_state_t)&neon_state, &neon_state_cnt);
+        if (kr == KERN_SUCCESS) {
+            // s0 对应 v0 的低32位，s1 对应 v1 的低32位
+            float new_s0 = -0.01f;
+            float new_s1 = -0.01f;
+            *(float*)&neon_state.__v[0] = new_s0;
+            *(float*)&neon_state.__v[1] = new_s1;
+            // 写回 NEON 状态
+            thread_set_state(thread_port, ARM_NEON_STATE64,
+                             (thread_state_t)&neon_state, neon_state_cnt);
+        } else {
+            // 无法获取 NEON 状态，继续但可能不会修改浮点寄存器
+        }
 
-	// 修改 s0、s1 的值
-    *(float*)&neon->__v[0] = -0.01f;
-    *(float*)&neon->__v[1] = -0.01f;
+    thread_state2.__pc = g_target_addr;
+	
+    thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
+    mach_port_deallocate(mach_task_self(), thread_port);
+	
 
-    // 修改 PC 为目标地址
-    //*thread_state = arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
-	//thread_state->__pc = (uint64_t)g_target_addr;
-	struct myARM_THREAD_STATE64 aaa = *(struct myARM_THREAD_STATE64 *)&thread_state;
-	//if (aaa.__pc == g_stat_addr) {
-	aaa.__pc = g_target_addr;
-	thread_state->__pc = (uint64_t)g_target_addr;
-
-    // 注意：信号返回后，线程将从新 PC 开始执行。
-    // 如果希望断点持续生效（例如，再次执行到源地址时再次跳转），
-    // 可以在目标地址处的代码中重新设置断点，但本例是单次跳转，故不重新设置。
+    
 }
 
 	
