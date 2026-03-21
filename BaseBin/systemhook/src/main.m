@@ -3324,12 +3324,10 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	//mach_port_deallocate(mach_task_self(), curr_thread);
 
 	NSLog(@"小罪ADD: sigtrap_handler : 重置标记完成，进入下一环");
-	setmypcnew(curr_thread,*thread_state2);
+	//setmypcnew(curr_thread,*thread_state2);
 	
-	
-	
+	thread_state2->__pc += 4; 
 
-    
 }
 
 	
