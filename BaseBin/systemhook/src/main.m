@@ -3212,8 +3212,9 @@ static void setmypc(mach_port_t thread_port,uint64_t newpc)
 
 static void setmypcnew(mach_port_t thread_port,struct myARM_THREAD_STATE64 thread_state2)
 {
-		
-		NSLog(@"小罪ADD: setmypcnew: thread_port:%llx, thread_state2:%llx",thread_port,thread_state2);
+		uint64_t pc = thread_state2.__pc;
+
+		NSLog(@"小罪ADD: setmypcnew: thread_port:%llx, thread_state2.__pc:%llx",thread_port,thread_state2.__pc);
 
 		thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
 	
@@ -3228,14 +3229,16 @@ static pthread_mutex_t g_handler_mutex = PTHREAD_MUTEX_INITIALIZER;
 // SIGTRAP 信号处理函数
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
+	NSLog(@"小罪ADD: sigtrap_handler 触发！");
+	/*
 	// 防止信号重入（SIGTRAP 可能多次触发）
     if (g_is_handling_sigtrap || pthread_mutex_trylock(&g_handler_mutex) != 0) 
 	{
         return;
     }
     
-	NSLog(@"小罪ADD: sigtrap_handler 触发！");
-
+	
+	
 	// 安全校验：context 不能为空
     if (context == NULL) {
         NSLog(@"小罪ADD: context 为空，处理失败");
@@ -3245,6 +3248,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     }
 
 	g_is_handling_sigtrap = 1;
+	*/
 
 	mach_port_t curr_thread = mach_thread_self();
 	
@@ -3263,8 +3267,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (pc != g_source_addr) {
 		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
 		thread_state2->__pc += 4;
-		g_is_handling_sigtrap = 0;
-		pthread_mutex_unlock(&g_handler_mutex);
+		//g_is_handling_sigtrap = 0;
+		//pthread_mutex_unlock(&g_handler_mutex);
         return; // 不是我们的断点
     }
 
@@ -3272,8 +3276,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (g_target_addr % 4 != 0) {
         NSLog(@"小罪ADD: 目标地址 0x%llx 未按 4 字节对齐，跳转失败", g_target_addr);
         thread_state2->__pc += 4; // 跳过断点指令
-        g_is_handling_sigtrap = 0;
-		pthread_mutex_unlock(&g_handler_mutex);
+        //g_is_handling_sigtrap = 0;
+		//pthread_mutex_unlock(&g_handler_mutex);
         return;
     }
 
@@ -3315,9 +3319,9 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	setmypcnew(curr_thread,*thread_state2);
 
 	// 重置标记
-    g_is_handling_sigtrap = 0;
-	pthread_mutex_unlock(&g_handler_mutex);
-	mach_port_deallocate(mach_task_self(), curr_thread);
+    //g_is_handling_sigtrap = 0;
+	//pthread_mutex_unlock(&g_handler_mutex);
+	//mach_port_deallocate(mach_task_self(), curr_thread);
 
 	NSLog(@"小罪ADD: sigtrap_handler : 重置标记完成，进入下一环");
 	
