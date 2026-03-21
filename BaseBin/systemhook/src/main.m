@@ -3159,6 +3159,11 @@ static kern_return_t remove_hw_breakpoint() {
 #define arm_neon_state64_get_v(neon, idx) ((neon).__v[idx])
 #define arm_neon_state64_set_v(neon, idx, val) do { (neon).__v[idx] = (val); } while(0)
 
+// 1. 补全必要定义
+typedef struct {
+    uint64_t dbgbvr[16]; // 断点值寄存器
+    uint64_t dbgbcr[16]; // 断点控制寄存器
+} arm64e_dbg_regs_t;
 
 // 禁用/启用当前线程的硬件断点（核心原子操作）
 static void toggle_hw_breakpoint(thread_t thread, int enable,uint64_t g_bp_addr) {
@@ -3262,7 +3267,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	// 1. 临时禁用断点（核心：避免返回后立刻触发）
     toggle_hw_breakpoint(curr_thread, 0,g_source_addr);
-	
+
+	// 2.修改pc 
 	NSLog(@"小罪ADD: sigtrap_handler: 修改前的pc: 0x%llx", thread_state2->__pc);
 	thread_state2->__pc = (uint64_t)g_target_addr;
 	NSLog(@"小罪ADD: sigtrap_handler: 修改后的pc: 0x%llx", thread_state2->__pc);
@@ -3272,35 +3278,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	// 重置标记
     g_is_handling_sigtrap = 0;
-
-	//调试测试版本
-	/*
-	//mach_port_t thread_port = mach_thread_self();
-	mach_port_t thread_port = pthread_mach_thread_np(pthread_self());
-	struct myARM_THREAD_STATE64 thread_state3;
-    mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
-	kern_return_t kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state3, &thread_state_cnt);
-    if (kr != KERN_SUCCESS) 
-	{
-        mach_port_deallocate(mach_task_self(), thread_port);
-    }
-    uint64_t cmppc = thread_state3.__pc;
-	*/
-
-	// 验证1：读异常状态的PC（和sig_pc一致）
-	
-    arm_exception_state64_t exc_state;
-    mach_msg_type_number_t exc_count = ARM_EXCEPTION_STATE64_COUNT;
-    kern_return_t kr = thread_get_state(curr_thread, ARM_EXCEPTION_STATE64, (thread_state_t)&exc_state, &exc_count);
-	if (kr != KERN_SUCCESS) 
-	{
-        
-    }
-    uint64_t exc_pc = exc_state.__exception_pc;
-
 	mach_port_deallocate(mach_task_self(), curr_thread);
-	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,exc_state.__exception_pc:0x%llx", thread_state2->__pc,exc_state.__exception_pc);
-
+	
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
