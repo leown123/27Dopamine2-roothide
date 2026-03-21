@@ -3151,11 +3151,66 @@ static kern_return_t remove_hw_breakpoint() {
     return KERN_SUCCESS;
 }
 
+// =============================================================================
+// 兼容宏：根据 SDK 版本自动适配 PC/SP 访问
+// =============================================================================
+#ifndef arm_thread_state64_get_pc
+    #if defined(__LP64__) && defined(__arm64__)
+        // 新版 SDK 可能使用 pc 而不是 __pc
+        #define arm_thread_state64_get_pc(ts) ((ts).pc)
+        #define arm_thread_state64_set_pc(ts, pc) do { (ts).pc = (pc); } while(0)
+        #define arm_thread_state64_get_sp(ts) ((ts).sp)
+        #define arm_thread_state64_set_sp(ts, sp) do { (ts).sp = (sp); } while(0)
+    #else
+        // 旧版 SDK 使用 __pc, __sp
+        #define arm_thread_state64_get_pc(ts) ((ts).__pc)
+        #define arm_thread_state64_set_pc(ts, pc) do { (ts).__pc = (pc); } while(0)
+        #define arm_thread_state64_get_sp(ts) ((ts).__sp)
+        #define arm_thread_state64_set_sp(ts, sp) do { (ts).__sp = (sp); } while(0)
+    #endif
+#endif
+
+// 兼容访问 NEON 寄存器 __v 数组（通常成员名不变）
+#define arm_neon_state64_get_v(neon, idx) ((neon).__v[idx])
+#define arm_neon_state64_set_v(neon, idx, val) do { (neon).__v[idx] = (val); } while(0)
+
+
 // SIGTRAP 信号处理函数
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
 
+	ucontext_t *uc = (ucontext_t *)context;
+    arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
+	
+	// 使用兼容宏获取 PC
+    uint64_t pc = arm_thread_state64_get_pc(*thread_state);
+	NSLog(@"小罪ADD: sigtrap_handler: pc: 0x%llx, g_source_addr:0x%llx", pc, (uint64_t)g_target_addr);
+    if (pc != g_target_addr) {
+		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
+        return; // 不是我们的断点
+    }
+
+	// ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
+	float new_val = -0.01f;
+    // 通过 union 或直接内存拷贝修改，确保不破坏高 96 位
+    union {
+        __uint128_t v;
+        float f;
+    } u0, u1;
+	
+    u0.v = arm_neon_state64_get_v(*neon_state, 0);
+    u0.f = new_val;
+    arm_neon_state64_set_v(*neon_state, 0, u0.v);
+	
+    u1.v = arm_neon_state64_get_v(*neon_state, 1);
+    u1.f = new_val;
+    arm_neon_state64_set_v(*neon_state, 1, u1.v);
+
+	arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
+
+
+	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
 	mach_port_t thread_port = mach_thread_self();
@@ -3203,7 +3258,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	
     thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
     mach_port_deallocate(mach_task_self(), thread_port);
-	
+	*/
 
     
 }
