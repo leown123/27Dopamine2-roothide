@@ -3160,10 +3160,26 @@ static kern_return_t remove_hw_breakpoint() {
 #define arm_neon_state64_set_v(neon, idx, val) do { (neon).__v[idx] = (val); } while(0)
 
 
+// 标记是否正在处理 SIGTRAP，防止重入
+static volatile int g_is_handling_sigtrap = 0;
+
 // SIGTRAP 信号处理函数
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
+	/ 防止信号重入（SIGTRAP 可能多次触发）
+    if (g_is_handling_sigtrap) {
+        return;
+    }
+    g_is_handling_sigtrap = 1;
+
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
+
+	/ 安全校验：context 不能为空
+    if (context == NULL) {
+        NSLog(@"小罪ADD: context 为空，处理失败");
+        g_is_handling_sigtrap = 0;
+        return;
+    }
 
 	ucontext_t *uc = (ucontext_t *)context;
     arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
@@ -3180,7 +3196,16 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (pc != g_source_addr) {
 		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
 		thread_state2->__pc += 4;
+		g_is_handling_sigtrap = 0;
         return; // 不是我们的断点
+    }
+
+	// 验证目标地址合法性（ARM64 指令必须 4 字节对齐）
+    if (g_target_addr % 4 != 0) {
+        NSLog(@"小罪ADD: 目标地址 0x%llx 未按 4 字节对齐，跳转失败", g_target_addr);
+        thread_state2->__pc += 4; // 跳过断点指令
+        g_is_handling_sigtrap = 0;
+        return;
     }
 
 	/*
@@ -3210,8 +3235,12 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	thread_state2->__pc = (uint64_t)g_target_addr;
 	NSLog(@"小罪ADD: sigtrap_handler: 修改后的pc: 0x%llx", thread_state2->__pc);
 
+	// 重置标记
+    g_is_handling_sigtrap = 0;
+
 	//调试测试版本
-	mach_port_t thread_port = mach_thread_self();
+	//mach_port_t thread_port = mach_thread_self();
+	mach_port_t thread_port = pthread_mach_thread_np(pthread_self());
 	struct myARM_THREAD_STATE64 thread_state3;
     mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
 	kern_return_t kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state3, &thread_state_cnt);
@@ -3222,6 +3251,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     uint64_t cmppc = thread_state3.__pc;
 
 	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,thread_state3.__pc:0x%llx", thread_state2->__pc,thread_state3.__pc);
+	mach_port_deallocate(mach_task_self(), thread_port);
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
