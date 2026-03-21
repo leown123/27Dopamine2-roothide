@@ -4521,7 +4521,83 @@ void initbreakpoint_smoba()
 	
 }
 
+// 定义原函数类型
+typedef kern_return_t (*task_get_exception_ports_t)(
+    task_t task,
+    exception_mask_t exception_mask,
+    exception_mask_array_t masks,
+    mach_msg_type_number_t *masksCnt,
+    exception_port_array_t ports,
+    exception_behavior_array_t behaviors,
+    thread_state_flavor_array_t flavors
+);
 
+typedef kern_return_t (*task_get_special_port_t)(
+    task_t task,
+    int which_port,
+    mach_port_t *special_port
+);
+
+// 全局原函数指针
+static task_get_exception_ports_t original_task_get_exception_ports = NULL;
+static task_get_special_port_t original_task_get_special_port = NULL;
+
+kern_return_t replaced_task_get_exception_ports(
+    task_t task,
+    exception_mask_t exception_mask,
+    exception_mask_array_t masks,
+    mach_msg_type_number_t *masksCnt,
+    exception_port_array_t ports,
+    exception_behavior_array_t behaviors,
+    thread_state_flavor_array_t flavors)
+{
+	NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
+	NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
+    // 方式一：完全伪造返回，不调用原函数（适用于知道调用者会检查返回值）
+    // 将所有输出数组置空
+    if (masksCnt != NULL) {
+        *masksCnt = 0;
+    }
+    // 注意：调用者可能已分配缓冲区，我们只需将第一个端口设为 MACH_PORT_NULL 并置计数为0
+    // 但更安全的是调用原函数后再清除敏感端口，避免影响系统其他部分
+    // 这里选择调用原函数，然后清除所有异常端口设置（仅当 task 是当前任务时）
+    kern_return_t kr = original_task_get_exception_ports(task, exception_mask, masks, masksCnt, ports, behaviors, flavors);
+    
+    // 如果是当前任务（即游戏自身），将异常端口全部清空
+    if (task == mach_task_self()) {
+        if (masksCnt && *masksCnt > 0) {
+            // 将所有端口设为 MACH_PORT_NULL，并将计数清零
+            for (mach_msg_type_number_t i = 0; i < *masksCnt; i++) {
+                ports[i] = MACH_PORT_NULL;
+                // 可选：重置 behaviors 和 flavors，但反作弊通常只检查端口
+            }
+            *masksCnt = 0;   // 让调用者认为没有任何异常端口设置
+        }
+    }
+    return kr;
+}
+
+kern_return_t replaced_task_get_special_port(
+    task_t task,
+    int which_port,
+    mach_port_t *special_port)
+{
+	NSLog(@"小罪ADD: systemhook: replaced_task_get_special_port call!");
+	NSLog(@"小罪ADD: [+] replaced_task_get_special_port called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
+    // 如果是当前任务且请求的是 bootstrap 端口（which_port = 4）
+    if (task == mach_task_self() && which_port == 4) 
+	{
+		// // 方式一：直接返回失败，反作弊将无法获取 bootstrap 端口
+    	return original_task_get_special_port(task, which_port, special_port);
+ 
+    }
+	// 方式二：返回成功但端口为 MACH_PORT_NULL（需根据反作弊逻辑选择）
+        // *special_port = MACH_PORT_NULL;
+        // return KERN_SUCCESS;
+	return KERN_FAILURE;
+    
+}
 
 
 
@@ -4645,6 +4721,13 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 
+		// Hook task_get_exception_ports
+   		int ret = DobbyHook((void *)task_get_exception_ports,(void *)replaced_task_get_exception_ports, (void **)&original_task_get_exception_ports);
+		NSLog(@"小罪ADD: [Dobby] hook task_get_exception_ports: %s", ret == 0 ? "success" : "failed");
+		
+    	// Hook task_get_special_port
+    	ret = DobbyHook((void *)task_get_special_port, (void *)replaced_task_get_special_port, (void **)&original_task_get_special_port);
+		NSLog(@"小罪ADD: [Dobby] hook task_get_special_port: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
@@ -4654,10 +4737,12 @@ if (load_executable_path() == 0)
 		//pthread_t thread2;
         //pthread_create(&thread2, NULL, crchackthread, NULL);
 
+		
+
 				
 		return;
 
-		int ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
+		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 		
 		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
