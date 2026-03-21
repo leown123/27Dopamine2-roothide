@@ -3160,6 +3160,32 @@ static kern_return_t remove_hw_breakpoint() {
 #define arm_neon_state64_set_v(neon, idx, val) do { (neon).__v[idx] = (val); } while(0)
 
 
+// 禁用/启用当前线程的硬件断点（核心原子操作）
+static void toggle_hw_breakpoint(thread_t thread, int enable,uint64_t g_bp_addr) {
+    if (g_bp_addr == 0 || thread == THREAD_NULL) return;
+    
+    arm64e_dbg_regs_t dbg_regs;
+    mach_msg_type_number_t reg_count = sizeof(dbg_regs) / sizeof(uint64_t);
+    
+    // 读取调试寄存器
+    kern_return_t kr = thread_get_state(thread, ARM_DEBUG_STATE64, (thread_state_t)&dbg_regs, &reg_count);
+    if (kr != KERN_SUCCESS) return;
+
+    // 找到匹配的断点槽位并切换状态
+    for (int i = 0; i < 16; i++) {
+        if (dbg_regs.dbgbvr[i] == g_bp_addr) {
+            if (enable) {
+                dbg_regs.dbgbcr[i] = 0x1; // 启用：执行断点
+            } else {
+                dbg_regs.dbgbcr[i] = 0x0; // 禁用
+            }
+            // 立即写回寄存器
+            thread_set_state(thread, ARM_DEBUG_STATE64, (thread_state_t)&dbg_regs, reg_count);
+            break;
+        }
+    }
+}
+
 // 标记是否正在处理 SIGTRAP，防止重入
 static volatile int g_is_handling_sigtrap = 0;
 
@@ -3170,8 +3196,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (g_is_handling_sigtrap) {
         return;
     }
-    g_is_handling_sigtrap = 1;
-
+    
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
 
 	// 安全校验：context 不能为空
@@ -3181,6 +3206,10 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
         return;
     }
 
+	g_is_handling_sigtrap = 1;
+
+	mach_port_t curr_thread = mach_thread_self();
+	
 	ucontext_t *uc = (ucontext_t *)context;
     arm_thread_state64_t *thread_state = &uc->uc_mcontext->__ss;
 	arm_neon_state64_t *neon_state = &uc->uc_mcontext->__ns;
@@ -3230,15 +3259,22 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 	//thread_state->__pc = (uint64_t)g_target_addr;
 	//thread_state->pc = (uint64_t)g_target_addr;
 	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);
+
+	// 1. 临时禁用断点（核心：避免返回后立刻触发）
+    toggle_hw_breakpoint(curr_thread, 0,g_source_addr);
 	
 	NSLog(@"小罪ADD: sigtrap_handler: 修改前的pc: 0x%llx", thread_state2->__pc);
 	thread_state2->__pc = (uint64_t)g_target_addr;
 	NSLog(@"小罪ADD: sigtrap_handler: 修改后的pc: 0x%llx", thread_state2->__pc);
 
+	// 3. 立即恢复断点（保证下次还能触发）
+    toggle_hw_breakpoint(curr_thread, 1,g_source_addr);
+
 	// 重置标记
     g_is_handling_sigtrap = 0;
 
 	//调试测试版本
+	/*
 	//mach_port_t thread_port = mach_thread_self();
 	mach_port_t thread_port = pthread_mach_thread_np(pthread_self());
 	struct myARM_THREAD_STATE64 thread_state3;
@@ -3249,9 +3285,21 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
         mach_port_deallocate(mach_task_self(), thread_port);
     }
     uint64_t cmppc = thread_state3.__pc;
+	*/
 
-	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,thread_state3.__pc:0x%llx", thread_state2->__pc,thread_state3.__pc);
-	mach_port_deallocate(mach_task_self(), thread_port);
+	// 验证1：读异常状态的PC（和sig_pc一致）
+	
+    arm_exception_state64_t exc_state;
+    mach_msg_type_number_t exc_count = ARM_EXCEPTION_STATE64_COUNT;
+    kern_return_t kr = thread_get_state(curr_thread, ARM_EXCEPTION_STATE64, (thread_state_t)&exc_state, &exc_count);
+	if (kr != KERN_SUCCESS) 
+	{
+        
+    }
+    uint64_t exc_pc = exc_state.__exception_pc;
+
+	mach_port_deallocate(mach_task_self(), curr_thread);
+	NSLog(@"小罪ADD: sigtrap_handler: thread_state2->__pc:0x%llx,exc_state.__exception_pc:0x%llx", thread_state2->__pc,exc_state.__exception_pc);
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
@@ -4126,7 +4174,8 @@ void initbreakpoint()
 	
     // 注册 SIGTRAP 信号处理器
     struct sigaction sa;
-    sa.sa_flags = SA_SIGINFO | SA_RESTART;
+    //sa.sa_flags = SA_SIGINFO | SA_RESTART;
+	sa.sa_flags = SA_SIGINFO | SA_RESTART | SA_NODEFER;
     sa.sa_sigaction = sigtrap_handler;
     sigemptyset(&sa.sa_mask);
     if (sigaction(SIGTRAP, &sa, NULL) == -1)
