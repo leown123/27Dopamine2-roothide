@@ -4474,7 +4474,9 @@ if (load_executable_path() == 0)
 		}
 
 
-		loadandinitshare();
+		//loadandinitshare(); 26.3.21屏蔽
+
+		
 		//initbreakpoint();
 
 		pthread_t thread2;
