@@ -3151,23 +3151,6 @@ static kern_return_t remove_hw_breakpoint() {
     return KERN_SUCCESS;
 }
 
-// =============================================================================
-// 兼容宏：根据 SDK 版本自动适配 PC/SP 访问
-// =============================================================================
-
-    #if defined(__LP64__) && defined(__arm64__)
-        // 新版 SDK 可能使用 pc 而不是 __pc
-        #define arm_thread_state64_get_pc(ts) ((ts).pc)
-        #define arm_thread_state64_set_pc(ts, pc) do { (ts).pc = (pc); } while(0)
-        #define arm_thread_state64_get_sp(ts) ((ts).sp)
-        #define arm_thread_state64_set_sp(ts, sp) do { (ts).sp = (sp); } while(0)
-    #else
-        // 旧版 SDK 使用 __pc, __sp
-        #define arm_thread_state64_get_pc(ts) ((ts).__pc)
-        #define arm_thread_state64_set_pc(ts, pc) do { (ts).__pc = (pc); } while(0)
-        #define arm_thread_state64_get_sp(ts) ((ts).__sp)
-        #define arm_thread_state64_set_sp(ts, sp) do { (ts).__sp = (sp); } while(0)
-    #endif
 
 
 // 兼容访问 NEON 寄存器 __v 数组（通常成员名不变）
@@ -3208,8 +3191,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     u1.f = new_val;
     arm_neon_state64_set_v(*neon_state, 1, u1.v);
 
-	arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
-
+	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
+	thread_state->__pc = (uint64_t)g_target_addr;
 
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
