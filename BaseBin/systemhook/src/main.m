@@ -3825,32 +3825,21 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2)
 			{
-				/*
-				// 修改浮点寄存器 s0/s1
-		        arm_neon_state64_t neon_state;
-		        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
-		        kr = thread_get_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, &neon_cnt);
-		        if (kr == KERN_SUCCESS) 
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
-					// 修改 D0（双精度，使用联合体保护高 64 位）
-				    union {
-				        __uint128_t v;
-				        double d;
-				    } u;
-				    u.v = neon_state.__v[0];
-				    u.d = bp->d0_val;
-				    neon_state.__v[0] = u.v;
-		            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
-		        }
-				*/
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 警告上报：sub_824AC hook] 检测类型: %s", path);
+				}
 
-				//NSLog(@"小罪ADD: [tersafe sub_215954 call] 线程被调用，拟直接返回！");
-
-				
 			}
 
 			bool iscontainstr = false;
-			if(terbptype == 6)
+			if(terbptype == 3)
 			{
 				
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4222,15 +4211,15 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd17,
-        .target = tersafetsadd17ret,
+        .source = tersafetsadd19,
+        .target = tersafetsadd19ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -4241,7 +4230,7 @@ void initbreakpoint()
     };
 	
 
-	
+	/*
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
@@ -4261,7 +4250,7 @@ void initbreakpoint()
     };
 	*/
 
-	ter_breakpoint_count = 3;
+	ter_breakpoint_count = 4;
 	
 
 	//g_breakpoint_count = 3;
