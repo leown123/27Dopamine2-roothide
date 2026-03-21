@@ -2989,7 +2989,8 @@ void* smobainit(void* aa)
 }
 
 void loadandinitshare()
-{
+{	
+	/*
 	if(!hadgongxiang)
     {
         gongxiangkaiqi();
@@ -2997,7 +2998,8 @@ void loadandinitshare()
         //kfdshareData->ismapped = false;
 		shareData->ismapped = false;
     }
-
+	*/
+	
 	//pid_t sharepid = kfdshareData->huizhipid;
 
 	while(!Imageaddress)
@@ -3014,15 +3016,14 @@ void loadandinitshare()
 	NSLog(@"小罪ADD: systemhook: tersafeadd:%lx,Read_Long(tersafeadd):%lx",tersafeadd,Read_Long(tersafeadd));
 
 
-	shareData->baseAddress = Imageaddress;
-    shareData->readbaseAddress = Read_Long(Imageaddress);
+	//shareData->baseAddress = Imageaddress;
+    //shareData->readbaseAddress = Read_Long(Imageaddress);
 
-	NSLog(@"小罪ADD: systemhook: shareData->baseAddress:%lx,shareData->readbaseAddress:%lx",shareData->baseAddress,shareData->readbaseAddress);
+	//NSLog(@"小罪ADD: systemhook: shareData->baseAddress:%lx,shareData->readbaseAddress:%lx",shareData->baseAddress,shareData->readbaseAddress);
 
-	pthread_t thread1;
-    pthread_create(&thread1, NULL, xunhuanthread, NULL);
+	//pthread_t thread1;
+    //pthread_create(&thread1, NULL, xunhuanthread, NULL);
 
-	
 	pthread_t thread2;
     pthread_create(&thread2, NULL, duquthread, NULL);
 
@@ -4265,7 +4266,7 @@ void initbreakpoint()
 	
     // 设置硬件断点
 
-	while(!isover100)
+	//while(!isover100)
 	{
     	setup_all_breakpoints();
 	}
@@ -4474,13 +4475,13 @@ if (load_executable_path() == 0)
 		}
 
 
-		//loadandinitshare(); 26.3.21屏蔽
+		loadandinitshare(); //26.3.21屏蔽
 
 		
 		//initbreakpoint();
 
-		pthread_t thread2;
-        pthread_create(&thread2, NULL, crchackthread, NULL);
+		//pthread_t thread2;
+        //pthread_create(&thread2, NULL, crchackthread, NULL);
 
 				
 		return;
