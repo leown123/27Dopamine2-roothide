@@ -3194,11 +3194,14 @@ static void toggle_hw_breakpoint(thread_t thread, int enable,uint64_t g_bp_addr)
 // 标记是否正在处理 SIGTRAP，防止重入
 static volatile int g_is_handling_sigtrap = 0;
 
+static pthread_mutex_t g_handler_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 // SIGTRAP 信号处理函数
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	// 防止信号重入（SIGTRAP 可能多次触发）
-    if (g_is_handling_sigtrap) {
+    if (g_is_handling_sigtrap || pthread_mutex_trylock(&g_handler_mutex) != 0) 
+	{
         return;
     }
     
@@ -3208,6 +3211,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (context == NULL) {
         NSLog(@"小罪ADD: context 为空，处理失败");
         g_is_handling_sigtrap = 0;
+		pthread_mutex_unlock(&g_handler_mutex);
         return;
     }
 
@@ -3231,6 +3235,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
 		thread_state2->__pc += 4;
 		g_is_handling_sigtrap = 0;
+		pthread_mutex_unlock(&g_handler_mutex);
         return; // 不是我们的断点
     }
 
@@ -3239,6 +3244,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
         NSLog(@"小罪ADD: 目标地址 0x%llx 未按 4 字节对齐，跳转失败", g_target_addr);
         thread_state2->__pc += 4; // 跳过断点指令
         g_is_handling_sigtrap = 0;
+		pthread_mutex_unlock(&g_handler_mutex);
         return;
     }
 
@@ -3278,7 +3284,9 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	// 重置标记
     g_is_handling_sigtrap = 0;
+	pthread_mutex_unlock(&g_handler_mutex);
 	mach_port_deallocate(mach_task_self(), curr_thread);
+	
 	
 	/*
 	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
