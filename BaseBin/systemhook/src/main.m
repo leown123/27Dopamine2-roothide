@@ -3191,6 +3191,25 @@ static void toggle_hw_breakpoint(thread_t thread, int enable,uint64_t g_bp_addr)
     }
 }
 
+static void setmypc(mach_port_t thread_port,uint64_t newpc)
+{
+		// 获取线程通用寄存器
+		struct myARM_THREAD_STATE64 thread_state2;
+        mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
+		kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, &thread_state_cnt);
+        if (kr != KERN_SUCCESS) {
+            return;
+        }
+		uint64_t pc = thread_state2.__pc;
+
+		NSLog(@"小罪ADD: setmypc: pc:%llx, newpc:%llx",pc,newpc);
+
+		thread_state2.__pc = (uint64_t)newpc;
+		thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
+	
+
+}
+
 // 标记是否正在处理 SIGTRAP，防止重入
 static volatile int g_is_handling_sigtrap = 0;
 
@@ -3281,6 +3300,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	// 3. 立即恢复断点（保证下次还能触发）
     toggle_hw_breakpoint(curr_thread, 1,g_source_addr);
+
+	setmypc(curr_thread,g_target_addr);
 
 	// 重置标记
     g_is_handling_sigtrap = 0;
@@ -4160,9 +4181,16 @@ void initbreakpoint()
 
 	
     // 注册 SIGTRAP 信号处理器
+	stack_t sig_stack;
+    sig_stack.ss_sp = malloc(SIGSTKSZ);
+    sig_stack.ss_size = SIGSTKSZ;
+    sig_stack.ss_flags = 0;
+    sigaltstack(&sig_stack, NULL);
+	
     struct sigaction sa;
     //sa.sa_flags = SA_SIGINFO | SA_RESTART;
-	sa.sa_flags = SA_SIGINFO | SA_RESTART | SA_NODEFER;
+	//sa.sa_flags = SA_SIGINFO | SA_RESTART | SA_NODEFER;
+	sa.sa_flags = SA_SIGINFO | SA_RESTART | SA_NODEFER | SA_ONSTACK;
     sa.sa_sigaction = sigtrap_handler;
     sigemptyset(&sa.sa_mask);
     if (sigaction(SIGTRAP, &sa, NULL) == -1)
