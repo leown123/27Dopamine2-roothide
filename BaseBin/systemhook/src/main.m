@@ -3230,7 +3230,7 @@ static pthread_mutex_t g_handler_mutex = PTHREAD_MUTEX_INITIALIZER;
 static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	NSLog(@"小罪ADD: sigtrap_handler 触发！");
-	/*
+	
 	// 防止信号重入（SIGTRAP 可能多次触发）
     if (g_is_handling_sigtrap || pthread_mutex_trylock(&g_handler_mutex) != 0) 
 	{
@@ -3248,7 +3248,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     }
 
 	g_is_handling_sigtrap = 1;
-	*/
+	
 
 	mach_port_t curr_thread = mach_thread_self();
 	
@@ -3267,8 +3267,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (pc != g_source_addr) {
 		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
 		thread_state2->__pc += 4;
-		//g_is_handling_sigtrap = 0;
-		//pthread_mutex_unlock(&g_handler_mutex);
+		g_is_handling_sigtrap = 0;
+		pthread_mutex_unlock(&g_handler_mutex);
         return; // 不是我们的断点
     }
 
@@ -3276,8 +3276,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     if (g_target_addr % 4 != 0) {
         NSLog(@"小罪ADD: 目标地址 0x%llx 未按 4 字节对齐，跳转失败", g_target_addr);
         thread_state2->__pc += 4; // 跳过断点指令
-        //g_is_handling_sigtrap = 0;
-		//pthread_mutex_unlock(&g_handler_mutex);
+        g_is_handling_sigtrap = 0;
+		pthread_mutex_unlock(&g_handler_mutex);
         return;
     }
 
@@ -3316,65 +3316,17 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     toggle_hw_breakpoint(curr_thread, 1,g_source_addr);
 
 	//setmypc(curr_thread,g_target_addr);
-	setmypcnew(curr_thread,*thread_state2);
+	//setmypcnew(curr_thread,*thread_state2);
 
 	// 重置标记
-    //g_is_handling_sigtrap = 0;
-	//pthread_mutex_unlock(&g_handler_mutex);
-	//mach_port_deallocate(mach_task_self(), curr_thread);
+    g_is_handling_sigtrap = 0;
+	pthread_mutex_unlock(&g_handler_mutex);
+	mach_port_deallocate(mach_task_self(), curr_thread);
 
 	NSLog(@"小罪ADD: sigtrap_handler : 重置标记完成，进入下一环");
 	
 	
-	/*
-	NSLog(@"小罪ADD: [+] sigtrap_handler called. Stack trace:\n%@", [NSThread callStackSymbols]);
-
-	mach_port_t thread_port = mach_thread_self();
-	struct myARM_THREAD_STATE64 thread_state2;
-    mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
-	kern_return_t kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, &thread_state_cnt);
-    if (kr != KERN_SUCCESS) 
-	{
-		NSLog(@"小罪ADD: sigtrap_handler : thread_get_state fail");
-        mach_port_deallocate(mach_task_self(), thread_port);
-        return;
-    }
-
-    uint64_t pc = thread_state2.__pc;
-	NSLog(@"小罪ADD: sigtrap_handler: pc: 0x%llx, g_source_addr:0x%llx", pc, (uint64_t)g_target_addr);
-    if (pc != g_source_addr) {
-        // 不是我们设置的断点，忽略
-		NSLog(@"小罪ADD: sigtrap_handler : 不是我们设置的断点，忽略");
-		mach_port_deallocate(mach_task_self(), thread_port);
-        return;
-    }
-
-    // 在这里可以插入自定义代码，比如日志输出
-   	NSLog(@"小罪ADD: sigtrap_handler: Breakpoint hit at 0x%llx, jumping to 0x%llx", pc, (uint64_t)g_target_addr);
-
-	// ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
-        arm_neon_state64_t neon_state;
-        mach_msg_type_number_t neon_state_cnt = ARM_NEON_STATE64_COUNT;
-        kr = thread_get_state(thread_port, ARM_NEON_STATE64,
-                              (thread_state_t)&neon_state, &neon_state_cnt);
-        if (kr == KERN_SUCCESS) {
-            // s0 对应 v0 的低32位，s1 对应 v1 的低32位
-            float new_s0 = -0.01f;
-            float new_s1 = -0.01f;
-            *(float*)&neon_state.__v[0] = new_s0;
-            *(float*)&neon_state.__v[1] = new_s1;
-            // 写回 NEON 状态
-            thread_set_state(thread_port, ARM_NEON_STATE64,
-                             (thread_state_t)&neon_state, neon_state_cnt);
-        } else {
-            // 无法获取 NEON 状态，继续但可能不会修改浮点寄存器
-        }
-
-    thread_state2.__pc = g_target_addr;
 	
-    thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
-    mach_port_deallocate(mach_task_self(), thread_port);
-	*/
 
     
 }
