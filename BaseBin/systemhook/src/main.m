@@ -3312,7 +3312,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     toggle_hw_breakpoint(curr_thread, 1,g_source_addr);
 
 	//setmypc(curr_thread,g_target_addr);
-	setmypcnew(curr_thread,thread_state2);
+	setmypcnew(curr_thread,*thread_state2);
 
 	// 重置标记
     g_is_handling_sigtrap = 0;
