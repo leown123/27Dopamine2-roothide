@@ -3267,7 +3267,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
         return;
     }
 
-	/*
+	
 	// ----- 获取并修改 NEON 浮点寄存器（s0, s1）-----
 	float new_val = -0.01f;
     // 通过 union 或直接内存拷贝修改，确保不破坏高 96 位
@@ -3283,7 +3283,7 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     u1.v = arm_neon_state64_get_v(*neon_state, 1);
     u1.f = new_val;
     arm_neon_state64_set_v(*neon_state, 1, u1.v);
-	*/
+	
 
 	//arm_thread_state64_set_pc(*thread_state, (uint64_t)g_target_addr);  // 跳过当前指令
 	//thread_state->__pc = (uint64_t)g_target_addr;
@@ -3307,6 +3307,8 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
     g_is_handling_sigtrap = 0;
 	pthread_mutex_unlock(&g_handler_mutex);
 	mach_port_deallocate(mach_task_self(), curr_thread);
+
+	NSLog(@"小罪ADD: sigtrap_handler : 重置标记完成，进入下一环");
 	
 	
 	/*
