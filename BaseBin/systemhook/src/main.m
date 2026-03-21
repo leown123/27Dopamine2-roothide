@@ -3719,7 +3719,7 @@ static void* exception_handler_thread(void* arg) {
 
 	NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate mach_port_insert_right");
 
-	return;
+	return NULL;
 
     // 设置任务异常端口，只捕获 EXC_BREAKPOINT
     kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
