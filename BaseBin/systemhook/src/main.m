@@ -3735,7 +3735,7 @@ static void* exception_handler_thread(void* arg) {
 
 	//NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate \ mach_port_insert_right \task_set_exception_ports");
 
-    NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started,g_breakpoint_count:%d,ter_breakpoints:%d",g_breakpoint_count,ter_breakpoints);
+    NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started,g_breakpoint_count:%d,ter_breakpoint_count:%d",g_breakpoint_count,ter_breakpoint_count);
 
 	
 	//return NULL;
@@ -4004,7 +4004,7 @@ static void* exception_handler_thread(void* arg) {
 			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
 			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
 
 					const char* result = "";
 					
@@ -4062,7 +4062,10 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "TDM");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, tdm");
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
 					if(iscontainstr == true)
@@ -4074,6 +4077,7 @@ static void* exception_handler_thread(void* arg) {
 					}
 					else
 					{
+						NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 暂时不干掉的检测类型: %s", path);
 						thread_state2.__sp -= 0x40;
 						bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
