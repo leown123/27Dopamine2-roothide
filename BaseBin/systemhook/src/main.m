@@ -1655,8 +1655,8 @@ bool hooked_sub241618(uint64_t a1) {
 
 uint64_t hooked_ret0(uint64_t a1)//
 {
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
@@ -3864,7 +3864,7 @@ static void* exception_handler_thread(void* arg) {
 		//if(istersafebp == false && bptype >= 0 //范围
 		if(istersafebp == false && (bptype == 0 || bptype > 1))
 		{	
-			NSLog(@"小罪ADD: 无后断点 触发");
+			//NSLog(@"小罪ADD: 无后断点 触发");
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
 	        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
@@ -4405,7 +4405,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd17,
         .target = tersafetsadd17ret,
@@ -4415,7 +4415,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -4445,7 +4445,7 @@ void initbreakpoint()
     };
 	*/
 
-	ter_breakpoint_count = 2;
+	ter_breakpoint_count = 3;
 	
 
 	//g_breakpoint_count = 3;
