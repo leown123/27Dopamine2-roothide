@@ -3872,7 +3872,7 @@ static void* exception_handler_thread(void* arg) {
 		{
 			if(terbptype == 0) //sub_585D0 下发文件hook
 			{
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -3880,12 +3880,12 @@ static void* exception_handler_thread(void* arg) {
 			                                              (mach_vm_address_t)path, &bytes_read);
 			    if (kr == KERN_SUCCESS && bytes_read > 0) {
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0或王者0x57B58 hook] Path: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] Path: %s", path);
 			    } else 
 				{
-			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0或王者0x57B58 hook] Failed to read path at 0x%llx", path_ptr);
+			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] Failed to read path at 0x%llx", path_ptr);
 			    }
-				*/
+				
 			}
 
 			if(terbptype == 1) //sub_9998 环境检测hook
@@ -4450,7 +4450,7 @@ void initbreakpoint()
 	
     // 设置硬件断点
 
-	//while(!isover100)
+	while(!isover100)
 	{
     	setup_all_breakpoints();
 	}
