@@ -4643,6 +4643,58 @@ kern_return_t replaced_task_get_special_port(
     
 }
 
+typedef kern_return_t (*thread_get_state_t)(
+    thread_act_t target_thread,
+    thread_state_flavor_t flavor,
+    thread_state_t old_state,
+    mach_msg_type_number_t *old_stateCnt
+);
+
+static thread_get_state_t original_thread_get_state = NULL;
+
+// ==================== 辅助函数：清除调试状态中的硬件断点 ====================
+
+static void clear_hardware_breakpoints_in_state(thread_state_t state, mach_msg_type_number_t *stateCnt) {
+    if (!state || !stateCnt || *stateCnt < sizeof(struct arm_debug_state64) / sizeof(uint32_t)) {
+        return;
+    }
+    
+    // 强制转换为 arm_debug_state64 结构体
+    struct arm_debug_state64 *debug_state = (struct arm_debug_state64 *)state;
+    
+    // 清除所有硬件断点 (最多 16 个)
+    for (int i = 0; i < 16; i++) {
+        // 将控制寄存器的 ENABLE 位 (bit 0) 设为 0
+        debug_state->__bcr[i] &= ~1;      // 禁用断点
+        debug_state->__bvr[i] = 0;        // 清空地址
+        
+        // 同时清空观察点
+        debug_state->__wcr[i] &= ~1;
+        debug_state->__wvr[i] = 0;
+    }
+}
+
+// ==================== Hook: thread_get_state ====================
+// 拦截读取线程状态的调用，伪造无硬件断点的状态返回
+
+kern_return_t replaced_thread_get_state(
+    thread_act_t target_thread,
+    thread_state_flavor_t flavor,
+    thread_state_t old_state,
+    mach_msg_type_number_t *old_stateCnt)
+{
+    // 调用原函数获取真实状态
+    kern_return_t kr = original_thread_get_state(target_thread, flavor, old_state, old_stateCnt);
+    
+    if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) {
+        // 如果是读取调试状态，清除所有硬件断点信息
+		NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
+		NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
+        clear_hardware_breakpoints_in_state(old_state, old_stateCnt);
+    }
+    
+    return kr;
+}
 
 
 //入口
@@ -4772,6 +4824,12 @@ if (load_executable_path() == 0)
     	// Hook task_get_special_port
     	//ret = DobbyHook((void *)task_get_special_port, (void *)replaced_task_get_special_port, (void **)&original_task_get_special_port);
 		//NSLog(@"小罪ADD: [Dobby] hook task_get_special_port: %s", ret == 0 ? "success" : "failed");
+
+		// Hook thread_get_state
+    	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
+		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
+
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
