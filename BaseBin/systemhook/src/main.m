@@ -3999,7 +3999,7 @@ static void* exception_handler_thread(void* arg) {
 			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
 			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 下发检测：sub_108DC4 hook] 检测类型: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_108DC4 hook] 检测类型: %s", path);
 				}
 
 			}
@@ -4085,6 +4085,39 @@ static void* exception_handler_thread(void* arg) {
 
 					result = strstr(path, "enc");
 					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "gcloud");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "mrpcs");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "anti");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ts");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "sc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dl");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "mrmoni");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "sav");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ac");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ios");
+					if (result != NULL) iscontainstr = true;
+
+					
+
 
 					if(iscontainstr == true)
 					{
@@ -4431,7 +4464,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
@@ -4450,9 +4483,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
-	ter_breakpoint_count = 4;
+	ter_breakpoint_count = 6;
 	
 
 	//g_breakpoint_count = 3;
