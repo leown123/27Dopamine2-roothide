@@ -4464,7 +4464,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
@@ -4483,9 +4483,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
-	ter_breakpoint_count = 6;
+	ter_breakpoint_count = 4;
 	
 
 	//g_breakpoint_count = 3;
