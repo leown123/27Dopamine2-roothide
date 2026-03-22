@@ -3422,7 +3422,7 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 	
 	//if(thread_count < 41) return KERN_FAILURE;
 
-	if(thread_count > 90)isover100 = true;
+	if(thread_count > 80)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
     for (mach_msg_type_number_t i = 41; i < thread_count; i++) {
@@ -4305,7 +4305,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4437,7 +4436,7 @@ void initbreakpoint()
     };
 	*/
 
-	ter_breakpoint_count = 1;
+	ter_breakpoint_count = 2;
 	
 
 	//g_breakpoint_count = 3;
