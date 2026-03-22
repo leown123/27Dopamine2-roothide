@@ -4730,8 +4730,8 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook task_get_exception_ports: %s", ret == 0 ? "success" : "failed");
 		
     	// Hook task_get_special_port
-    	ret = DobbyHook((void *)task_get_special_port, (void *)replaced_task_get_special_port, (void **)&original_task_get_special_port);
-		NSLog(@"小罪ADD: [Dobby] hook task_get_special_port: %s", ret == 0 ? "success" : "failed");
+    	//ret = DobbyHook((void *)task_get_special_port, (void *)replaced_task_get_special_port, (void **)&original_task_get_special_port);
+		//NSLog(@"小罪ADD: [Dobby] hook task_get_special_port: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
