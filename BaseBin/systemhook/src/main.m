@@ -4666,8 +4666,8 @@ kern_return_t replaced_thread_get_state(
     if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) 
 	{
         // 如果是读取调试状态，清除所有硬件断点信息
-		//NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
-		//NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
+		NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
         clear_hardware_breakpoints_in_state(old_state, old_stateCnt);
     }
     
