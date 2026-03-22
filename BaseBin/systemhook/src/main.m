@@ -4553,26 +4553,30 @@ kern_return_t replaced_task_get_exception_ports(
 {
 	NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
 	NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
-    // 方式一：完全伪造返回，不调用原函数（适用于知道调用者会检查返回值）
-    // 将所有输出数组置空
-    if (masksCnt != NULL) {
-        *masksCnt = 0;
-    }
-    // 注意：调用者可能已分配缓冲区，我们只需将第一个端口设为 MACH_PORT_NULL 并置计数为0
-    // 但更安全的是调用原函数后再清除敏感端口，避免影响系统其他部分
-    // 这里选择调用原函数，然后清除所有异常端口设置（仅当 task 是当前任务时）
+	
+    // 调用原函数获取真实的异常端口配置
     kern_return_t kr = original_task_get_exception_ports(task, exception_mask, masks, masksCnt, ports, behaviors, flavors);
-    
-    // 如果是当前任务（即游戏自身），将异常端口全部清空
-    if (task == mach_task_self()) {
-        if (masksCnt && *masksCnt > 0) {
-            // 将所有端口设为 MACH_PORT_NULL，并将计数清零
-            for (mach_msg_type_number_t i = 0; i < *masksCnt; i++) {
-                ports[i] = MACH_PORT_NULL;
-                // 可选：重置 behaviors 和 flavors，但反作弊通常只检查端口
+    if (kr == KERN_SUCCESS && masksCnt && *masksCnt > 0) {
+        mach_msg_type_number_t new_count = 0;
+        for (mach_msg_type_number_t i = 0; i < *masksCnt; i++) {
+            // 如果掩码中包含 EXC_MASK_BREAKPOINT，则跳过该条目
+            if (!(masks[i] & EXC_MASK_BREAKPOINT)) {
+                if (new_count != i) 
+				{
+                    masks[new_count] = masks[i];
+                    ports[new_count] = ports[i];
+                    behaviors[new_count] = behaviors[i];
+                    flavors[new_count] = flavors[i];
+                }
+                new_count++;
             }
-            *masksCnt = 0;   // 让调用者认为没有任何异常端口设置
+			else
+			{
+				NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports :检测出调试端口");
+				ports[i] = MACH_PORT_NULL;
+			}
         }
+        *masksCnt = new_count;
     }
     return kr;
 }
