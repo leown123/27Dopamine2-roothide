@@ -1655,8 +1655,8 @@ bool hooked_sub241618(uint64_t a1) {
 
 uint64_t hooked_ret0(uint64_t a1)//
 {
-	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
-	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
@@ -3870,6 +3870,7 @@ static void* exception_handler_thread(void* arg) {
 
 		if(istersafebp == true)
 		{
+			/*
 			if(terbptype == 0) //sub_585D0 下发文件hook
 			{
 				
@@ -3880,14 +3881,20 @@ static void* exception_handler_thread(void* arg) {
 			                                              (mach_vm_address_t)path, &bytes_read);
 			    if (kr == KERN_SUCCESS && bytes_read > 0) {
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] Path: %s", path);
+			        NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] Path: %s", path);
 			    } else 
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] Failed to read path at 0x%llx", path_ptr);
 			    }
 				
 			}
+			*/
 
+			if(terbptype == 0) //sub_9998 环境检测hook
+			{	
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 触发");
+			}
+			
 			if(terbptype == 1) //sub_9998 环境检测hook
 			{
 				/*
@@ -4374,7 +4381,16 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 1;
 
-	
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4384,7 +4400,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-	/*
+	
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
