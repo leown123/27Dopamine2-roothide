@@ -4440,6 +4440,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
 	
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd12,
@@ -4451,7 +4452,7 @@ void initbreakpoint()
     };
 	*/
 
-	ter_breakpoint_count = 3;
+	ter_breakpoint_count = 4;
 	
 
 	//g_breakpoint_count = 3;
