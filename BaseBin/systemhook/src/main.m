@@ -4080,6 +4080,12 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
 					if(iscontainstr == true)
 					{
 						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 准备干掉字符串并返回0: %s", path);
@@ -4415,7 +4421,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -4425,7 +4431,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
