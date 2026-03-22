@@ -4574,6 +4574,7 @@ kern_return_t replaced_task_get_exception_ports(
 			{
 				NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports :检测出调试端口");
 				ports[i] = MACH_PORT_NULL;
+				NSLog(@"小罪ADD: [+] Hooked replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
 			}
         }
         *masksCnt = new_count;
