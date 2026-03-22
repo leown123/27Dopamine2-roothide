@@ -3855,7 +3855,8 @@ static void* exception_handler_thread(void* arg) {
 		
 		//if(istersafebp == false && bptype >= 0 //范围
 		if(istersafebp == false && (bptype == 0 || bptype > 1))
-		{
+		{	
+			NSLog(@"小罪ADD: 无后断点 触发");
 	        // 修改浮点寄存器 s0/s1
 	        arm_neon_state64_t neon_state;
 	        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
@@ -4663,7 +4664,8 @@ kern_return_t replaced_thread_get_state(
     // 调用原函数获取真实状态
     kern_return_t kr = original_thread_get_state(target_thread, flavor, old_state, old_stateCnt);
     
-    if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) {
+    if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) 
+	{
         // 如果是读取调试状态，清除所有硬件断点信息
 		//NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
 		//NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
