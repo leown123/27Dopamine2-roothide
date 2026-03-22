@@ -4650,6 +4650,15 @@ typedef kern_return_t (*thread_get_state_t)(
     mach_msg_type_number_t *old_stateCnt
 );
 
+struct arm_debug_state64
+{
+	__uint64_t __bvr[16];
+	__uint64_t __bcr[16];
+	__uint64_t __wvr[16];
+	__uint64_t __wcr[16];
+	__uint64_t __mdscr_el1; /* Bit 0 is SS (Hardware Single Step) */
+};
+
 static thread_get_state_t original_thread_get_state = NULL;
 
 // ==================== 辅助函数：清除调试状态中的硬件断点 ====================
