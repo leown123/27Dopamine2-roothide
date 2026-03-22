@@ -4650,26 +4650,19 @@ typedef kern_return_t (*thread_get_state_t)(
     mach_msg_type_number_t *old_stateCnt
 );
 
-struct arm_debug_state64
-{
-	__uint64_t __bvr[16];
-	__uint64_t __bcr[16];
-	__uint64_t __wvr[16];
-	__uint64_t __wcr[16];
-	__uint64_t __mdscr_el1; /* Bit 0 is SS (Hardware Single Step) */
-};
+
 
 static thread_get_state_t original_thread_get_state = NULL;
 
 // ==================== 辅助函数：清除调试状态中的硬件断点 ====================
 
 static void clear_hardware_breakpoints_in_state(thread_state_t state, mach_msg_type_number_t *stateCnt) {
-    if (!state || !stateCnt || *stateCnt < sizeof(struct arm_debug_state64) / sizeof(uint32_t)) {
+    if (!state || !stateCnt || *stateCnt < ARM_DEBUG_STATE64_COUNT) {
         return;
     }
     
-    // 强制转换为 arm_debug_state64 结构体
-    struct arm_debug_state64 *debug_state = (struct arm_debug_state64 *)state;
+    // 强制转换为系统定义的调试状态结构体类型
+    arm_debug_state64_t *debug_state = (arm_debug_state64_t *)state;
     
     // 清除所有硬件断点 (最多 16 个)
     for (int i = 0; i < 16; i++) {
