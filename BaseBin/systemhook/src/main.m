@@ -1656,7 +1656,7 @@ bool hooked_sub241618(uint64_t a1) {
 uint64_t hooked_ret0(uint64_t a1)//
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
@@ -3733,12 +3733,12 @@ static void* exception_handler_thread(void* arg) {
         return NULL;
     }
 
-	NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate \ mach_port_insert_right \task_set_exception_ports");
+	//NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate \ mach_port_insert_right \task_set_exception_ports");
 
     NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started,g_breakpoint_count:%d,ter_breakpoints:%d",g_breakpoint_count,ter_breakpoints);
 
 	
-	return NULL;
+	//return NULL;
 
 	
     while (1) {
@@ -3870,7 +3870,7 @@ static void* exception_handler_thread(void* arg) {
 
 		if(istersafebp == true)
 		{
-			if(terbptype == 0)
+			if(terbptype == 0) //sub_585D0 下发文件hook
 			{
 				/*
 				uint64_t path_ptr = thread_state2.__x[0];
@@ -3888,7 +3888,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 			}
 
-			if(terbptype == 1)
+			if(terbptype == 1) //sub_9998 环境检测hook
 			{
 				/*
 				uint64_t a3  = thread_state2.__x[2];
@@ -3977,8 +3977,23 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
+			if(terbptype == 2) //下发检测hook sub_108DC4 
+			{
+				uint64_t path_ptr = thread_state2.__x[0];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 下发检测：sub_108DC4 hook] 检测类型: %s", path);
+				}
+
+			}
+
 			bool iscontainstr = false;
-			if(terbptype == 2)
+			if(terbptype == 3) //全局检测开关hook sub_AAB64
 			{
 				
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4044,12 +4059,18 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, tdm");
+					if (result != NULL) iscontainstr = true;
+
 					if(iscontainstr == true)
 					{
 						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 准备干掉字符串并返回0: %s", path);
-						//bp->target = (uint64_t)(hooked_ret0);
-						thread_state2.__sp -= 0x40;
-						bp->target = (uint64_t)(thread_state2.__pc + 4);
+						bp->target = (uint64_t)(hooked_ret0);
+						//thread_state2.__sp -= 0x40;
+						//bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
 					else
 					{
@@ -4070,22 +4091,9 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 3)
-			{
-				uint64_t path_ptr = thread_state2.__x[1];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) 
-				{
-			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 警告上报：sub_824AC hook] 检测类型: %s", path);
-				}
+			
 
-			}
-
-			if(terbptype == 4)
+			if(terbptype == 4) //上报警告检测hook sub_824AC
 			{
 				
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4108,7 +4116,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 5)
+			if(terbptype == 5) //暂时禁用举报
 			{
 
 			}
@@ -4290,7 +4298,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4300,7 +4308,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4360,9 +4368,9 @@ void initbreakpoint()
 	*/
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 1;
+    g_breakpoint_count = 2;
 
-	/*
+	
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4384,8 +4392,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd18,
-        .target = tersafetsadd18ret,
+        .source = tersafetsadd17,
+        .target = tersafetsadd17ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4394,8 +4402,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd19,
-        .target = tersafetsadd19ret,
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4412,17 +4420,17 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd20,
-        .target = tersafetsadd20ret,
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd12,
+        .target = tersafetsadd12ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
-	ter_breakpoint_count = 0;
+	ter_breakpoint_count = 6;
 	
 
 	//g_breakpoint_count = 3;
@@ -4437,7 +4445,7 @@ void initbreakpoint()
 	
     // 设置硬件断点
 
-	//while(!isover100)
+	while(!isover100)
 	{
     	setup_all_breakpoints();
 	}
