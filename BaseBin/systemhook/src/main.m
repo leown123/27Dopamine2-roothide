@@ -4086,6 +4086,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "enc");
 					if (result != NULL) iscontainstr = true;
 
+					/*
 					result = strstr(path, "gcloud");
 					if (result != NULL) iscontainstr = true;
 
@@ -4115,7 +4116,7 @@ static void* exception_handler_thread(void* arg) {
 
 					result = strstr(path, "ios");
 					if (result != NULL) iscontainstr = true;
-
+					*/
 					
 
 
