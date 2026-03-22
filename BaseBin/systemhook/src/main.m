@@ -4362,7 +4362,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4380,7 +4380,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 
 	/*
@@ -4422,7 +4422,7 @@ void initbreakpoint()
 	*/
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 4;
+    g_breakpoint_count = 2;
 
 	
 	ter_breakpoints[0] = (Breakpoint){
@@ -4474,7 +4474,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd12,
         .target = tersafetsadd12ret,
@@ -4483,9 +4483,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
-	ter_breakpoint_count = 5;
+	ter_breakpoint_count = 6;
 	
 
 	//g_breakpoint_count = 3;
