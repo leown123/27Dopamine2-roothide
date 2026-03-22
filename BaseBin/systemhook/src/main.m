@@ -3892,7 +3892,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 0) //sub_9998 环境检测hook
 			{	
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 触发");
+				NSLog(@"小罪ADD: [tersafe sub_9998(现在是wuhouadd) hook] 触发");
 			}
 			
 			if(terbptype == 1) //sub_9998 环境检测hook
@@ -4382,6 +4382,16 @@ void initbreakpoint()
     g_breakpoint_count = 1;
 
 	ter_breakpoints[0] = (Breakpoint){
+        .source = wuhouadd,          // 源地址
+    	.target = wuhouadd + 4,          // 目标地址
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
+	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
         .s0_val = 29.0f,
@@ -4390,7 +4400,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
