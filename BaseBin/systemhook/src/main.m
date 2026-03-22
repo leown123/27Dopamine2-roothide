@@ -2916,7 +2916,7 @@ void* duquthread(void* aa)
 
 		initbreakpoint();
 
-		
+		/*
 		long linshitersafe = tersafeadd+0x2AA880;
 
 		while(Read_Int(linshitersafe) < 1000)
@@ -2927,7 +2927,7 @@ void* duquthread(void* aa)
 	    NSLog(@"小罪ADD: systemhook : linshitersafe Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
 	    forcewritenew(linshitersafe, CFSwapInt32(0x00002103));
 	    NSLog(@"小罪ADD: systemhook : linshitersafe SUCCESS !Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
-		
+		*/
 		
 }	
 
