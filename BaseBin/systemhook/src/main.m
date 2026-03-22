@@ -3332,7 +3332,16 @@ static void sigtrap_handler(int signo, siginfo_t *info, void *context) {
 
 	
 
+typedef kern_return_t (*thread_get_state_t)(
+    thread_act_t target_thread,
+    thread_state_flavor_t flavor,
+    thread_state_t old_state,
+    mach_msg_type_number_t *old_stateCnt
+);
 
+
+
+static thread_get_state_t original_thread_get_state = NULL;
 
 	
 bool isover100 = false;
@@ -3386,8 +3395,8 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 	for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
-        kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
-                                            (thread_state_t)&debug_state, &count);
+        //kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64, (thread_state_t)&debug_state, &count);
+		kern_return_t kr = original_thread_get_state(thread_list[i], ARM_DEBUG_STATE64, (thread_state_t)&debug_state, &count);
         if (kr != KERN_SUCCESS) { kr_all = kr; continue; }
 
         debug_state.__bvr[idx] = addr;
@@ -3429,16 +3438,15 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 	//for (mach_msg_type_number_t i = 0; i < 40; i++) {
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
-        kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,
-                                            (thread_state_t)&debug_state, &count);
+        //kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64,(thread_state_t)&debug_state, &count);
+		kern_return_t kr = original_thread_get_state(thread_list[i], ARM_DEBUG_STATE64, (thread_state_t)&debug_state, &count);
         if (kr != KERN_SUCCESS) { kr_all = kr; continue; }
 
         debug_state.__bvr[idx] = addr;
         debug_state.__bcr[idx] = (1ULL << 0) | (2ULL << 1) | (1ULL << 5); // 启用
         debug_state.__mdscr_el1 |= (1ULL << 15);   // 全局调试启用
 
-        kr = thread_set_state(thread_list[i], ARM_DEBUG_STATE64,
-                              (thread_state_t)&debug_state, count);
+        kr = thread_set_state(thread_list[i], ARM_DEBUG_STATE64,(thread_state_t)&debug_state, count);
         if (kr != KERN_SUCCESS) kr_all = kr;
     }
 
@@ -3464,7 +3472,7 @@ static void setup_all_breakpoints(void)
 			{
 	            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, g_breakpoints[i].source);
 	        } else {
-	            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
+	            NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
 	        }
 	    }
 	}
@@ -4619,16 +4627,7 @@ kern_return_t replaced_task_get_special_port(
     
 }
 
-typedef kern_return_t (*thread_get_state_t)(
-    thread_act_t target_thread,
-    thread_state_flavor_t flavor,
-    thread_state_t old_state,
-    mach_msg_type_number_t *old_stateCnt
-);
 
-
-
-static thread_get_state_t original_thread_get_state = NULL;
 
 // ==================== 辅助函数：清除调试状态中的硬件断点 ====================
 
