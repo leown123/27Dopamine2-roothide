@@ -2916,7 +2916,7 @@ void* duquthread(void* aa)
 
 		initbreakpoint();
 
-		/*
+		
 		long linshitersafe = tersafeadd+0x2AA880;
 
 		while(Read_Int(linshitersafe) < 1000)
@@ -2927,7 +2927,7 @@ void* duquthread(void* aa)
 	    NSLog(@"小罪ADD: systemhook : linshitersafe Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
 	    forcewritenew(linshitersafe, CFSwapInt32(0x00002103));
 	    NSLog(@"小罪ADD: systemhook : linshitersafe SUCCESS !Read_Int(linshitersafe) :0x%x,,linshitersafe:0x%lx",Read_Int(linshitersafe),linshitersafe);
-		*/
+		
 		
 }	
 
@@ -4414,7 +4414,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4432,7 +4432,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 
 	/*
@@ -4474,7 +4474,7 @@ void initbreakpoint()
 	*/
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 2;
+    g_breakpoint_count = 4;
 
 	
 	ter_breakpoints[0] = (Breakpoint){
@@ -4516,7 +4516,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
@@ -4535,9 +4535,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
-	ter_breakpoint_count = 4;
+	ter_breakpoint_count = 6;
 	
 
 	//g_breakpoint_count = 3;
