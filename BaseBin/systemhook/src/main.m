@@ -4086,10 +4086,11 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "enc");
 					if (result != NULL) iscontainstr = true;
 
-					/*
+					
 					result = strstr(path, "mrpcs");
 					if (result != NULL) iscontainstr = true;
 
+					/*
 					result = strstr(path, "anti");
 					if (result != NULL) iscontainstr = true;
 					*/
