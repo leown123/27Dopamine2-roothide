@@ -4092,13 +4092,15 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "anti");
 					if (result != NULL) iscontainstr = true;
 
+					/*
+
 					result = strstr(path, "ts");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "tcj");
 					if (result != NULL) iscontainstr = true;
 
-					/*
+					
 					result = strstr(path, "gcloud");
 					if (result != NULL) iscontainstr = true;
 
