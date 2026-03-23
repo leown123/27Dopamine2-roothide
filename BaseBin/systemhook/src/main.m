@@ -4143,13 +4143,13 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 					
 
-					/*
+					
 					result = strstr(path, "mt");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "cs_");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					/*
 					result = strstr(path, "game");
