@@ -4135,13 +4135,40 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
 
-					/*
+					
 					result = strstr(path, "filt");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "ne");
 					if (result != NULL) iscontainstr = true;
+					
+
+					/*
+					result = strstr(path, "mt");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs_");
+					if (result != NULL) iscontainstr = true;
 					*/
+
+					/*
+					result = strstr(path, "game");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "Game");
+					if (result != NULL) iscontainstr = true;
+					*/
+
+					/*
+					result = strstr(path, "ip");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ds");
+					if (result != NULL) iscontainstr = true;
+					*/
+
+
+					
 
 					if(iscontainstr == true)
 					{
