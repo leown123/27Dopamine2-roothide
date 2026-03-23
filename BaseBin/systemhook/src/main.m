@@ -4151,22 +4151,23 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 					
 
-					/*
+					//
 					result = strstr(path, "game");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "Game");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
-					/*
+					
 					result = strstr(path, "ip");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "ds");
 					if (result != NULL) iscontainstr = true;
-					*/
-
+					
+					result = strstr(path, "port");
+					if (result != NULL) iscontainstr = true;
 
 					
 
