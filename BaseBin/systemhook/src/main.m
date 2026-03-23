@@ -4115,7 +4115,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					/*
-					result = strstr(path, "mrmoni");
+					result = strstr(path, "mrmoni");  //会三方
 					if (result != NULL) iscontainstr = true;
 					*/
 
@@ -4129,8 +4129,19 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "ios");
 					if (result != NULL) iscontainstr = true;
 					
-					
+					result = strstr(path, "ob");
+					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+
+					/*
+					result = strstr(path, "filt");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ne");
+					if (result != NULL) iscontainstr = true;
+					*/
 
 					if(iscontainstr == true)
 					{
