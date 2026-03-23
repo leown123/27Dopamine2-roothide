@@ -4110,10 +4110,11 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "sc");
 					if (result != NULL) iscontainstr = true;
 
-					/*
+					
 					result = strstr(path, "dl");
 					if (result != NULL) iscontainstr = true;
 
+					/*
 					result = strstr(path, "mrmoni");
 					if (result != NULL) iscontainstr = true;
 					*/
