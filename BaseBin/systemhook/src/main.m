@@ -3056,7 +3056,7 @@ static pthread_mutex_t g_hwbp_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t ter_hwbp_mutex = PTHREAD_MUTEX_INITIALIZER;
 static mach_port_t g_exception_port = MACH_PORT_NULL;
 
-#define MAX_HW_BREAKPOINTS 6
+#define MAX_HW_BREAKPOINTS 16
 typedef struct {
     mach_vm_address_t source;   // 源地址（断点位置）
     mach_vm_address_t target;   // 目标地址（跳转位置）
@@ -3072,7 +3072,7 @@ static Breakpoint g_breakpoints[MAX_HW_BREAKPOINTS];
 static int g_breakpoint_count = 0;
 
 static Breakpoint ter_breakpoints[MAX_HW_BREAKPOINTS];
-static int ter_breakpoint_count = 6;
+static int ter_breakpoint_count = 16;
 
 
 // 获取所有线程
@@ -3416,8 +3416,8 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 }
 
 static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t addr) {
-    //if (idx < 0 || idx >= MAX_HW_BREAKPOINTS)
-	if (idx < 0 || idx > 16)
+    if (idx < 0 || idx >= MAX_HW_BREAKPOINTS)
+	//if (idx < 0 || idx > 16)
         return KERN_INVALID_ARGUMENT;
 
     pthread_mutex_lock(&ter_hwbp_mutex);
