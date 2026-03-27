@@ -3416,7 +3416,8 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 }
 
 static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t addr) {
-    if (idx < 0 || idx >= MAX_HW_BREAKPOINTS)
+    //if (idx < 0 || idx >= MAX_HW_BREAKPOINTS)
+	if (idx < 0 || idx > 16)
         return KERN_INVALID_ARGUMENT;
 
     pthread_mutex_lock(&ter_hwbp_mutex);
