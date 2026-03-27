@@ -3433,7 +3433,7 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 	
 	//if(thread_count < 41) return KERN_FAILURE;
 
-	if(thread_count > 80)isover100 = true;
+	if(thread_count > 90)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
     for (mach_msg_type_number_t i = 41; i < thread_count; i++) {
@@ -4251,7 +4251,7 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x700 && opcode < 0x800) result = "文件系统异常";
 				if(opcode >= 0x800) result = "超过0x800的未知异常";
 
-				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%s",opcode,result);
+				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%s",opcode,result);
 
 			}
 
@@ -4422,7 +4422,8 @@ void initbreakpoint()
 
 	//3.28ai过检测
 	mach_vm_address_t tersafetsadd21 = tersafeadd + 0x241578;//
-	mach_vm_address_t tersafetsadd21ret = (mach_vm_address_t)hooked_sub241578;
+	//mach_vm_address_t tersafetsadd21ret = (mach_vm_address_t)hooked_sub241578;
+	mach_vm_address_t tersafetsadd21ret = (mach_vm_address_t)hooked_ret1;
 
 	mach_vm_address_t tersafetsadd22 = tersafeadd + 0x24245C;//
 	mach_vm_address_t tersafetsadd22ret = (mach_vm_address_t)hooked_ret0;
