@@ -4252,7 +4252,14 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x800) result = "超过0x800的未知异常";
 
 				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%s",opcode,result);
+				
 
+			}
+
+			if(terbptype == 8) //暂时禁用举报
+			{
+				NSLog(@"小罪ADD: [tersafe 0x258948 hook] VTable_CallTrampoline called!");
+				thread_state2.__x[0] = 0;
 			}
 
 			
@@ -4428,6 +4435,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd22 = tersafeadd + 0x24245C;//
 	mach_vm_address_t tersafetsadd22ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t tersafetsadd23 = tersafeadd + 0x258948;//
+	mach_vm_address_t tersafetsadd23ret = tersafeadd + 0x258950;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -4566,9 +4576,18 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
+	ter_breakpoints[8] = (Breakpoint){
+        .source = tersafetsadd23,
+        .target = tersafetsadd23ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 
-	ter_breakpoint_count = 8;
+	ter_breakpoint_count = 9;
 	
 
 	//g_breakpoint_count = 3;
