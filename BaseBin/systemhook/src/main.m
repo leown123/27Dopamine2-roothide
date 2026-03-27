@@ -1623,10 +1623,12 @@ static Sub241618_t orig_sub241618 = NULL;
 // Hook for sub_241578 (offset 0x241578)
 uint64_t hooked_sub241578(uint64_t a1, uint64_t a2, unsigned int a3) 
 {
-    NSLog(@"小罪ADD: [+] hooked_sub241578 called: a1=0x%llx, a2=0x%llx, a3=%u", a1, a2, a3);
-
-	NSLog(@"小罪ADD: [+] hooked_sub241578 called. Stack trace:\n%@", [NSThread callStackSymbols]);
-
+	@autoreleasepool 
+	 {
+	    NSLog(@"小罪ADD: [+] hooked_sub241578 called: a1=0x%llx, a2=0x%llx, a3=%u", a1, a2, a3);
+	
+		NSLog(@"小罪ADD: [+] hooked_sub241578 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	}
 	//if(!orig_sub241578) orig_sub241578 = (Sub241578_t)(tersafeadd + 0x24157C);
 
     // 调用原始函数
@@ -3815,7 +3817,7 @@ static void* exception_handler_thread(void* arg) {
         // 查找匹配的断点
         Breakpoint *bp = NULL;
         //for (int i = 0; i < g_breakpoint_count; i++) 
-		for (int i = 0; i < 6; i++) 
+		for (int i = 0; i < 16; i++) 
 		{
             if (g_breakpoints[i].used && g_breakpoints[i].source == pc) 
 			{
@@ -4228,6 +4230,31 @@ static void* exception_handler_thread(void* arg) {
 
 			}
 
+			if(terbptype == 6) //暂时禁用举报
+			{
+				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue 通道，纯异常触发");
+			}
+
+			if(terbptype == 7) //异常上报ReportQueue_Enqueue sub_24245C
+			{
+				uint64_t myptr = thread_state2.__x[1];
+				int opcode = Read_Int(myptr);
+				const char* result = "";
+
+				if(opcode < 0x100) result = "小于0x100未的知异常";
+				if(opcode >= 0x100 && opcode < 0x200) result = "VM执行引擎异常、调试检测";
+				if(opcode >= 0x200 && opcode < 0x300) result = "Inline Hook / 代码完整性 / Session管理";
+				if(opcode >= 0x300 && opcode < 0x400) result = "VM opcode参数非法";
+				if(opcode >= 0x400 && opcode < 0x500) result = "VM opcode未知分支";
+				if(opcode >= 0x500 && opcode < 0x600) result = "定时器/调度系统异常";
+				if(opcode >= 0x600 && opcode < 0x700) result = "dladdr/内存映射异常";
+				if(opcode >= 0x700 && opcode < 0x800) result = "文件系统异常";
+				if(opcode >= 0x800) result = "超过0x800的未知异常";
+
+				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%s",opcode,result);
+
+			}
+
 			
 		}
 
@@ -4392,6 +4419,14 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd20 = tersafeadd + 0x93D34;//
 	mach_vm_address_t tersafetsadd20ret = (mach_vm_address_t)hooked_ret0;
 
+
+	//3.28ai过检测
+	mach_vm_address_t tersafetsadd21 = tersafeadd + 0x241578;//
+	mach_vm_address_t tersafetsadd21ret = (mach_vm_address_t)hooked_sub241578;
+
+	mach_vm_address_t tersafetsadd22 = tersafeadd + 0x24245C;//
+	mach_vm_address_t tersafetsadd22ret = (mach_vm_address_t)hooked_ret0;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -4425,27 +4460,6 @@ void initbreakpoint()
     };
 
 	g_breakpoints[3] = (Breakpoint){
-        .source = fanweiadd3,
-        .target = fanweiadd3 + 4,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	
-
-
-	/*
-	g_breakpoints[1] = (Breakpoint){
-        .source = fanweiadd1,
-        .target = fanweiadd1 + 4,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd2,
         .target = fanweiadd2 + 4,
         .s0_val = 29.0f,
@@ -4453,9 +4467,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
-	
-	g_breakpoints[3] = (Breakpoint){
+
+	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
         .s0_val = 29.0f,
@@ -4463,7 +4476,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	g_breakpoints[4] = (Breakpoint){
+	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd4,
         .target = fanweiadd4 + 4,
         .s0_val = 29.0f,
@@ -4471,10 +4484,10 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 4;
+    g_breakpoint_count = 6;
 
 	
 	ter_breakpoints[0] = (Breakpoint){
@@ -4486,7 +4499,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
@@ -4535,9 +4547,27 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
+	ter_breakpoints[6] = (Breakpoint){
+        .source = tersafetsadd21,
+        .target = tersafetsadd21ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	ter_breakpoints[7] = (Breakpoint){
+        .source = tersafetsadd22,
+        .target = tersafetsadd22ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 
-	ter_breakpoint_count = 6;
+	ter_breakpoint_count = 8;
 	
 
 	//g_breakpoint_count = 3;
