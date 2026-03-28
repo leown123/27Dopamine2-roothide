@@ -3865,20 +3865,73 @@ static void* exception_handler_thread(void* arg) {
 		*/
 		
 		//if(istersafebp == false && bptype >= 0 //范围
-		if(istersafebp == false && (bptype == 0 || bptype > 1))
-		{	
-			//NSLog(@"小罪ADD: 无后断点 触发");
-	        // 修改浮点寄存器 s0/s1
-	        arm_neon_state64_t neon_state;
-	        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
-	        kr = thread_get_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, &neon_cnt);
-	        if (kr == KERN_SUCCESS) 
+		if(istersafebp == false )
+		{
+			if(bptype == 0 || bptype > 3)
+			{	
+				//NSLog(@"小罪ADD: 无后断点 触发");
+		        // 修改浮点寄存器 s0/s1
+		        arm_neon_state64_t neon_state;
+		        mach_msg_type_number_t neon_cnt = ARM_NEON_STATE64_COUNT;
+		        kr = thread_get_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, &neon_cnt);
+		        if (kr == KERN_SUCCESS) 
+				{
+		            *(float*)&neon_state.__v[0] = bp->s0_val;
+		            *(float*)&neon_state.__v[1] = bp->s1_val;
+		            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
+		        }
+			}
+
+			if(bptype == 2) //上报警告检测hook sub_824AC
 			{
-	            *(float*)&neon_state.__v[0] = bp->s0_val;
-	            *(float*)&neon_state.__v[1] = bp->s1_val;
-	            thread_set_state(thread_port, ARM_NEON_STATE64,(thread_state_t)&neon_state, neon_cnt);
-	        }
+				
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] 检测类型: %s", path);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
+			    }
+
+				
+				
+			}
+
+			if(bptype == 3) //异常上报ReportQueue_Enqueue sub_24245C
+			{
+					uint64_t myptr = thread_state2.__x[1];
+					int opcode = Read_Int(myptr);
+					//const char* result = "";
+					NSString *result = @"0";
+	
+					if(opcode < 0x100) result = @"小于0x100未的知异常";
+					if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
+					if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
+					if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
+					if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
+					if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
+					if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
+					if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
+					if(opcode >= 0x800) result = @"超过0x800的未知异常";
+	
+					NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+					
+	
+			}
+
+
+
+			
 		}
+		
 
 		if(istersafebp == true)
 		{
@@ -4462,7 +4515,43 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd19,
+        .target = tersafetsadd19ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd22,
+        .target = tersafetsadd22ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[4] = (Breakpoint){
+        .source = fanweiadd1,
+        .target = fanweiadd1 + 4,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[5] = (Breakpoint){
+        .source = fanweiadd3,
+        .target = fanweiadd3 + 4,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
 	g_breakpoints[2] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4497,6 +4586,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
@@ -4720,6 +4810,7 @@ kern_return_t replaced_task_get_exception_ports(
 {
 	NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
 	NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	kern_return_t kr = thread_suspend(mach_thread_self(););
 	
     // 调用原函数获取真实的异常端口配置
     kern_return_t kr = original_task_get_exception_ports(task, exception_mask, masks, masksCnt, ports, behaviors, flavors);
@@ -4756,6 +4847,7 @@ kern_return_t replaced_task_get_special_port(
 {
 	NSLog(@"小罪ADD: systemhook: replaced_task_get_special_port call!");
 	NSLog(@"小罪ADD: [+] replaced_task_get_special_port called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	kern_return_t kr = thread_suspend(mach_thread_self(););
 	
     // 如果是当前任务且请求的是 bootstrap 端口（which_port = 4）
     if (task == mach_task_self() && which_port == 4) 
@@ -4806,6 +4898,7 @@ kern_return_t replaced_thread_get_state(
 {
     // 调用原函数获取真实状态
     kern_return_t kr = original_thread_get_state(target_thread, flavor, old_state, old_stateCnt);
+	kern_return_t kr = thread_suspend(mach_thread_self(););
     
     if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) 
 	{
