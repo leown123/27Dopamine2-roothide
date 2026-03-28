@@ -4898,7 +4898,7 @@ kern_return_t replaced_thread_get_state(
 {
     // 调用原函数获取真实状态
     kern_return_t kr = original_thread_get_state(target_thread, flavor, old_state, old_stateCnt);
-	kern_return_t kr = thread_suspend(mach_thread_self(););
+	thread_suspend(target_thread);
     
     if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) 
 	{
