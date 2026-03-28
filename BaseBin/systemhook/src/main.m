@@ -3884,7 +3884,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) //上报警告检测hook sub_824AC
 			{
-				
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
+				thread_state2.__x[0] = 1;
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -3900,6 +3902,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
+				*/
 
 				
 				
@@ -4268,7 +4271,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4) //上报警告检测hook sub_824AC
 			{
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
+				thread_state2.__x[1] = 1;
 				
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4284,7 +4290,8 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
-
+				*/
+				
 				
 				
 			}
@@ -4534,8 +4541,8 @@ void initbreakpoint()
     };
 
 	g_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd19,
-        .target = tersafetsadd19ret,
+        .source = tersafetsadd24,
+        .target = tersafetsadd24ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4653,8 +4660,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd19,
-        .target = tersafetsadd19ret,
+        .source = tersafetsadd24,
+        .target = tersafetsadd24ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
