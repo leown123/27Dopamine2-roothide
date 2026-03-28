@@ -4048,7 +4048,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 2) //单范围检测 0x249FD8跳转到0x249FDC，但是把x0改1
 			{
 				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
-				thread_state2.__x[0] = 1;
+				thread_state2.__x[0] = 0;
 
 			
 				/* 下发检测hook sub_108DC4 
