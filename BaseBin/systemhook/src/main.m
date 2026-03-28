@@ -4552,8 +4552,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd12,
-        .target = tersafetsadd12ret,
+        .source = tersafetsadd22,
+        .target = tersafetsadd22ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
