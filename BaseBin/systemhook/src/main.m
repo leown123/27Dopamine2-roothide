@@ -4149,11 +4149,15 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
-
 					result = strstr(path, "enc");
 					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "hb");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "Logout");
+					if (result != NULL) iscontainstr = true;
+
 
 					/*
 					result = strstr(path, "mrpcs"); //会三方
@@ -4165,7 +4169,7 @@ static void* exception_handler_thread(void* arg) {
 					
 
 					
-
+					/*
 					result = strstr(path, "ts");
 					if (result != NULL) iscontainstr = true;
 
@@ -4182,13 +4186,14 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "dl");
 					if (result != NULL) iscontainstr = true;
+					*/
 
 					/*
 					result = strstr(path, "mrmoni");  //会三方
 					if (result != NULL) iscontainstr = true;
 					*/
 
-					
+					/*
 					result = strstr(path, "sav");
 					if (result != NULL) iscontainstr = true;
 
@@ -4218,9 +4223,10 @@ static void* exception_handler_thread(void* arg) {
 
 					result = strstr(path, "cs_");
 					if (result != NULL) iscontainstr = true;
+					*/
 					
 
-					//
+					/*
 					result = strstr(path, "game");
 					if (result != NULL) iscontainstr = true;
 
@@ -4237,6 +4243,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
+					*/
 
 					
 
@@ -4558,7 +4565,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4576,7 +4583,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	g_breakpoints[2] = (Breakpoint){
@@ -4617,7 +4624,7 @@ void initbreakpoint()
 	
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 6;
+    g_breakpoint_count = 4;
 
 	
 	ter_breakpoints[0] = (Breakpoint){
@@ -4706,7 +4713,7 @@ void initbreakpoint()
     };
 	
 
-	ter_breakpoint_count = 9;
+	ter_breakpoint_count = 6;
 	
 
 	//g_breakpoint_count = 3;
