@@ -4810,7 +4810,7 @@ kern_return_t replaced_task_get_exception_ports(
 {
 	NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
 	NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
-	kern_return_t kr = thread_suspend(mach_thread_self(););
+	thread_suspend(mach_thread_self(););
 	
     // 调用原函数获取真实的异常端口配置
     kern_return_t kr = original_task_get_exception_ports(task, exception_mask, masks, masksCnt, ports, behaviors, flavors);
