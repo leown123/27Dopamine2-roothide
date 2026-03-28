@@ -4045,10 +4045,14 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 2) //单范围检测 0x249FD8跳转到0x249FDC，但是把x0改1
+			if(terbptype == 2) //sub_1E1E28 自瞄hook
 			{
+				NSLog(@"小罪ADD: [tersafe sub_1E1E28 hook] 自瞄hook检测触发");
+				
+				/* 单范围检测 0x249FD8跳转到0x249FDC，但是把x0改1
 				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
 				thread_state2.__x[0] = 0;
+				*/
 
 			
 				/* 下发检测hook sub_108DC4 
@@ -4502,6 +4506,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd24 = tersafeadd + 0x249FD8;//单纯范围的检测
 	mach_vm_address_t tersafetsadd24ret = tersafeadd + 0x249FDC;
 
+	mach_vm_address_t tersafetsadd25 = tersafeadd + 0x1E1E28;//自瞄hook检测
+	mach_vm_address_t tersafetsadd25ret = (mach_vm_address_t)hooked_ret1;
+
 	
 
 	g_source_addr = wuhouadd;
@@ -4626,8 +4633,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd24,
-        .target = tersafetsadd24ret,
+        .source = tersafetsadd25,
+        .target = tersafetsadd25ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
