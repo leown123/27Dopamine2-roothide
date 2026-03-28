@@ -4240,19 +4240,20 @@ static void* exception_handler_thread(void* arg) {
 			{
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
-				const char* result = "";
+				//const char* result = "";
+				NSString *result = @"0";
 
-				if(opcode < 0x100) result = "小于0x100未的知异常";
-				if(opcode >= 0x100 && opcode < 0x200) result = "VM执行引擎异常、调试检测";
-				if(opcode >= 0x200 && opcode < 0x300) result = "Inline Hook / 代码完整性 / Session管理";
-				if(opcode >= 0x300 && opcode < 0x400) result = "VM opcode参数非法";
-				if(opcode >= 0x400 && opcode < 0x500) result = "VM opcode未知分支";
-				if(opcode >= 0x500 && opcode < 0x600) result = "定时器/调度系统异常";
-				if(opcode >= 0x600 && opcode < 0x700) result = "dladdr/内存映射异常";
-				if(opcode >= 0x700 && opcode < 0x800) result = "文件系统异常";
-				if(opcode >= 0x800) result = "超过0x800的未知异常";
+				if(opcode < 0x100) result = @"小于0x100未的知异常";
+				if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
+				if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
+				if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
+				if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
+				if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
+				if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
+				if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
+				if(opcode >= 0x800) result = @"超过0x800的未知异常";
 
-				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%s",opcode,result);
+				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
 				
 
 			}
