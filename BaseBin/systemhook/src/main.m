@@ -4226,7 +4226,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 5) //暂时禁用举报
+			//if(terbptype == 5) //暂时禁用举报
 			{
 
 			}
@@ -4236,7 +4236,7 @@ static void* exception_handler_thread(void* arg) {
 				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue 通道，纯异常触发");
 			}
 
-			if(terbptype == 7) //异常上报ReportQueue_Enqueue sub_24245C
+			if(terbptype == 5 || terbptype == 7) //异常上报ReportQueue_Enqueue sub_24245C
 			{
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
