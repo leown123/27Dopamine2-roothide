@@ -4898,7 +4898,7 @@ kern_return_t replaced_thread_get_state(
 {
     // 调用原函数获取真实状态
     kern_return_t kr = original_thread_get_state(target_thread, flavor, old_state, old_stateCnt);
-	thread_suspend(target_thread);
+	
     
     if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) 
 	{
@@ -4906,6 +4906,7 @@ kern_return_t replaced_thread_get_state(
 		NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
 		NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
         clear_hardware_breakpoints_in_state(old_state, old_stateCnt);
+		thread_suspend(target_thread);
     }
     
     return kr;
