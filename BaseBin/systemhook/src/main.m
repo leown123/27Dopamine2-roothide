@@ -4045,8 +4045,12 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 2) //下发检测hook sub_108DC4 
+			if(terbptype == 2) //单范围检测 0x249FD8跳转到0x249FDC，但是把x0改1
 			{
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
+
+			
+				/* 下发检测hook sub_108DC4 
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4057,6 +4061,7 @@ static void* exception_handler_thread(void* arg) {
 			        path[bytes_read] = '\0';
 			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_108DC4 hook] 检测类型: %s", path);
 				}
+				*/
 
 			}
 
@@ -4493,6 +4498,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd23 = tersafeadd + 0x258948;//
 	mach_vm_address_t tersafetsadd23ret = tersafeadd + 0x258950;
 
+	mach_vm_address_t tersafetsadd24 = tersafeadd + 0x249FD8;//单纯范围的检测
+	mach_vm_address_t tersafetsadd24ret = tersafeadd + 0x249FDC;
+
+	
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -4533,7 +4543,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4551,7 +4561,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	g_breakpoints[2] = (Breakpoint){
@@ -4592,7 +4602,7 @@ void initbreakpoint()
 	
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 4;
+    g_breakpoint_count = 6;
 
 	
 	ter_breakpoints[0] = (Breakpoint){
@@ -4615,8 +4625,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd17,
-        .target = tersafetsadd17ret,
+        .source = tersafetsadd24,
+        .target = tersafetsadd24ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4812,7 +4822,7 @@ kern_return_t replaced_task_get_exception_ports(
 {
 	NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
 	NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
-	thread_suspend(mach_thread_self());
+	//thread_suspend(mach_thread_self());
 	
     // 调用原函数获取真实的异常端口配置
     kern_return_t kr = original_task_get_exception_ports(task, exception_mask, masks, masksCnt, ports, behaviors, flavors);
@@ -4849,7 +4859,7 @@ kern_return_t replaced_task_get_special_port(
 {
 	NSLog(@"小罪ADD: systemhook: replaced_task_get_special_port call!");
 	NSLog(@"小罪ADD: [+] replaced_task_get_special_port called. Stack trace:\n%@", [NSThread callStackSymbols]);
-	kern_return_t kr = thread_suspend(mach_thread_self());
+	//kern_return_t kr = thread_suspend(mach_thread_self());
 	
     // 如果是当前任务且请求的是 bootstrap 端口（which_port = 4）
     if (task == mach_task_self() && which_port == 4) 
@@ -4908,7 +4918,7 @@ kern_return_t replaced_thread_get_state(
 		NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
 		NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
         clear_hardware_breakpoints_in_state(old_state, old_stateCnt);
-		thread_suspend(target_thread);
+		//thread_suspend(target_thread);
     }
     
     return kr;
