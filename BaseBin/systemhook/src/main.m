@@ -3884,7 +3884,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) //上报警告检测hook sub_824AC
 			{
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
+				int a2 = thread_state2.__x[1];
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d",a2);
 				thread_state2.__x[0] = 1;
 				/*
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4536,7 +4537,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	//0x585D0 下发
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4546,7 +4547,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-
+	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
@@ -4556,6 +4557,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	//0x24245C ReportQueue_Enqueue
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
@@ -4626,7 +4628,7 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
-	
+	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4636,7 +4638,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-
+	//0x9998 越狱检测
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
@@ -4646,7 +4648,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	//0x824AC 上报警告
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
@@ -4656,7 +4658,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -4665,9 +4667,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
 
-	
+	////0x249FD8 RingBuf_Tick
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
@@ -4677,7 +4678,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	////0x24245C ReportQueue_Enqueue
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
