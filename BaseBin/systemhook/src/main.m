@@ -3882,12 +3882,18 @@ static void* exception_handler_thread(void* arg) {
 		        }
 			}
 
-			if(bptype == 2) //上报警告检测hook sub_824AC
+			if(bptype == 1)
+			{
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 触发");
+			}
+
+			if(bptype == 2) //0x249FD8 hook
 			{
 				int a2 = thread_state2.__x[1];
 				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d",a2);
 				thread_state2.__x[0] = 1;
-				/*
+
+				/* 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4049,7 +4055,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 2) //下发检测hook sub_108DC4
+			if(terbptype == 2) //下发检测hook sub_824AC
 			{
 				//sub_1E1E28 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe sub_1E1E28 hook] 自瞄hook检测触发");
@@ -4061,7 +4067,7 @@ static void* exception_handler_thread(void* arg) {
 
 			
 				
-				uint64_t path_ptr = thread_state2.__x[0];
+				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
 			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
@@ -4069,7 +4075,7 @@ static void* exception_handler_thread(void* arg) {
 			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_108DC4 hook] 检测类型: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_824AC hook] 检测类型: %s", path);
 				}
 				
 
@@ -4139,17 +4145,17 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "device");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "device");
+					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "TDM");
+					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "tdm");
+					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "force");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "force");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "enc");
 					if (result != NULL) iscontainstr = true;
@@ -4280,8 +4286,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4) //
 			{
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
-				thread_state2.__x[1] = 1;
+				int a2 = thread_state2.__x[1];
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d",a2);
+				thread_state2.__x[0] = 1;
 				
 				/* 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4328,18 +4335,6 @@ static void* exception_handler_thread(void* arg) {
 			}
 
 			
-			if(terbptype == 6) //暂时禁用举报
-			{
-				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue 通道，纯异常触发");
-			}
-
-
-			if(terbptype == 8) //暂时禁用举报
-			{
-				NSLog(@"小罪ADD: [tersafe 0x258948 hook] VTable_CallTrampoline called!");
-				thread_state2.__x[0] = 0;
-			}
-
 			
 		}
 
@@ -4537,11 +4532,23 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x585D0 下发
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
         .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x9998 越狱检测
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
