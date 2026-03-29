@@ -4048,9 +4048,10 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 2) //sub_1E1E28 自瞄hook
+			if(terbptype == 2) //下发检测hook sub_108DC4
 			{
-				NSLog(@"小罪ADD: [tersafe sub_1E1E28 hook] 自瞄hook检测触发");
+				//sub_1E1E28 自瞄hook
+				//NSLog(@"小罪ADD: [tersafe sub_1E1E28 hook] 自瞄hook检测触发");
 				
 				/* 单范围检测 0x249FD8跳转到0x249FDC，但是把x0改1
 				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
@@ -4058,7 +4059,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 			
-				/* 下发检测hook sub_108DC4 
+				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4069,7 +4070,7 @@ static void* exception_handler_thread(void* arg) {
 			        path[bytes_read] = '\0';
 			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_108DC4 hook] 检测类型: %s", path);
 				}
-				*/
+				
 
 			}
 
@@ -4276,12 +4277,12 @@ static void* exception_handler_thread(void* arg) {
 
 			
 
-			if(terbptype == 4) //上报警告检测hook sub_824AC
+			if(terbptype == 4) //
 			{
 				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick");
 				thread_state2.__x[1] = 1;
 				
-				/*
+				/* 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4303,17 +4304,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			//if(terbptype == 5) //暂时禁用举报
-			{
-
-			}
-
-			if(terbptype == 6) //暂时禁用举报
-			{
-				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue 通道，纯异常触发");
-			}
-
-			if(terbptype == 5 || terbptype == 7) //异常上报ReportQueue_Enqueue sub_24245C
+			if(terbptype == 5) //异常上报ReportQueue_Enqueue sub_24245C
 			{
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
@@ -4334,6 +4325,13 @@ static void* exception_handler_thread(void* arg) {
 				
 
 			}
+
+			
+			if(terbptype == 6) //暂时禁用举报
+			{
+				NSLog(@"小罪ADD: [tersafe sub_241578 hook] ReportQueue 通道，纯异常触发");
+			}
+
 
 			if(terbptype == 8) //暂时禁用举报
 			{
@@ -4538,6 +4536,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4546,6 +4545,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -4565,7 +4565,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd1,
         .target = fanweiadd1 + 4,
@@ -4583,7 +4583,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	g_breakpoints[2] = (Breakpoint){
@@ -4624,9 +4624,9 @@ void initbreakpoint()
 	
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
-    g_breakpoint_count = 4;
+    g_breakpoint_count = 6;
 
-	
+	/*
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -4635,6 +4635,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
@@ -4647,8 +4648,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd25,
-        .target = tersafetsadd25ret,
+        .source = tersafetsadd19,
+        .target = tersafetsadd19ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -4685,6 +4686,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	ter_breakpoints[6] = (Breakpoint){
         .source = tersafetsadd21,
         .target = tersafetsadd21ret,
@@ -4711,6 +4713,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	ter_breakpoint_count = 6;
