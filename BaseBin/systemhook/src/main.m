@@ -3898,7 +3898,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 576)
+				if(shujusize != 576)
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
@@ -4323,7 +4323,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 576)
+				if(shujusize != 576)
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] tersafe线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
