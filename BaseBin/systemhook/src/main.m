@@ -3900,8 +3900,9 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenew(thread_state2.__x[0] + 0x10, 0);
 				forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 				//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+				//forcewritenew(thread_state2.__x[0] + 0x18, 128);
 	
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 				thread_state2.__x[0] = 1;
 
 				/* 上报警告检测hook sub_824AC
@@ -4298,7 +4299,19 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 4) //
 			{
 				int a2 = thread_state2.__x[1];
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d",a2);
+
+				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
+
+				int biaoshi = Read_Int(thread_state2.__x[0] + 0x14);
+
+				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
+
+				forcewritenew(thread_state2.__x[0] + 0x10, 0);
+				forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
+				//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+				//forcewritenew(thread_state2.__x[0] + 0x18, 128);
+	
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] tersafe线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 				thread_state2.__x[0] = 1;
 				
 				/* 上报警告检测hook sub_824AC
