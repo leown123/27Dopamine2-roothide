@@ -3884,7 +3884,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 触发");
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
 			}
 
 			if(bptype == 2) //0x249FD8 hook
@@ -3897,13 +3897,29 @@ static void* exception_handler_thread(void* arg) {
 
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
-				forcewritenew(thread_state2.__x[0] + 0x10, 0);
-				forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-				//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-				//forcewritenew(thread_state2.__x[0] + 0x18, 128);
-	
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
-				thread_state2.__x[0] = 1;
+				
+				if(shujusize == 576)
+				{
+					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+
+					forcewritenew(thread_state2.__x[0] + 0x10, 0);
+					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x18, 128);
+		
+					thread_state2.__x[0] = 1;
+
+					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+				}
+				else
+				{
+					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发(未修改)（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
+					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					
+				}
+				
+				
 
 				/* 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -3979,7 +3995,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 1) //sub_9998 环境检测hook
 			{
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 触发");
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发");
 				/*
 				uint64_t a3  = thread_state2.__x[2];
 				if(a3 < 100)
@@ -4306,13 +4322,27 @@ static void* exception_handler_thread(void* arg) {
 
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
-				forcewritenew(thread_state2.__x[0] + 0x10, 0);
-				forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-				//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-				//forcewritenew(thread_state2.__x[0] + 0x18, 128);
-	
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] tersafe线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
-				thread_state2.__x[0] = 1;
+				
+				if(shujusize == 576)
+				{
+					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] tersafe线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+
+					forcewritenew(thread_state2.__x[0] + 0x10, 0);
+					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
+					forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+					forcewritenew(thread_state2.__x[0] + 0x18, 128);
+		
+					thread_state2.__x[0] = 1;
+
+					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+				}
+				else
+				{
+					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] tersafe线程范围检测触发(未修改)（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
+					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					
+				}
 				
 				/* 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
