@@ -4163,13 +4163,14 @@ static void* exception_handler_thread(void* arg) {
 
 				
 				
-			}
+			
 			}
 
 
 
 			
 		}
+		
 		
 
 		if(istersafebp == true)
