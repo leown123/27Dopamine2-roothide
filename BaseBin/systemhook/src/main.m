@@ -3890,7 +3890,13 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 2) //0x249FD8 hook
 			{
 				int a2 = thread_state2.__x[1];
-				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d",a2);
+
+				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
+
+				forcewritenew(thread_state2.__x[0] + 0x10, v2 );
+				forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+	
+				NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d",a2,v2);
 				thread_state2.__x[0] = 1;
 
 				/* 上报警告检测hook sub_824AC
