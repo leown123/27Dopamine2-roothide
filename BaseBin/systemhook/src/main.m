@@ -3976,6 +3976,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        path[bytes_read] = '\0';
 			        //NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
+					bool iscontainstr = false;
 
 					const char* result = "";
 					
