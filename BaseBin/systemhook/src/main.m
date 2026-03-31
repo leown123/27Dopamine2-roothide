@@ -5437,13 +5437,13 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	*/
 }
 
-typedef __int64 (*GetDataFromTGPAFunc)(void);
+typedef void (*GetDataFromTGPAFunc)();
 
 // 保存原始函数指针
 static GetDataFromTGPAFunc original_GetDataFromTGPA = NULL;
 
 // 替换函数实现
-__int64 hooked_GetDataFromTGPA(void) 
+void hooked_GetDataFromTGPA() 
 {
 	NSLog(@"小罪ADD: systemhook: 主线程hooked_GetDataFromTGPA called");
 	NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA called. Stack trace:\n%@", [NSThread callStackSymbols]);
