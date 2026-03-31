@@ -3574,11 +3574,11 @@ static void ensurereporter()
 		tersafeadd = Get_tersafe_base();
 	}
 	
-	long tersafereporter = tersafeadd = 0x2E1C00;
+	long tersafereporter = tersafeadd + 0x2E1C00;
 	if( Read_Long(tersafereporter) != (long)(tersafeadd + 0x826C))
 	{
 		forcewritenewlong(tersafereporter,(long)(tersafeadd+ 0x826C));
-		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx", tersafereporter, tersafeadd+ 0x826C);
+		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, tersafeadd+ 0x826C,Read_Long(tersafereporter));
 	}
 	
 }
@@ -4933,7 +4933,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd26ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t tersafetsadd27 = tersafeadd + 0x1371C0;//环境
-	mach_vm_address_t tersafetsadd27ret = (mach_vm_address_t)hooked_ret1;
+	mach_vm_address_t tersafetsadd27ret = (mach_vm_address_t)hooked_ret0;
 
 	
 
