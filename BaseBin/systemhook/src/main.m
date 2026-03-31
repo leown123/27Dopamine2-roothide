@@ -3574,11 +3574,13 @@ static void ensurereporter()
 		tersafeadd = Get_tersafe_base();
 	}
 	
-	long tersafereporter = tersafeadd + 0x2E1C00;
-	if( Read_Long(tersafereporter) != (long)(tersafeadd + 0x826C))
+	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2E1C00);
+	uint64_t retadd = (uint64_t)(tersafeadd + 0x826C);
+	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
+	if( rd != retadd)
 	{
-		forcewritenewlong(tersafereporter,(long)(tersafeadd+ 0x826C));
-		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, tersafeadd+ 0x826C,Read_Long(tersafereporter));
+		forcewritenewlong(tersafereporter,(uint64_t)retadd);
+		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
 	
 }
@@ -4721,7 +4723,8 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  //sub_1371C0 环境检测
 			{	
-				NSLog(@"小罪ADD: [tersafe sub_1371C0 hook] tersafe线程环境检测");
+				//NSLog(@"小罪ADD: [tersafe sub_1371C0 hook] tersafe线程环境检测");
+				
 				/*
 				//异常上报ReportQueue_Enqueue sub_24245C
 				uint64_t myptr = thread_state2.__x[1];
