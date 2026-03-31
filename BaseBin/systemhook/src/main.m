@@ -453,16 +453,18 @@ int hooked_access(const char *path, int amode) {
     if (isJailbreakPath(path)) {
 
 		NSLog(@"小罪ADD: hooked_access called ! 命中isJailbreakPath: path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;
         return -1;
     }
 
 	if (isdocPath(path)) {
 		NSLog(@"小罪ADD: hooked_access called ! 命中isdocPath: path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //return 0;
     }
 
-	NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
 	
     return orig_access(path, amode);
 }
@@ -472,11 +474,12 @@ int hooked_access(const char *path, int amode) {
 int hooked_stat(const char *path, struct stat *buf) {
 	int rt = orig_stat(path, buf);
 
-	NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
     
     
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_stat 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;
         return -1;
     }
@@ -484,6 +487,7 @@ int hooked_stat(const char *path, struct stat *buf) {
 	if (isdocPath(path)) 
 	{
 		NSLog(@"小罪ADD: hooked_stat 命中 isdocPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //return 0;
     }
 
@@ -500,6 +504,7 @@ int hooked_lstat(const char *path, struct stat *buf) {
     
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_lstat 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_lstat called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;
         return -1;
     }
@@ -507,6 +512,7 @@ int hooked_lstat(const char *path, struct stat *buf) {
 	if (isdocPath(path)) 
 	{
 		NSLog(@"小罪ADD: hooked_lstat 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_lstat called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //return 0;
     }
 
@@ -519,16 +525,18 @@ int hooked_lstat(const char *path, struct stat *buf) {
 int hooked_open(const char *path, int flags, ...) {
 	//NSLog(@"小罪ADD: hooked_open called ! path:%s",path);
 
-	NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
 	
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_open 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_open called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;
         return -1;
     }
 
 	if (isdocPath(path)) {
 		NSLog(@"小罪ADD: hooked_open 命中 isdocPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_open called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //errno = ENOENT;
         //return -1;
     }
@@ -549,13 +557,15 @@ FILE *hooked_fopen(const char *filename, const char *mode) {
     // 检查文件路径是否在黑名单中
     if (isJailbreakPath(filename)) 
 	{
-	NSLog(@"小罪ADD: hooked_fopen 命中 isJailbreakPath ! filename:%s,mode:%s",filename,mode);
+		NSLog(@"小罪ADD: hooked_fopen 命中 isJailbreakPath ! filename:%s,mode:%s",filename,mode);
+		NSLog(@"小罪ADD: [+] Hooked hooked_fopen called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;          // 假装文件不存在
         return NULL;
     }
 
 	if (isdocPath(filename)) {
-	NSLog(@"小罪ADD: hooked_fopen 命中 isdocPath ! filename:%s,mode:%s",filename,mode);
+		NSLog(@"小罪ADD: hooked_fopen 命中 isdocPath ! filename:%s,mode:%s",filename,mode);
+		NSLog(@"小罪ADD: [+] Hooked hooked_fopen called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //errno = ENOENT;
         //return NULL;
     }
@@ -571,6 +581,8 @@ static __thread int in_hook = 0;  // 线程局部变量
 char *hooked_getenv(const char *name) {
 
     if (strcmp(name, "DYLD_INSERT_LIBRARIES") == 0) {
+		NSLog(@"小罪ADD: hooked_getenv 命中 name ! filename:%s",name);
+		NSLog(@"小罪ADD: [+] Hooked hooked_getenv called. Stack trace:\n%@", [NSThread callStackSymbols]);
         return NULL;
     }
     return orig_getenv(name);
@@ -874,17 +886,19 @@ int hooked_stat64(const char *path, struct stat64 *buf) {
 
 	if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_stat64 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_stat64 called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;
         return -1;
     }
 
 	if (isdocPath(path)) {
-	NSLog(@"小罪ADD: hooked_stat64 命中 isdocPath ! path:%s",path);
+		NSLog(@"小罪ADD: hooked_stat64 命中 isdocPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_stat64 called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //errno = ENOENT;
         //return -1;
     }
 
-	NSLog(@"小罪ADD: [+] Hooked hooked_stat64 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
 	
     return orig_stat64(path, buf);
 }
@@ -893,6 +907,7 @@ int hooked_stat64(const char *path, struct stat64 *buf) {
 int hooked_mkdir(const char *path, mode_t mode) {
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_mkdir 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_mkdir called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = EACCES;  // 权限不足，阻止创建
         return -1;
     }
@@ -900,6 +915,7 @@ int hooked_mkdir(const char *path, mode_t mode) {
 	if (isdocPath(path)) {
 		//NSLog(@"小罪ADD: hooked_mkdir 命中 isdocPath ! path:%s",path);
         //return 0;
+		NSLog(@"小罪ADD: [+] Hooked hooked_mkdir called. Stack trace:\n%@", [NSThread callStackSymbols]);
     }
 	
     return orig_mkdir(path, mode);
@@ -910,6 +926,7 @@ int hooked_rmdir(const char *path) {
 
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_rmdir 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_rmdir called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = EACCES;  // 权限不足，阻止创建
         return -1;
     }
@@ -917,6 +934,7 @@ int hooked_rmdir(const char *path) {
 	if (isdocPath(path)) {
 		//NSLog(@"小罪ADD: hooked_rmdir 命中 isdocPath ! path:%s",path);
         //return 0;
+		NSLog(@"小罪ADD: [+] Hooked hooked_rmdir called. Stack trace:\n%@", [NSThread callStackSymbols]);
     }
     return orig_rmdir(path);
 }
@@ -925,6 +943,7 @@ int hooked_rmdir(const char *path) {
 int hooked_rename(const char *oldpath, const char *newpath) {
     // 检查旧路径或新路径是否在黑名单中
     if (isJailbreakPath(oldpath) || isJailbreakPath(newpath)) {
+		NSLog(@"小罪ADD: [+] Hooked hooked_rename called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = EACCES;
         return -1;
     }
@@ -932,6 +951,7 @@ int hooked_rename(const char *oldpath, const char *newpath) {
 	if (isJailbreakPath(oldpath) || isJailbreakPath(newpath))
 	{
 		NSLog(@"小罪ADD: hooked_rename 命中 isJailbreakPath ! oldpath:%s , newpath:%s",oldpath,newpath);
+		NSLog(@"小罪ADD: [+] Hooked hooked_rename called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = EACCES;  // 权限不足，阻止创建
         return -1;
     }
@@ -939,10 +959,11 @@ int hooked_rename(const char *oldpath, const char *newpath) {
 	if (isdocPath(oldpath) || isdocPath(newpath))
 	{
 		NSLog(@"小罪ADD: hooked_rename 命中 isdocPath ! oldpath:%s , newpath:%s",oldpath,newpath);
+		NSLog(@"小罪ADD: [+] Hooked hooked_rename called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //return 0;
     }
 
-	NSLog(@"小罪ADD: [+] Hooked hooked_rename called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
 	
     return orig_rename(oldpath, newpath);
 }
@@ -5409,6 +5430,24 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
         NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
+		// 环境变量
+        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
+        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
+        NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
+        NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
+
+		// mkdir
+        ret = DobbyHook((void *)mkdir, (void *)hooked_mkdir, (void **)&orig_mkdir);
+        NSLog(@"小罪ADD: [Dobby] hook mkdir: %s", ret == 0 ? "success" : "failed");
+
+		// rmdir
+        ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
+        NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
+
 		loadandinitshare(); //26.3.21屏蔽
 
 		
@@ -5424,15 +5463,13 @@ if (load_executable_path() == 0)
 
 		
 		
-		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
-        NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
-
 		
 
 		
 
-		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
-        NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
+		
+
+		
 
 		// stat64 (如果符号存在)
         void *stat64_addr = (void *)dlsym(RTLD_DEFAULT, "stat64");
@@ -5443,13 +5480,9 @@ if (load_executable_path() == 0)
             NSLog(@"小罪ADD: [Dobby] stat64 not found, skipping");
         }
         
-        // mkdir
-        ret = DobbyHook((void *)mkdir, (void *)hooked_mkdir, (void **)&orig_mkdir);
-        NSLog(@"小罪ADD: [Dobby] hook mkdir: %s", ret == 0 ? "success" : "failed");
         
-        // rmdir
-        ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
-        NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
+        
+        
         
         
 
@@ -5551,9 +5584,7 @@ if (load_executable_path() == 0)
 		*/
 
 		
-		// 环境变量
-        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
-        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
+		
 
 		// 文件操作类
         ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
