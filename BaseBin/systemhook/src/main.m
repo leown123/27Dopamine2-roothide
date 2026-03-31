@@ -3577,7 +3577,7 @@ static void ensurereporter()
 	long tersafereporter = tersafeadd = 0x2E1C00;
 	if( Read_Long(tersafereporter) != (long)(tersafeadd + 0x826C))
 	{
-		forcewritenewlong(tersafereporter,(long)(tersafeadd+ 0x826C))
+		forcewritenewlong(tersafereporter,(long)(tersafeadd+ 0x826C));
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx", tersafereporter, tersafeadd+ 0x826C);
 	}
 	
