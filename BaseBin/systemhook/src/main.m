@@ -67,6 +67,8 @@
 
 #include <mach/thread_status.h>
 
+#include <dispatch/dispatch.h>
+
 ShareStruct *shareData = 0;
 kfdShareStruct *kfdshareData= 0;
 
@@ -479,7 +481,7 @@ int hooked_stat(const char *path, struct stat *buf) {
     
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_stat 命中 isJailbreakPath ! path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
         errno = ENOENT;
         return -1;
     }
@@ -487,7 +489,7 @@ int hooked_stat(const char *path, struct stat *buf) {
 	if (isdocPath(path)) 
 	{
 		NSLog(@"小罪ADD: hooked_stat 命中 isdocPath ! path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //return 0;
     }
 
@@ -1285,6 +1287,81 @@ void forcewritenew(mach_vm_address_t addres,int data)
 {
  
     int size = 4;
+    
+    
+    mach_port_t object_name;
+    mach_vm_size_t region_size=0;
+    mach_vm_address_t region_base = (uint64_t)addres;
+    
+    vm_region_basic_info_data_64_t info = {0};
+    mach_msg_type_number_t info_cnt = VM_REGION_BASIC_INFO_COUNT_64;
+    kern_return_t kr = mach_vm_region(mach_task_self(), &region_base, &region_size,
+                                      VM_REGION_BASIC_INFO_64, (vm_region_info_t)&info, &info_cnt, &object_name);
+    if(kr != KERN_SUCCESS) {
+        NSLog(@"mach_vm_region failed! %p", region_base);
+        return ;
+    }
+    
+    
+    vm_address_t base = 0;
+    if(!(info.protection & VM_PROT_WRITE)) {
+        //NSLog(@"unwritable region %p %x : %x", region_base, region_size, info.protection);
+        base = (uint64_t)addres & ~PAGE_MASK;
+        //c1越狱这里可能失败, 不能同时rwx??? c1这里返回成功但是实际上并没有成功!!!!
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+            
+            //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            if(kr != KERN_SUCCESS) {
+                //NSLog(@"vm_protect failed2! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+                
+                //NSLog(@"mprotect=%d, %d, %s", mprotect((void*)base, PAGE_SIZE, info.protection|VM_PROT_WRITE), errno, strerror(errno));
+                
+                return ;
+            }
+        }
+    }
+    
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    kern_return_t error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+    if(error != KERN_SUCCESS && base)
+    {
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect again failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+        } else {
+            //error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+            error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+        }
+        
+    }
+    
+    if(error == KERN_SUCCESS && base)
+    {
+        vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection);
+    }
+    
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ | VM_PROT_WRITE|VM_PROT_COPY);
+    //vm_write(mach_task_self(),addres,(vm_address_t)&data,size);
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ |VM_PROT_EXECUTE);
+    
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t error = mach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+    //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+}
+
+void forcewritenewlong(mach_vm_address_t addres,int data)
+{
+ 
+    int size = 8;
     
     
     mach_port_t object_name;
@@ -3466,7 +3543,7 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 	
 	//if(thread_count < 41) return KERN_FAILURE;
 
-	if(thread_count > 90)isover100 = true;
+	//if(thread_count > 90)isover100 = true;
 
     kern_return_t kr_all = KERN_SUCCESS;
     for (mach_msg_type_number_t i = 41; i < thread_count; i++) {
@@ -3488,6 +3565,17 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     free_threads(thread_list, thread_count);
     pthread_mutex_unlock(&ter_hwbp_mutex);
     return kr_all;
+}
+
+static void ensurereporter()
+{
+	long tersafereporter = tersafeadd = 0x2E1C00;
+	if( Read_Long(tersafereporter) != (long)(tersafe+ 0x826C))
+	{
+		forcewritenewlong(tersafereporter,(long)(tersafe+ 0x826C))
+		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafe+ 0x826C: 0x%llx", tersafereporter, tersafe+ 0x826C);
+	}
+	
 }
 
 // =============================================================================
@@ -4183,14 +4271,14 @@ static void* exception_handler_thread(void* arg) {
 
 					if(iscontainstr == true)
 					{
-						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 主线程 准备干掉字符串并返回0: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 主线程 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 						//thread_state2.__sp -= 0x40;
 						//bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
 					else
 					{
-						NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 主线程 暂时不干掉的检测类型: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 主线程 暂时不干掉的检测类型: %s", path);
 						thread_state2.__sp -= 0x40;
 						bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
@@ -4328,8 +4416,9 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(terbptype == 2) //下发检测hook sub_824AC
+			if(terbptype == 2) 
 			{
+				NSLog(@"小罪ADD: [tersafe sub_1864C hook] tersafe模块环境检测触发");
 				//sub_1E1E28 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe sub_1E1E28 hook] 自瞄hook检测触发");
 				
@@ -4338,8 +4427,8 @@ static void* exception_handler_thread(void* arg) {
 				thread_state2.__x[0] = 0;
 				*/
 
-			
-				
+				//下发检测hook sub_824AC
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4350,7 +4439,7 @@ static void* exception_handler_thread(void* arg) {
 			        path[bytes_read] = '\0';
 			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_824AC hook] 检测类型: %s", path);
 				}
-				
+				*/
 
 			}
 
@@ -4530,14 +4619,14 @@ static void* exception_handler_thread(void* arg) {
 
 					if(iscontainstr == true)
 					{
-						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 						//thread_state2.__sp -= 0x40;
 						//bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
 					else
 					{
-						NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
 						thread_state2.__sp -= 0x40;
 						bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
@@ -4624,9 +4713,12 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 			}
-
-			if(terbptype == 5) //异常上报ReportQueue_Enqueue sub_24245C
-			{
+ 
+			if(terbptype == 5)  //sub_1371C0 环境检测
+			{	
+				NSLog(@"小罪ADD: [tersafe sub_1371C0 hook] tersafe线程环境检测");
+				/*
+				//异常上报ReportQueue_Enqueue sub_24245C
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
 				//const char* result = "";
@@ -4643,7 +4735,7 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x800) result = @"超过0x800的未知异常";
 
 				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-				
+				*/
 
 			}
 
@@ -4830,6 +4922,14 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd25 = tersafeadd + 0x1E1E28;//自瞄hook检测
 	mach_vm_address_t tersafetsadd25ret = (mach_vm_address_t)hooked_ret1;
 
+
+	//4.1 新的环境检测
+	mach_vm_address_t tersafetsadd26 = tersafeadd + 0x1864C;//环境
+	mach_vm_address_t tersafetsadd26ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd27 = tersafeadd + 0x1371C0;//环境
+	mach_vm_address_t tersafetsadd27ret = (mach_vm_address_t)hooked_ret1;
+
 	
 
 	g_source_addr = wuhouadd;
@@ -4981,10 +5081,20 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x824AC 上报警告
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd26,
+        .target = tersafetsadd26ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5011,10 +5121,21 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	////0x24245C ReportQueue_Enqueue
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd27,
+        .target = tersafetsadd27ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5069,6 +5190,7 @@ void initbreakpoint()
 	while(!isover100)
 	{
     	setup_all_breakpoints();
+		ensurereporter();
 	}
 
 
@@ -5202,9 +5324,9 @@ kern_return_t replaced_task_get_exception_ports(
             }
 			else
 			{
-				NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports :检测出调试端口");
+				//NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports :检测出调试端口");
 				ports[i] = MACH_PORT_NULL;
-				NSLog(@"小罪ADD: [+] Hooked replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
+				//NSLog(@"小罪ADD: [+] Hooked replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
 			}
         }
         *masksCnt = new_count;
@@ -5275,13 +5397,35 @@ kern_return_t replaced_thread_get_state(
     if (kr == KERN_SUCCESS && flavor == ARM_DEBUG_STATE64) 
 	{
         // 如果是读取调试状态，清除所有硬件断点信息
-		NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
-		NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		//NSLog(@"小罪ADD: systemhook: replaced_thread_get_state :检测出正在读取ARM_DEBUG_STATE64");
+		//NSLog(@"小罪ADD: [+] Hooked replaced_thread_get_state called. Stack trace:\n%@", [NSThread callStackSymbols]);
         clear_hardware_breakpoints_in_state(old_state, old_stateCnt);
 		//thread_suspend(target_thread);
     }
     
     return kr;
+}
+
+// 定义原函数类型
+typedef void (*dispatch_once_t)(dispatch_once_t *predicate, dispatch_block_t block);
+
+// 保存原始函数指针
+dispatch_once_t original_dispatch_once = nullptr;
+
+// 替换函数实现
+void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once called, predicate: %p\n", predicate);
+	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	/*
+    // 调用原始实现
+    if (original_dispatch_once) {
+        original_dispatch_once(predicate, block);
+    } else {
+        // 如果原始指针无效，直接调用系统函数
+        dispatch_once(predicate, block);
+    }
+	*/
 }
 
 
@@ -5447,6 +5591,15 @@ if (load_executable_path() == 0)
 		// rmdir
         ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
         NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
+
+		while(!Imageaddress)
+		{
+			Imageaddress = Get_Imageaddress_base();
+		}
+
+		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
+		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
+		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
