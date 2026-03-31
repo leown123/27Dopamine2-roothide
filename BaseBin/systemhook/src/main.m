@@ -1358,7 +1358,7 @@ void forcewritenew(mach_vm_address_t addres,int data)
     //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
 }
 
-void forcewritenewlong(mach_vm_address_t addres,int data)
+void forcewritenewlong(mach_vm_address_t addres,uint64_t data)
 {
  
     int size = 8;
@@ -4723,7 +4723,7 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  //sub_1371C0 环境检测
 			{	
-				//NSLog(@"小罪ADD: [tersafe sub_1371C0 hook] tersafe线程环境检测");
+				NSLog(@"小罪ADD: [tersafe 0x133124 hook] tersafe线程环境检测");
 				
 				/*
 				//异常上报ReportQueue_Enqueue sub_24245C
@@ -4935,7 +4935,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd26 = tersafeadd + 0x1864C;//环境
 	mach_vm_address_t tersafetsadd26ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd27 = tersafeadd + 0x1371C0;//环境
+	mach_vm_address_t tersafetsadd27 = tersafeadd + 0x133124;//环境
 	mach_vm_address_t tersafetsadd27ret = (mach_vm_address_t)hooked_ret0;
 
 	
@@ -5141,6 +5141,7 @@ void initbreakpoint()
     };
 	*/
 
+	//0x133124
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd27,
         .target = tersafetsadd27ret,
