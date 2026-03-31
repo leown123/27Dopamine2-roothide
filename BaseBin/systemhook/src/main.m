@@ -4723,7 +4723,7 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  //sub_1371C0 环境检测
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x133124 hook] tersafe线程环境检测");
+				//NSLog(@"小罪ADD: [tersafe 0x133124 hook] tersafe线程环境检测");
 				
 				/*
 				//异常上报ReportQueue_Enqueue sub_24245C
@@ -5437,6 +5437,26 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	*/
 }
 
+typedef __int64 (*GetDataFromTGPAFunc)(void);
+
+// 保存原始函数指针
+static GetDataFromTGPAFunc original_GetDataFromTGPA = NULL;
+
+// 替换函数实现
+__int64 hooked_GetDataFromTGPA(void) 
+{
+	NSLog(@"小罪ADD: systemhook: 主线程hooked_GetDataFromTGPA called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA called. Stack trace:\n%@", [NSThread callStackSymbols]);
+    //printf("[HOOK] _GetDataFromTGPA called\n");
+    
+    // 可选：添加自定义逻辑
+    // 调用原始函数
+    //__int64 result = original_GetDataFromTGPA ? original_GetDataFromTGPA() : 0;
+    
+    //printf("[HOOK] _GetDataFromTGPA returned: %lld\n", result);
+    //return result;
+}
+
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -5609,6 +5629,10 @@ if (load_executable_path() == 0)
 		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
+
+		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
+		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
+		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
