@@ -4044,7 +4044,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-					forcewritenew(thread_state2.__x[0] + 0x18, 128);
+					forcewritenew(thread_state2.__x[0] + 0x18, 64);
 					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
 					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
 					
