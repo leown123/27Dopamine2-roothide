@@ -461,6 +461,8 @@ int hooked_access(const char *path, int amode) {
 		NSLog(@"小罪ADD: hooked_access called ! 命中isdocPath: path:%s",path);
         //return 0;
     }
+
+	NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	
     return orig_access(path, amode);
 }
@@ -469,6 +471,8 @@ int hooked_access(const char *path, int amode) {
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
 	int rt = orig_stat(path, buf);
+
+	NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
     
     
     if (isJailbreakPath(path)) {
@@ -482,6 +486,8 @@ int hooked_stat(const char *path, struct stat *buf) {
 		NSLog(@"小罪ADD: hooked_stat 命中 isdocPath ! path:%s",path);
         //return 0;
     }
+
+	
 	
     return rt;
 }
@@ -512,6 +518,8 @@ int hooked_lstat(const char *path, struct stat *buf) {
 
 int hooked_open(const char *path, int flags, ...) {
 	//NSLog(@"小罪ADD: hooked_open called ! path:%s",path);
+
+	NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_open 命中 isJailbreakPath ! path:%s",path);
@@ -865,7 +873,7 @@ NSString *hooked_NSProcessInfo_operatingSystemVersionString(id self, SEL _cmd) {
 int hooked_stat64(const char *path, struct stat64 *buf) {
 
 	if (isJailbreakPath(path)) {
-	NSLog(@"小罪ADD: hooked_stat64 命中 isJailbreakPath ! path:%s",path);
+		NSLog(@"小罪ADD: hooked_stat64 命中 isJailbreakPath ! path:%s",path);
         errno = ENOENT;
         return -1;
     }
@@ -875,6 +883,8 @@ int hooked_stat64(const char *path, struct stat64 *buf) {
         //errno = ENOENT;
         //return -1;
     }
+
+	NSLog(@"小罪ADD: [+] Hooked hooked_stat64 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	
     return orig_stat64(path, buf);
 }
@@ -932,6 +942,7 @@ int hooked_rename(const char *oldpath, const char *newpath) {
         //return 0;
     }
 
+	NSLog(@"小罪ADD: [+] Hooked hooked_rename called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	
     return orig_rename(oldpath, newpath);
 }
@@ -5385,7 +5396,18 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
+        NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
+        NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
+
+		// rename
+        ret = DobbyHook((void *)rename, (void *)hooked_rename, (void **)&orig_rename);
+        NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
+        NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
@@ -5400,17 +5422,14 @@ if (load_executable_path() == 0)
 				
 		return;
 
-		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
-        NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
+		
 		
 		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
         NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
-        NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
+		
 
-		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
-        NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
+		
 
 		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
         NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
@@ -5432,9 +5451,7 @@ if (load_executable_path() == 0)
         ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
         NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
         
-        // rename
-        ret = DobbyHook((void *)rename, (void *)hooked_rename, (void **)&orig_rename);
-        NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
+        
 
 		//dyld
 		
