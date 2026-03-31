@@ -5412,13 +5412,13 @@ kern_return_t replaced_thread_get_state(
 }
 
 // 定义原函数类型
-typedef void (*dispatch_once_t)(dispatch_once_t *predicate, dispatch_block_t block);
+typedef void (*dispatch_once_func_t)(dispatch_once_t *predicate, dispatch_block_t block);
 
 // 保存原始函数指针
-dispatch_once_t original_dispatch_once = NULL;
+static dispatch_once_func_t original_dispatch_once = NULL;
 
 // 替换函数实现
-void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) 
+void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) {
 {
     NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once called, predicate: %p\n", predicate);
 	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
