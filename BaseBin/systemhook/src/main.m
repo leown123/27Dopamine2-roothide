@@ -3569,11 +3569,16 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 
 static void ensurereporter()
 {
-	long tersafereporter = tersafeadd = 0x2E1C00;
-	if( Read_Long(tersafereporter) != (long)(tersafe+ 0x826C))
+	while(!tersafeadd)
 	{
-		forcewritenewlong(tersafereporter,(long)(tersafe+ 0x826C))
-		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafe+ 0x826C: 0x%llx", tersafereporter, tersafe+ 0x826C);
+		tersafeadd = Get_tersafe_base();
+	}
+	
+	long tersafereporter = tersafeadd = 0x2E1C00;
+	if( Read_Long(tersafereporter) != (long)(tersafeadd + 0x826C))
+	{
+		forcewritenewlong(tersafereporter,(long)(tersafeadd+ 0x826C))
+		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx", tersafereporter, tersafeadd+ 0x826C);
 	}
 	
 }
@@ -5410,7 +5415,7 @@ kern_return_t replaced_thread_get_state(
 typedef void (*dispatch_once_t)(dispatch_once_t *predicate, dispatch_block_t block);
 
 // 保存原始函数指针
-dispatch_once_t original_dispatch_once = nullptr;
+dispatch_once_t original_dispatch_once = NULL;
 
 // 替换函数实现
 void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) 
