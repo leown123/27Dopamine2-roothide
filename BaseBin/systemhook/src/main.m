@@ -3582,6 +3582,15 @@ static void ensurereporter()
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
+
+	uint64_t huanjingjilu =  (uint64_t)(tersafeadd + 0x2E1D18);
+	uint64_t rd2 = (uint64_t)Read_Long(huanjingjilu);
+	if( rd2 != 0)
+	{
+		forcewritenewlong(huanjingjilu,0);
+		NSLog(@"小罪ADD: ensurereporter: huanjingjilu: 0x%llx ,rd2: 0x%llx", huanjingjilu,rd2);
+
+	}
 	
 }
 
@@ -5311,8 +5320,8 @@ kern_return_t replaced_task_get_exception_ports(
     exception_behavior_array_t behaviors,
     thread_state_flavor_array_t flavors)
 {
-	NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
-	NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//NSLog(@"小罪ADD: systemhook: replaced_task_get_exception_ports call!");
+	//NSLog(@"小罪ADD: [+] replaced_task_get_exception_ports called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	//thread_suspend(mach_thread_self());
 	
     // 调用原函数获取真实的异常端口配置
