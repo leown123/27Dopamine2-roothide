@@ -5523,7 +5523,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 	long predicatelong = (long)predicate;
 	long zuidi  = Imageaddress+0x13002900;
-	long zuigao = Imageaddress+0x130029FF
+	long zuigao = Imageaddress+0x130029FF;
 
 	//if(predicate == (dispatch_once_t *)(Imageaddress+0x13002958))
 	if(predicatelong >= zuidi && predicatelong<= zuigao)
@@ -5744,9 +5744,9 @@ if (load_executable_path() == 0)
 			Imageaddress = Get_Imageaddress_base();
 		}
 
-		//void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
-		//ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
-		//NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
+		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
+		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
+		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
