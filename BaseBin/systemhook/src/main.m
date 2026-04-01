@@ -5523,7 +5523,8 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 	long predicatelong = (long)predicate;
 	long zuidi  = Imageaddress+0x13002900;
-	long zuigao = Imageaddress+0x130029FF;
+	//long zuigao = Imageaddress+0x130029FF;
+	long zuigao = Imageaddress+0x13002950;
 
 	//if(predicate == (dispatch_once_t *)(Imageaddress+0x13002958))
 	if(predicatelong >= zuidi && predicatelong<= zuigao)
