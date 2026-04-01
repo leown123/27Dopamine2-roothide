@@ -5620,6 +5620,17 @@ uint64_t hooked_InitTGPA()
     return 0;
 }
 
+/ 原函数类型
+typedef id (*OriginalInitMainFlowFunc)(void *a1, const char *a2, ...);
+// 保存原始函数指针
+static OriginalInitMainFlowFunc original_startInitMainFlow_reprovideDelegate = NULL;
+
+id hooked_startInitMainFlow_reprovideDelegate(void *a1, const char *a2, ...)
+{
+	NSLog(@"小罪ADD: systemhook: 主线程 hooked_Inhooked_startInitMainFlow_reprovideDelegateitTGPA called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_startInitMainFlow_reprovideDelegate called. Stack trace:\n%@", [NSThread callStackSymbols]);
+    return 0;
+}
 
 
 //入口
@@ -5800,6 +5811,10 @@ if (load_executable_path() == 0)
 
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
+		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+
+		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
+		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
