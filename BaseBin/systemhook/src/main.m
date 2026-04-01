@@ -5529,9 +5529,11 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	//if(predicatelong >= zuidi && predicatelong<= zuigao)
 
 	if(
-		predicatelong == (Imageaddress+0x130025D0) ||
-		predicatelong == (Imageaddress+0x130025E8) ||
-		predicatelong == (Imageaddress+0x13002450) ||
+		predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
+		predicatelong == (Imageaddress+0x13003300) || //[RMLeakChecker getInstance]
+		predicatelong == (Imageaddress+0x130033B8)  //[RMReportCenter report:result:]
+
+		/*
 		predicatelong == (Imageaddress+0x130026B0) ||
 		predicatelong == (Imageaddress+0x13019660) ||
 		predicatelong == (Imageaddress+0x130029F8) ||
@@ -5553,6 +5555,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 		predicatelong == (Imageaddress+0x1302B470) ||
 		predicatelong == (Imageaddress+0x13002658)
+		*/
 
 
 	)
