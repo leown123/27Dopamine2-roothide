@@ -5518,19 +5518,52 @@ static dispatch_once_func_t original_dispatch_once = NULL;
 // 替换函数实现
 void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) 
 {
-    NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once called, predicateptr: 0x%p\n", (long)predicate - Imageaddress);
-	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
-
+    
 	long predicatelong = (long)predicate;
 	long zuidi  = Imageaddress+0x13002950;
 	//long zuigao = Imageaddress+0x130029FF;
 	long zuigao = Imageaddress+0x130029FF;
 
-	/*
+	
 	//if(predicate == (dispatch_once_t *)(Imageaddress+0x13002958))
-	if(predicatelong >= zuidi && predicatelong<= zuigao)
+	//if(predicatelong >= zuidi && predicatelong<= zuigao)
+
+	if(
+		predicatelong == (Imageaddress+0x130025D0) ||
+		predicatelong == (Imageaddress+0x130025E8) ||
+		predicatelong == (Imageaddress+0x13002450) ||
+		predicatelong == (Imageaddress+0x130026B0) ||
+		predicatelong == (Imageaddress+0x13019660) ||
+		predicatelong == (Imageaddress+0x130029F8) ||
+		predicatelong == (Imageaddress+0x13002440) ||
+		predicatelong == (Imageaddress+0x13002630) ||
+		predicatelong == (Imageaddress+0x13002420) ||
+		predicatelong == (Imageaddress+0x13002688) ||
+		predicatelong == (Imageaddress+0x130025F0) ||
+		predicatelong == (Imageaddress+0x13002608) ||
+		predicatelong == (Imageaddress+0x13002488) ||
+		predicatelong == (Imageaddress+0x13002690) ||
+
+		predicatelong == (Imageaddress+0x13003300) ||
+		predicatelong == (Imageaddress+0x130033B8) ||
+		predicatelong == (Imageaddress+0x130030F0) ||
+		predicatelong == (Imageaddress+0x13003160) ||
+		predicatelong == (Imageaddress+0x13002CB0) ||
+		predicatelong == (Imageaddress+0x1302B2C0) ||
+
+		predicatelong == (Imageaddress+0x1302B470) ||
+		predicatelong == (Imageaddress+0x13002658)
+
+
+	}
 	{
-		NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once 登录sdk触发！ predicate: %p\n", predicate);
+		NSLog(@"小罪ADD: systemhook: 主线程 hooked_dispatch_once called, passed predicateptr: 0x%p\n", (long)predicate - Imageaddress);
+		NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+	}
+	else
+	{
+		//NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once 登录sdk触发！ predicate: %p\n", predicate);
 		 // 调用原始实现
 	    if (original_dispatch_once) 
 		{
@@ -5540,7 +5573,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	        dispatch_once(predicate, block);
 	    }
 	}
-	*/
+	
 
 }
 
