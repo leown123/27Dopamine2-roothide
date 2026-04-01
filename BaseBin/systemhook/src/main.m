@@ -5738,9 +5738,9 @@ if (load_executable_path() == 0)
 			Imageaddress = Get_Imageaddress_base();
 		}
 
-		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
-		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
-		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
+		//void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
+		//ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
+		//NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
