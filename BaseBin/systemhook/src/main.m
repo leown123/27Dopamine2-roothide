@@ -5555,7 +5555,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 		predicatelong == (Imageaddress+0x13002658)
 
 
-	}
+	)
 	{
 		NSLog(@"小罪ADD: systemhook: 主线程 hooked_dispatch_once called, passed predicateptr: 0x%p\n", (long)predicate - Imageaddress);
 		NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
