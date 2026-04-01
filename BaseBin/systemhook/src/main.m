@@ -5620,7 +5620,7 @@ uint64_t hooked_InitTGPA()
     return 0;
 }
 
-/ 原函数类型
+
 typedef id (*OriginalInitMainFlowFunc)(void *a1, const char *a2, ...);
 // 保存原始函数指针
 static OriginalInitMainFlowFunc original_startInitMainFlow_reprovideDelegate = NULL;
