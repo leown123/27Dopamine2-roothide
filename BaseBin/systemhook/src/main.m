@@ -4817,6 +4817,7 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  //sub_1371C0 环境检测
 			{	
+				NSLog(@"小罪ADD: [sub_1000475C8 hook] 主线程环境检测触发");
 				//NSLog(@"小罪ADD: [tersafe 0x133124 hook] tersafe线程环境检测");
 				
 				/*
@@ -5032,6 +5033,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd27 = tersafeadd + 0x133124;//环境
 	mach_vm_address_t tersafetsadd27ret = (mach_vm_address_t)hooked_ret0;
 
+	//4.2环境
+	mach_vm_address_t zhuxianchenghjadd1 = Imageaddress + 0x1000475C8;
+	mach_vm_address_t zhuxianchenghjadd1ret = (mach_vm_address_t)hooked_ret0;
 	
 
 	g_source_addr = wuhouadd;
@@ -5089,6 +5093,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0xAAB64 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd18,
@@ -5098,7 +5103,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
+	*/
 	
 
 	/*
@@ -5194,6 +5199,8 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
+
+	//0x1864C 环境
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd26,
         .target = tersafetsadd26ret,
@@ -5235,10 +5242,10 @@ void initbreakpoint()
     };
 	*/
 
-	//0x133124
+	//sub_1000475C8
 	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd27,
-        .target = tersafetsadd27ret,
+        .source = zhuxianchenghjadd1,
+        .target = zhuxianchenghjadd1ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
