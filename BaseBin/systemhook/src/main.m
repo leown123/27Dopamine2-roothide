@@ -5522,9 +5522,9 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
 	long predicatelong = (long)predicate;
-	long zuidi  = Imageaddress+0x13002900;
+	long zuidi  = Imageaddress+0x13002950;
 	//long zuigao = Imageaddress+0x130029FF;
-	long zuigao = Imageaddress+0x13002950;
+	long zuigao = Imageaddress+0x130029FF;
 
 	//if(predicate == (dispatch_once_t *)(Imageaddress+0x13002958))
 	if(predicatelong >= zuidi && predicatelong<= zuigao)
