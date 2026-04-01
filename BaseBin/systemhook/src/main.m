@@ -5518,7 +5518,7 @@ static dispatch_once_func_t original_dispatch_once = NULL;
 // 替换函数实现
 void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) 
 {
-    NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once called, predicate: %p\n", predicate);
+    NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once called, predicateptr: 0x%p\n", (long)predicate - Imageaddress);
 	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
 	long predicatelong = (long)predicate;
@@ -5526,6 +5526,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	//long zuigao = Imageaddress+0x130029FF;
 	long zuigao = Imageaddress+0x130029FF;
 
+	/*
 	//if(predicate == (dispatch_once_t *)(Imageaddress+0x13002958))
 	if(predicatelong >= zuidi && predicatelong<= zuigao)
 	{
@@ -5539,6 +5540,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	        dispatch_once(predicate, block);
 	    }
 	}
+	*/
 
 }
 
