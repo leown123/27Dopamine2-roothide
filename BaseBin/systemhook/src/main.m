@@ -1433,6 +1433,82 @@ void forcewritenewlong(mach_vm_address_t addres,uint64_t data)
     //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
 }
 
+void forcewritenewchar(mach_vm_address_t addres,char data)
+{
+ 
+    int size = 1;
+    
+    
+    mach_port_t object_name;
+    mach_vm_size_t region_size=0;
+    mach_vm_address_t region_base = (uint64_t)addres;
+    
+    vm_region_basic_info_data_64_t info = {0};
+    mach_msg_type_number_t info_cnt = VM_REGION_BASIC_INFO_COUNT_64;
+    kern_return_t kr = mach_vm_region(mach_task_self(), &region_base, &region_size,
+                                      VM_REGION_BASIC_INFO_64, (vm_region_info_t)&info, &info_cnt, &object_name);
+    if(kr != KERN_SUCCESS) {
+        NSLog(@"mach_vm_region failed! %p", region_base);
+        return ;
+    }
+    
+    
+    vm_address_t base = 0;
+    if(!(info.protection & VM_PROT_WRITE)) {
+        //NSLog(@"unwritable region %p %x : %x", region_base, region_size, info.protection);
+        base = (uint64_t)addres & ~PAGE_MASK;
+        //c1越狱这里可能失败, 不能同时rwx??? c1这里返回成功但是实际上并没有成功!!!!
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+            
+            //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            if(kr != KERN_SUCCESS) {
+                //NSLog(@"vm_protect failed2! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+                
+                //NSLog(@"mprotect=%d, %d, %s", mprotect((void*)base, PAGE_SIZE, info.protection|VM_PROT_WRITE), errno, strerror(errno));
+                
+                return ;
+            }
+        }
+    }
+    
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    kern_return_t error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+    if(error != KERN_SUCCESS && base)
+    {
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect again failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+        } else {
+            //error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+            error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+        }
+        
+    }
+    
+    if(error == KERN_SUCCESS && base)
+    {
+        vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection);
+    }
+    
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ | VM_PROT_WRITE|VM_PROT_COPY);
+    //vm_write(mach_task_self(),addres,(vm_address_t)&data,size);
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ |VM_PROT_EXECUTE);
+    
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t error = mach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+    //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+}
+
+
 long Imageaddress = 0;
 
 static long Get_Imageaddress_base() {
@@ -3591,6 +3667,15 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: huanjingjilu: 0x%llx ,rd2: 0x%llx", huanjingjilu,rd2);
 
 	}
+
+	uint64_t huanjingchar =  (uint64_t)(tersafeadd + 0x2E0A68);
+	char rd3 = (char)Read_Char(huanjingchar);
+	if( rd3 != (char)1)
+	{
+		forcewritenewchar(huanjingchar,(char)1);
+		NSLog(@"小罪ADD: ensurereporter: huanjingchar: 0x%llx ,rd3: %d,Read_Char(huanjingchar): %d", huanjingchar,rd3,Read_Char(huanjingchar));
+
+	}
 	
 }
 
@@ -5468,6 +5553,18 @@ uint64_t hooked_GetDataFromTGPA()
     //return result;
 }
 
+typedef uint64_t (*InitTGPAFunc)();
+static InitTGPAFunc original_InitTGPA = NULL;
+// 替换函数实现
+uint64_t hooked_InitTGPA() 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程 hooked_InitTGPA called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_InitTGPA called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    return 0;
+}
+
+
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -5643,6 +5740,10 @@ if (load_executable_path() == 0)
 
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
+		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+
+		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
+		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
