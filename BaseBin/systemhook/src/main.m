@@ -5520,15 +5520,19 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 {
     NSLog(@"小罪ADD: systemhook: 主线程hooked_dispatch_once called, predicate: %p\n", predicate);
 	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
-	/*
-    // 调用原始实现
-    if (original_dispatch_once) {
-        original_dispatch_once(predicate, block);
-    } else {
-        // 如果原始指针无效，直接调用系统函数
-        dispatch_once(predicate, block);
-    }
-	*/
+
+	if(predicate == (dispatch_once_t *)(Imageaddress+0x13002958))
+	{
+		 // 调用原始实现
+	    if (original_dispatch_once) 
+		{
+	        original_dispatch_once(predicate, block);
+	    } else {
+	        // 如果原始指针无效，直接调用系统函数
+	        dispatch_once(predicate, block);
+	    }
+	}
+
 }
 
 typedef uint64_t (*GetDataFromTGPAFunc)();
