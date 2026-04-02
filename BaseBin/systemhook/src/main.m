@@ -1950,6 +1950,12 @@ uint64_t hooked_ret1()
 	return 1;
 }
 
+uint64_t hooked_ret8()
+{
+	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return 8;
+}
+
 typedef double (*subD9424_t)();
 static subD9424_t orig_subD9424 = NULL;
 
@@ -4308,7 +4314,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
-				NSLog(@"小罪ADD: [tersafe sub_215954 hook] 主线程调用");
+				NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] 主线程调用");
 				
 				/*
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -5064,8 +5070,13 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
-	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
+	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
+	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
+	
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x23B6A4;;//范围检测2
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret8;//tersafeadd + 0x241914;
+
+	
 
 	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241578;//范围检测1
 	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
