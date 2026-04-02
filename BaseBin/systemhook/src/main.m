@@ -4218,15 +4218,18 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 576 || shujusize == 128 )
+				if(shujusize == 576)// || shujusize == 128 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
+					/*
 					forcewritenew(thread_state2.__x[0] + 0x10, 1);
 					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					forcewritenew(thread_state2.__x[0] + 0x18, 0);
-		
+					*/
+
+					memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					
 					thread_state2.__x[0] = 1;
 
@@ -4247,9 +4250,9 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 64);
-					forcewritenew(thread_state2.__x[0] + 0x10, 1);
-					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
+					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
 					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
@@ -5876,6 +5879,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -5906,6 +5910,7 @@ if (load_executable_path() == 0)
 		// rmdir
         ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
         NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		while(!Imageaddress)
 		{
