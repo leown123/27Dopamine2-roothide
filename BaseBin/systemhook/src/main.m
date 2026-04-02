@@ -448,34 +448,14 @@ static BOOL isdocPath(const char *path) {
     return NO;
 }
 
-// ---------- 1. 文件操作类 ----------
-int hooked_access(const char *path, int amode) {
-	
-	
-    if (isJailbreakPath(path)) {
-
-		NSLog(@"小罪ADD: hooked_access called ! 命中isJailbreakPath: path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
-        errno = ENOENT;
-        return -1;
-    }
-
-	if (isdocPath(path)) {
-		NSLog(@"小罪ADD: hooked_access called ! 命中isdocPath: path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
-        //return 0;
-    }
-
-	
-	
-    return orig_access(path, amode);
-}
 
 // ---------- 线程黑名单管理（专为 stat 钩子） ----------
 #define MAX_STAT_BLACKLISTED_THREADS 200
 static pthread_t stat_blacklisted_threads[MAX_STAT_BLACKLISTED_THREADS];
 static int stat_blacklist_count = 0;
 static pthread_mutex_t stat_blacklist_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+
 
 // 检查线程是否已在 stat 黑名单中
 static int isStatThreadBlacklisted(pthread_t thread) {
@@ -493,10 +473,48 @@ static void addCurrentStatThreadToBlacklist(void) {
     pthread_mutex_lock(&stat_blacklist_mutex);
     if (stat_blacklist_count < MAX_STAT_BLACKLISTED_THREADS && !isStatThreadBlacklisted(current)) {
         stat_blacklisted_threads[stat_blacklist_count++] = current;
-        NSLog(@"小罪ADD: addCurrentStatThreadToBlacklist：线程 %p 已加入 stat 黑名单", (void *)current);
+        NSLog(@"小罪ADD: addCurrentStatThreadToBlacklist：线程 %p 已加入 stat/access/lstat 黑名单", (void *)current);
     }
     pthread_mutex_unlock(&stat_blacklist_mutex);
 }
+
+// ---------- 1. 文件操作类 ----------
+int hooked_access(const char *path, int amode) {
+
+	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+    pthread_mutex_lock(&stat_blacklist_mutex);
+    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+    pthread_mutex_unlock(&stat_blacklist_mutex);
+
+	if (is_blacklisted) 
+	{
+		NSLog(@"小罪ADD: hooked_access 命中 is_blacklisted黑名单线程 ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+      
+        errno = ENOENT;
+        return -1;
+    }
+	
+    if (isJailbreakPath(path)) {
+
+		NSLog(@"小罪ADD: hooked_access called ! 命中isJailbreakPath: path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		addCurrentStatThreadToBlacklist();
+        errno = ENOENT;
+        return -1;
+    }
+
+	if (isdocPath(path)) {
+		NSLog(@"小罪ADD: hooked_access called ! 命中isdocPath: path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+        //return 0;
+    }
+
+	
+	
+    return orig_access(path, amode);
+}
+
 
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
@@ -542,11 +560,26 @@ int hooked_stat(const char *path, struct stat *buf) {
 int hooked_lstat(const char *path, struct stat *buf) {
 
 	int rt = orig_lstat(path, buf);
+
+	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+    pthread_mutex_lock(&stat_blacklist_mutex);
+    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+    pthread_mutex_unlock(&stat_blacklist_mutex);
+
+	if (is_blacklisted) 
+	{
+		NSLog(@"小罪ADD: hooked_stat 命中 is_blacklisted黑名单线程 ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
+      
+        errno = ENOENT;
+        return -1;
+    }
     
     
     if (isJailbreakPath(path)) {
 		NSLog(@"小罪ADD: hooked_lstat 命中 isJailbreakPath ! path:%s",path);
 		NSLog(@"小罪ADD: [+] Hooked hooked_lstat called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		addCurrentStatThreadToBlacklist();
         errno = ENOENT;
         return -1;
     }
