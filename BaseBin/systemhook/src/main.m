@@ -4308,6 +4308,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				NSLog(@"小罪ADD: [tersafe sub_215954 hook] 主线程调用");
+				
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4391,10 +4394,10 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					/*
-					result = strstr(path, "mrpcs"); //会三方
-					if (result != NULL) iscontainstr = true;
-					*/
+					
+					//result = strstr(path, "mrpcs"); //会三方
+					//if (result != NULL) iscontainstr = true;
+					
 					
 					result = strstr(path, "anti");
 					if (result != NULL) iscontainstr = true;
@@ -4420,10 +4423,10 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 					
 
-					/*
-					result = strstr(path, "mrmoni");  //会三方
-					if (result != NULL) iscontainstr = true;
-					*/
+					
+					//result = strstr(path, "mrmoni");  //会三方
+					//if (result != NULL) iscontainstr = true;
+					
 
 					
 					result = strstr(path, "sav");
@@ -4501,9 +4504,9 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-
 				
 				
+				*/
 			
 			}
 
@@ -5206,7 +5209,16 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	
 
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	/*
 	//0xAAB64 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
