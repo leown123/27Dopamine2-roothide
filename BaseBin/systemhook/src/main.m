@@ -486,6 +486,15 @@ int hooked_access(const char *path, int amode) {
         return orig_access(path, amode);
     }
 
+	if(
+		(strcmp(path,"/private/var/containers/Bundle/Application") == 0 )||
+		(strcmp(path,"/Applications") == 0 )||
+		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )
+	)
+	{
+		return orig_access(path, amode);
+	}
+
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
     int is_blacklisted = isStatThreadBlacklisted(pthread_self());
