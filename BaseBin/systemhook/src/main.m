@@ -481,6 +481,11 @@ static void addCurrentStatThreadToBlacklist(void) {
 // ---------- 1. 文件操作类 ----------
 int hooked_access(const char *path, int amode) {
 
+	if (strstr(path, "/DeltaForceClient.app") != NULL) 
+	{
+        return orig_access(path, amode);
+    }
+
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
     int is_blacklisted = isStatThreadBlacklisted(pthread_self());
@@ -519,6 +524,11 @@ int hooked_access(const char *path, int amode) {
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
 	int rt = orig_stat(path, buf);
+
+	if (strstr(path, "/DeltaForceClient.app") != NULL) 
+	{
+        return rt;
+    }
 
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
@@ -560,6 +570,11 @@ int hooked_stat(const char *path, struct stat *buf) {
 int hooked_lstat(const char *path, struct stat *buf) {
 
 	int rt = orig_lstat(path, buf);
+
+	if (strstr(path, "/DeltaForceClient.app") != NULL) 
+	{
+        return rt;
+    }
 
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
