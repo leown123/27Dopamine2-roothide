@@ -757,6 +757,7 @@ static long Getselfdylibadd() {
 }
 
 long tersafeaddnew = 0;
+static long Get_tersafe_base();
 
 int hooked_dladdr(const void *addr, Dl_info *info) {
 
