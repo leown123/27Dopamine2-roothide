@@ -756,7 +756,6 @@ static long Getselfdylibadd() {
     return 0;
 }
 
-long 
 
 int hooked_dladdr(const void *addr, Dl_info *info) {
 
