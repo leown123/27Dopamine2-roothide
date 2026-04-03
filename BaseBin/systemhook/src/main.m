@@ -4895,8 +4895,12 @@ static void* exception_handler_thread(void* arg) {
 
 			
 
-			if(terbptype == 4) //
-			{
+			if(terbptype == 4) //0x1E1E28
+			{	
+				NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
+
+
+				/*
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -4951,6 +4955,7 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
+				*/
 				
 				/* 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -5295,7 +5300,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -5304,7 +5309,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -5400,8 +5405,19 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
-	////0x249FD8 RingBuf_Tick
+	//0x1E1E28
+	ter_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd25,
+        .target = tersafetsadd25ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+
+	/*
+	//0x249FD8 RingBuf_Tick
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
@@ -5410,6 +5426,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
+
 	
 
 	ter_breakpoints[5] = (Breakpoint){
