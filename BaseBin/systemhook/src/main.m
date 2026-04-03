@@ -4570,9 +4570,11 @@ static void* exception_handler_thread(void* arg) {
 			}
 
 			
-			if(terbptype == 1) //sub_9998 环境检测hook
+			if(terbptype == 1) 
 			{
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发");
+				
+				NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
+				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
 				/*
 				uint64_t a3  = thread_state2.__x[2];
 				if(a3 < 100)
@@ -5195,6 +5197,9 @@ void initbreakpoint()
 	//4.3上报
 	mach_vm_address_t tersafetsadd28 = tersafeadd + 0x241968;
 	mach_vm_address_t tersafetsadd28ret = (mach_vm_address_t)hooked_ret1;
+
+	mach_vm_address_t tersafetsadd29 = tersafeadd + 0x24B47C;//
+	mach_vm_address_t tersafetsadd29ret = (mach_vm_address_t)hooked_ret0;
 	
 
 	g_source_addr = wuhouadd;
@@ -5351,10 +5356,10 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-	//0x9998 越狱检测
+	//0x24B47C 越狱检测
 	ter_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd11ret,
+        .source = tersafetsadd29,
+        .target = tersafetsadd29ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
