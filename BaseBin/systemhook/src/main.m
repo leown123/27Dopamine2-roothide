@@ -69,6 +69,10 @@
 
 #include <dispatch/dispatch.h>
 
+#include <mach-o/dyld.h>
+#include <dlfcn.h>
+#include <libproc.h>
+
 ShareStruct *shareData = 0;
 kfdShareStruct *kfdshareData= 0;
 
@@ -765,8 +769,11 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
 	if((long)addr >= selfdylibadd && addr <= selfdylibend)
 	{
 		NSLog(@"小罪ADD: hooked_dladdr called 命中 systemhook模块地址! addr:%lx",addr);
+		NSLog(@"小罪ADD: [+] Hooked hooked_dladdr called. Stack trace:\n%@", [NSThread callStackSymbols]);
 		memset(info, 0, sizeof(Dl_info));
-        return 0;
+		int ret1 = orig_dladdr((void*)tersafeadd, info);
+        return ret1;
+        //return 0;
 	}
 		
     // 先调用原始函数获取真实信息
@@ -777,10 +784,13 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
         // 检查文件名（dli_fname）是否为越狱相关路径
         if (info->dli_fname && isJailbreakPath(info->dli_fname)) {
 			NSLog(@"小罪ADD: hooked_dladdr called 命中 jailbreakPaths! info->dli_fname:%s",info->dli_fname);
+			NSLog(@"小罪ADD: [+] Hooked hooked_dladdr called. Stack trace:\n%@", [NSThread callStackSymbols]);
             // 伪装成未知符号（返回0表示未找到）
             // 或者可以选择修改信息，例如改为系统库的路径
             memset(info, 0, sizeof(Dl_info));
-            return 0;
+
+			int ret1 = orig_dladdr((void*)tersafeadd, info);
+            return ret1;
         }
         
         // 检查符号名（dli_sname）是否包含越狱特征（可选）
@@ -791,8 +801,10 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
             for (NSString *black in blacklistedSymbols) {
                 if ([sname containsString:black]) {
 					NSLog(@"小罪ADD: hooked_dladdr called 命中 blacklistedSymbols! sname:%@,black:%@",sname,black);
+					NSLog(@"小罪ADD: [+] Hooked hooked_dladdr called. Stack trace:\n%@", [NSThread callStackSymbols]);
                     memset(info, 0, sizeof(Dl_info));
-                    return 0;
+					int ret1 = orig_dladdr((void*)tersafeadd, info);
+            		return ret1;
                 }
             }
         }
@@ -5200,7 +5212,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+
+	/*
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5210,6 +5223,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	//0x24245C ReportQueue_Enqueue
 	g_breakpoints[3] = (Breakpoint){
@@ -5254,6 +5268,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -5262,6 +5277,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -5357,6 +5373,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	////0x249FD8 RingBuf_Tick
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5366,6 +5383,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	////0x24245C ReportQueue_Enqueue
@@ -5769,6 +5787,34 @@ id hooked_startInitMainFlow_reprovideDelegate(void *a1, const char *a2, ...)
     return 0;
 }
 
+typedef int (*proc_regionfilename_t)(int pid, uint64_t address, char *buf, uint32_t buf_size);
+proc_regionfilename_t orig_proc_regionfilename = NULL;
+
+// Hook 函数实现
+int hooked_proc_regionfilename(int pid, uint64_t address, char *buf, uint32_t buf_size) {
+    // 如果 buf 为空，直接调用原函数
+    if (!buf || buf_size == 0) {
+        return orig_proc_regionfilename(pid, address, buf, buf_size);
+    }
+
+
+    // 关键逻辑：检查 address 是否属于你想隐藏的模块
+    Dl_info info;
+    if (dladdr((void *)address, &info) && info.dli_fname) {
+        // 匹配需要隐藏的模块路径
+        //if (strcmp(info.dli_fname, HIDE_PATH) == 0) 
+		if(strstr(info.dli_fname, "libswiftPrivate_BiomeStreams") != NULL)
+		{
+			NSLog(@"小罪ADD: systemhook: 主线程 hooked_proc_regionfilename called");
+			NSLog(@"小罪ADD: [+] Hooked hooked_proc_regionfilename called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			return orig_proc_regionfilename(pid, tersafeadd, buf, buf_size);
+        }
+    }
+
+    // 默认情况，调用原函数
+    return orig_proc_regionfilename(pid, address, buf, buf_size);
+}
+
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -5933,7 +5979,12 @@ if (load_executable_path() == 0)
 		// rmdir
         ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
         NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
-		
+
+		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
+		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
+		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
 
 		while(!Imageaddress)
 		{
@@ -6002,8 +6053,7 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)dlsym, (void *)hooked_dlsym, (void **)&orig_dlsym);
         NSLog(@"小罪ADD: [Dobby] hook dlsym: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
-		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		
 
 		// ---------- 使用 runtime Hook Objective-C 方法 ----------
 		// NSFileManager fileExistsAtPath
