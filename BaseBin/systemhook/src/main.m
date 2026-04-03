@@ -4280,8 +4280,13 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
+					
+					thread_state2.__x[0] = 1;
+
+					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
 				
@@ -4333,7 +4338,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
-				NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] 主线程调用");
+				//NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] 主线程调用");
+				NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
 				/*
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4656,7 +4662,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				NSLog(@"小罪ADD: [tersafe sub_1864C hook] tersafe模块环境检测触发");
+				NSLog(@"小罪ADD: [tersafe sub_241968 hook] tersafe模块 BufWriter_WriteField 触发");
+				//NSLog(@"小罪ADD: [tersafe sub_1864C hook] tersafe模块环境检测触发");
 				//sub_1E1E28 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe sub_1E1E28 hook] 自瞄hook检测触发");
 				
@@ -4909,14 +4916,16 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x2418E0);
 					
 					
-					forcewritenew(thread_state2.__x[0] + 0x10, 0);
-					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x10, 0);
+					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 128);
-					
-					
+
+					memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					thread_state2.__x[0] = 1;
+
 					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+
 					
 				}
 				else
@@ -4926,12 +4935,16 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 64);
 
-					forcewritenew(thread_state2.__x[0] + 0x10, 0);
-					forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					forcewritenew(thread_state2.__x[0] + 0x14, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x10, 0);
+					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
+					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
+					thread_state2.__x[0] = 1;
+
+					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
 				
@@ -5089,13 +5102,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
 	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
 
-	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x215954;;//范围检测2
-	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret0;//tersafeadd + 0x241914;
-	
 	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x23B6A4;;//范围检测2
 	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_ret8;//tersafeadd + 0x241914;
-
-	
 
 	//mach_vm_address_t tersafetsadd4 = tersafeadd + 0x241578;//范围检测1
 	//mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub241578;//tersafeadd + 0x241814;
@@ -5183,6 +5191,10 @@ void initbreakpoint()
 	//4.2环境
 	mach_vm_address_t zhuxianchenghjadd1 = Imageaddress + 0x1000475C8;
 	mach_vm_address_t zhuxianchenghjadd1ret = (mach_vm_address_t)hooked_ret0;
+
+	//4.3上报
+	mach_vm_address_t tersafetsadd28 = tersafeadd + 0x241968;
+	mach_vm_address_t tersafetsadd28ret = (mach_vm_address_t)hooked_ret1;
 	
 
 	g_source_addr = wuhouadd;
@@ -5220,7 +5232,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5230,7 +5242,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	//0x24245C ReportQueue_Enqueue
 	g_breakpoints[3] = (Breakpoint){
@@ -5244,13 +5256,14 @@ void initbreakpoint()
 	
 
 	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd4,
-        .target = tersafetsadd4ret,
+        .source = tersafetsadd28,
+        .target = tersafetsadd28ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
+	
 	/*
 	//0xAAB64 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
@@ -5275,7 +5288,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -5284,7 +5297,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
@@ -5362,8 +5375,8 @@ void initbreakpoint()
 
 	//0x1864C 环境
 	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd26,
-        .target = tersafetsadd26ret,
+        .source = tersafetsadd28,
+        .target = tersafetsadd28ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5380,7 +5393,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	////0x249FD8 RingBuf_Tick
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5390,7 +5403,16 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
+
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd28,
+        .target = tersafetsadd28ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	////0x24245C ReportQueue_Enqueue
@@ -5987,8 +6009,8 @@ if (load_executable_path() == 0)
         ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
         NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
-		NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
+		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
