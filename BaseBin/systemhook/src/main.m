@@ -756,8 +756,15 @@ static long Getselfdylibadd() {
     return 0;
 }
 
+long tersafeaddnew = 0;
 
 int hooked_dladdr(const void *addr, Dl_info *info) {
+
+	tersafeaddnew = Get_tersafe_base();
+    while(tersafeaddnew < 0x1000)
+    {
+        tersafeaddnew = Get_tersafe_base();
+    }
 
 	if(!selfdylibadd || !selfdylibend)
 	{
@@ -770,7 +777,7 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
 		NSLog(@"小罪ADD: hooked_dladdr called 命中 systemhook模块地址! addr:%lx",addr);
 		NSLog(@"小罪ADD: [+] Hooked hooked_dladdr called. Stack trace:\n%@", [NSThread callStackSymbols]);
 		memset(info, 0, sizeof(Dl_info));
-		int ret1 = orig_dladdr((void*)tersafeadd, info);
+		int ret1 = orig_dladdr((void*)tersafeaddnew, info);
         return ret1;
         //return 0;
 	}
@@ -788,7 +795,7 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
             // 或者可以选择修改信息，例如改为系统库的路径
             memset(info, 0, sizeof(Dl_info));
 
-			int ret1 = orig_dladdr((void*)tersafeadd, info);
+			int ret1 = orig_dladdr((void*)tersafeaddnew, info);
             return ret1;
         }
         
@@ -802,7 +809,7 @@ int hooked_dladdr(const void *addr, Dl_info *info) {
 					NSLog(@"小罪ADD: hooked_dladdr called 命中 blacklistedSymbols! sname:%@,black:%@",sname,black);
 					NSLog(@"小罪ADD: [+] Hooked hooked_dladdr called. Stack trace:\n%@", [NSThread callStackSymbols]);
                     memset(info, 0, sizeof(Dl_info));
-					int ret1 = orig_dladdr((void*)tersafeadd, info);
+					int ret1 = orig_dladdr((void*)tersafeaddnew, info);
             		return ret1;
                 }
             }
