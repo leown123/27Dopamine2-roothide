@@ -4229,7 +4229,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
+				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
+				NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发");
+				
 			}
 
 			if(bptype == 2) //0x249FD8 hook
@@ -5229,8 +5231,8 @@ void initbreakpoint()
 
 	//0x9998 越狱检测
 	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd11ret,
+        .source = tersafetsadd29,
+        .target = tersafetsadd29ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
