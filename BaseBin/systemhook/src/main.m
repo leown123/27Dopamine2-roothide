@@ -4063,7 +4063,7 @@ static bool cached_flag128 = false; // false: 未缓存, true: 已缓存
 static bool cached_flag576 = false; // false: 未缓存, true: 已缓存
 
 static uint8_t cached_struct128[128];
-static uint8_t cached_struct[576];
+static uint8_t cached_struct576[576];
 
 
 static void* exception_handler_thread(void* arg) {
