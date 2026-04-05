@@ -3772,7 +3772,7 @@ static void ensurereporter()
 		tersafeadd = Get_tersafe_base();
 	}
 
-	/*
+	
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2E1C00);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x826C);
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
@@ -3781,7 +3781,7 @@ static void ensurereporter()
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
-	*/
+	
 
 	uint64_t huanjingjilu =  (uint64_t)(tersafeadd + 0x2E1D18);
 	uint64_t rd2 = (uint64_t)Read_Long(huanjingjilu);
@@ -4230,12 +4230,31 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{
 				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
-				NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发");
+				NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 				
 			}
 
-			if(bptype == 2) //0x249FD8 hook
-			{
+			if(bptype == 2) 
+			{		
+			
+				// 上报警告检测hook sub_824AC
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 主线程 警告上报sub_824AC hook] 检测类型: %s", path);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
+			    }		
+				
+				/* 0x249FD8 hook
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -4291,26 +4310,11 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
-				
-				
-
-				/* 上报警告检测hook sub_824AC
-				uint64_t path_ptr = thread_state2.__x[1];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) 
-				{
-			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] 检测类型: %s", path);
-
-					
-			    } else 
-				{
-			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
-			    }
 				*/
+				
+
+				
+				
 
 				
 				
@@ -4341,9 +4345,9 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] 主线程调用");
-				NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
+				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4539,15 +4543,17 @@ static void* exception_handler_thread(void* arg) {
 			    }
 				
 				
-				*/
+				
 			
 			}
 
 			if(bptype == 5)
 			{
-				uint64_t a2 = thread_state2.__x[1];
+				
 				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
-				NSLog(@"小罪ADD: [tersafe 0x2412D0 BufWriter_Init hook] 主线程触发,a2:%d",a2);
+
+				//uint64_t a2 = thread_state2.__x[1];
+				//NSLog(@"小罪ADD: [tersafe 0x2412D0 BufWriter_Init hook] 主线程触发,a2:%d",a2);
 				
 			}
 
@@ -5216,7 +5222,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd28ret = (mach_vm_address_t)hooked_ret1;
 
 	mach_vm_address_t tersafetsadd29 = tersafeadd + 0x24B47C;//
-	mach_vm_address_t tersafetsadd29ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd29ret = (mach_vm_address_t)hooked_ret8;
 
 	mach_vm_address_t tersafetsadd30 = tersafeadd + 0x2412D0;//BufWriter_Init
 	mach_vm_address_t tersafetsadd30ret = tersafeadd + 0x2412D4;
@@ -5247,10 +5253,20 @@ void initbreakpoint()
     };
 	*/
 
-	//VM_DebugDetect_Dispatch 越狱检测
+	//0x24B47C VM_DebugDetect_Dispatch 越狱检测
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd29,
         .target = tersafetsadd29ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x824AC 上报警告
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd19,
+        .target = tersafetsadd19ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5278,7 +5294,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+
+	/*
 	//BufWriter_WriteField
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd28,
@@ -5288,8 +5305,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
-	/*
+	
 	//0xAAB64 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd18,
@@ -5299,7 +5317,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
@@ -5322,8 +5340,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-
+	
+	
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd30,
         .target = tersafetsadd30ret,
@@ -5332,7 +5350,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	g_breakpoints[2] = (Breakpoint){
@@ -5385,10 +5403,22 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-	//0x24B47C VM_DebugDetect_Dispatch 越狱检测
+	
+
+	//0x24245C ReportQueue_Enqueue
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x24B47C VM_DebugDetect_Dispatch 越狱检测
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd29,
+        .target = tersafetsadd29ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5406,7 +5436,8 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
- 
+
+	/*
 	//0x241968 BufWriter_WriteField环境
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd28,
@@ -5416,6 +5447,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
@@ -5451,7 +5483,7 @@ void initbreakpoint()
 	*/
 
 	
-
+	/*
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd28,
         .target = tersafetsadd28ret,
@@ -5461,7 +5493,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	////0x24245C ReportQueue_Enqueue
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd22,
