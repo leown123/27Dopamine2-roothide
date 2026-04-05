@@ -3696,7 +3696,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	//if(thread_count < 40) return KERN_FAILURE;
 
-	maindone = true;
+	//maindone = true;
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: 有40个线程，prepare to set breakpoint");
 
 	kern_return_t kr_all = KERN_SUCCESS;
@@ -3820,7 +3820,7 @@ static void setup_all_breakpoints(void)
 	if(!maindone)
 	{
 	    for (int i = 0; i < g_breakpoint_count; i++) {
-			NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 g_breakpoint g_breakpoint_count：%d",g_breakpoint_count);
+			//NSLog(@"小罪ADD: setup_all_breakpoints: 准备设置 g_breakpoint g_breakpoint_count：%d",g_breakpoint_count);
 	        if (!g_breakpoints[i].used) continue;
 	        g_breakpoints[i].hw_index = i;   // 硬件索引与数组下标一致
 	        kern_return_t kr = set_hw_breakpoint_at_index(i, g_breakpoints[i].source);
