@@ -4326,16 +4326,16 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
 
-					memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
+					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					
-					thread_state2.__x[0] = 1;
+					//thread_state2.__x[0] = 1;
 
-					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 
 					
-					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					//bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
+					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
 					
 
 					
@@ -4352,8 +4352,8 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					//bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
+					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
