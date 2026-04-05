@@ -3828,7 +3828,7 @@ static void setup_all_breakpoints(void)
 			{
 	            //NSLog(@"小罪ADD: setup_all_breakpoints: Failed to set breakpoint %d at 0x%llx", i, g_breakpoints[i].source);
 	        } else {
-	            NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
+	            //NSLog(@"小罪ADD: setup_all_breakpoints: Breakpoint %d: 0x%llx -> 0x%llx (s0=%.3f, s1=%.3f)",i, g_breakpoints[i].source, g_breakpoints[i].target, g_breakpoints[i].s0_val, g_breakpoints[i].s1_val);
 	        }
 	    }
 	}
