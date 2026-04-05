@@ -4245,14 +4245,9 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{
 				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
-				NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
+				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
+				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 				
-			}
-
-			if(bptype == 2) 
-			{		
-
-				/*
 				// 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
@@ -4267,9 +4262,16 @@ static void* exception_handler_thread(void* arg) {
 					
 			    } else 
 				{
-			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
+			        NSLog(@"小罪ADD: [tersafe 主线程 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
-				*/
+				
+				
+			}
+
+			if(bptype == 2) 
+			{		
+
+				
 				
 				//0x249FD8 hook
 				int a2 = thread_state2.__x[1];
@@ -5305,6 +5307,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x24B47C VM_DebugDetect_Dispatch 越狱检测
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd29,
@@ -5314,10 +5317,11 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
+	
 	//0x824AC 上报警告
-	g_breakpoints[2] = (Breakpoint){
+	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
         .s0_val = 29.0f,
@@ -5325,7 +5329,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	
 	//0x249FD8 RingBuf_Tick
@@ -6111,7 +6115,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6145,7 +6149,7 @@ if (load_executable_path() == 0)
 
 		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
 		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
