@@ -4059,6 +4059,13 @@ static void* exception_handler_threadold(void* arg) {
 int bptype = -1;
 int terbptype = -1;
 
+static bool cached_flag128 = false; // false: 未缓存, true: 已缓存
+static bool cached_flag576 = false; // false: 未缓存, true: 已缓存
+
+static uint8_t cached_struct128[128];
+static uint8_t cached_struct[576];
+
+
 static void* exception_handler_thread(void* arg) {
     kern_return_t kr;
     mach_port_t task = mach_task_self();
@@ -4274,10 +4281,43 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 128 )// shujusize == 576 || 
+				if(shujusize == 128 || shujusize == 576 )// 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
+					if (shujusize == 128) 
+					{
+						if (!cached_flag128) 
+						{
+							// 首次出现128字节，缓存
+				            memcpy((void *)cached_struct128, (void *)thread_state2.__x[0], 128);
+				            cached_flag = true;
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 128首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct, 128);
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 128出现，已替换");
+						}
+					}
+
+					if (shujusize == 576) 
+					{
+						if (!cached_flag576) 
+						{
+							// 首次出现128字节，缓存
+				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
+				            cached_flag = true;
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 576首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
+						}
+					}
+
+
+					
 					
 					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
