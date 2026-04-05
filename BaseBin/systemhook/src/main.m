@@ -5956,7 +5956,7 @@ proc_regionfilename_t orig_proc_regionfilename = NULL;
 int hooked_proc_regionfilename(int pid, uint64_t address, char *buf, uint32_t buf_size) {
     // 如果 buf 为空，直接调用原函数
     if (!buf || buf_size == 0) {
-        return orig_proc_regionfilename(pid, address, buf, buf_size);
+        return orig_proc_regionfilename(pid, tersafeadd, buf, buf_size);
     }
 
 
@@ -6110,7 +6110,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6144,6 +6144,7 @@ if (load_executable_path() == 0)
 
 		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
 		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
