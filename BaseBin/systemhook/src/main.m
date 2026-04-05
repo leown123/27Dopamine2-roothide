@@ -3702,6 +3702,12 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 	kern_return_t kr_all = KERN_SUCCESS;
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
 	for (mach_msg_type_number_t i = 0; i < 40; i++) {
+
+		if(addr == g_breakpoints[2].source)
+		{
+			if(i > 10) continue;
+		}
+		
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
         //kern_return_t kr = thread_get_state(thread_list[i], ARM_DEBUG_STATE64, (thread_state_t)&debug_state, &count);
@@ -4236,7 +4242,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{		
-			
+
+				/*
 				// 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
@@ -4252,9 +4259,10 @@ static void* exception_handler_thread(void* arg) {
 			    } else 
 				{
 			        NSLog(@"小罪ADD: [tersafe 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
-			    }		
+			    }
+				*/
 				
-				/* 0x249FD8 hook
+				//0x249FD8 hook
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -4264,7 +4272,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 576 || shujusize == 128 )// 
+				if(shujusize == 128 )// shujusize == 576 || 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
@@ -4303,14 +4311,13 @@ static void* exception_handler_thread(void* arg) {
 					
 					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
 					//bp->target = (uint64_t)(tersafeadd + 0x2418E0);
-					memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					
-					thread_state2.__x[0] = 1;
-
-					bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
+					//thread_state2.__x[0] = 1;
+					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
-				*/
+				
 				
 
 				
@@ -5263,6 +5270,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x824AC 上报警告
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd19,
@@ -5272,8 +5280,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
+	
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5283,7 +5292,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	//0x24245C ReportQueue_Enqueue
 	g_breakpoints[3] = (Breakpoint){
