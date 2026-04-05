@@ -4291,7 +4291,7 @@ static void* exception_handler_thread(void* arg) {
 						{
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct128, (void *)thread_state2.__x[0], 128);
-				            cached_flag = true;
+				            cached_flag128 = true;
 							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 128首次出现，已记录");
 						}
 						else
@@ -4307,7 +4307,7 @@ static void* exception_handler_thread(void* arg) {
 						{
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
-				            cached_flag = true;
+				            cached_flag576 = true;
 							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 576首次出现，已记录");
 						}
 						else
