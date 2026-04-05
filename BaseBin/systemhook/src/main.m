@@ -4218,7 +4218,7 @@ static void* exception_handler_thread(void* arg) {
 		//if(istersafebp == false && bptype >= 0 //范围
 		if(istersafebp == false )
 		{
-			if(bptype == 0)
+			if(bptype == 0 || bptype == 4)
 			{	
 				//NSLog(@"小罪ADD: 无后断点 触发");
 		        // 修改浮点寄存器 s0/s1
@@ -5316,7 +5316,7 @@ void initbreakpoint()
     };
 	*/
 	
-	
+	/*
 	//0xAAB64 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd18,
@@ -5326,7 +5326,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -5340,8 +5340,8 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	g_breakpoints[5] = (Breakpoint){
+	
+	g_breakpoints[4] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
         .s0_val = 29.0f,
@@ -5350,7 +5350,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
-	
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd30,
         .target = tersafetsadd30ret,
