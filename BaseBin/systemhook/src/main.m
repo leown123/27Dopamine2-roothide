@@ -3674,7 +3674,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: thread_count:%d",thread_count);
 
-	
+	/*
 	while (thread_count < 40) 
 	{ 
 		
@@ -3688,7 +3688,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 		
 		//return KERN_FAILURE; 
 	}
-	
+	*/
 
 	//NSLog(@"小罪ADD: set_hw_breakpoint_at_index: prepare to set breakpoint");
 
@@ -3703,10 +3703,12 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
     //for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
 	for (mach_msg_type_number_t i = 0; i < 40; i++) {
 
+		/*
 		if(addr == g_breakpoints[2].source)
 		{
 			if(i > 20) continue;
 		}
+		*/
 		
         arm_debug_state64_t debug_state;
         mach_msg_type_number_t count = ARM_DEBUG_STATE64_COUNT;
@@ -5569,7 +5571,8 @@ void initbreakpoint()
 	
     // 设置硬件断点
 
-	while(!isover100)
+	//while(!isover100)
+	while(true)
 	{
     	setup_all_breakpoints();
 		ensurereporter();
