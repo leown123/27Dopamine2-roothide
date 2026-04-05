@@ -4296,7 +4296,7 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct, 128);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct128, 128);
 							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 128出现，已替换");
 						}
 					}
@@ -4313,6 +4313,7 @@ static void* exception_handler_thread(void* arg) {
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 576出现，已替换");
 						}
 					}
 
