@@ -5072,9 +5072,13 @@ static void* exception_handler_thread(void* arg) {
 
 			
 
-			if(terbptype == 4) //0x1E1E28
-			{	
-				NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
+			if(terbptype == 4) 
+			{		
+				//0x254818 VM_DebugDetect_Instance2
+				NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe线程 VM_DebugDetect_Instance2触发");
+
+				//0x1E1E28
+				//NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
 
 
 				/* 上报警告检测hook sub_824AC
@@ -5312,6 +5316,10 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd30 = tersafeadd + 0x2412D0;//BufWriter_Init
 	mach_vm_address_t tersafetsadd30ret = tersafeadd + 0x2412D4;
+
+	//4.6闪退
+	mach_vm_address_t tersafetsadd31 = tersafeadd + 0x254818;//VM_DebugDetect_Instance2
+	mach_vm_address_t tersafetsadd31ret = (mach_vm_address_t)hooked_ret1;
 	
 
 	g_source_addr = wuhouadd;
@@ -5563,6 +5571,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x1E1E28
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd25,
@@ -5572,10 +5581,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-
-	
-
+	//0x254818 VM_DebugDetect_Instance2
+	ter_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd31,
+        .target = tersafetsadd31ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 	/*
 	ter_breakpoints[5] = (Breakpoint){
