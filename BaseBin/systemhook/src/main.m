@@ -3705,7 +3705,7 @@ static kern_return_t set_hw_breakpoint_at_index(int idx, mach_vm_address_t addr)
 
 		if(addr == g_breakpoints[2].source)
 		{
-			if(i > 10) continue;
+			if(i > 20) continue;
 		}
 		
         arm_debug_state64_t debug_state;
@@ -5349,7 +5349,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+
 	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd30,
