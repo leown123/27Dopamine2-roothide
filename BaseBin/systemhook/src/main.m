@@ -4657,11 +4657,10 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{
+				NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
-				
-
-				//sub_585D0 下发文件hook
-				
+				/*
+				//sub_585D0 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4674,6 +4673,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
+				*/
 				
 			}
 
@@ -5143,8 +5143,6 @@ static void* exception_handler_thread(void* arg) {
 			{	
 				NSLog(@"小罪ADD: [tersafe 0x0x93F0C hook] ter线程调用");
 				
-				//0x254818 VM_DebugDetect_Instance2
-				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe线程 VM_DebugDetect_Instance2触发");
 
 				//0x1E1E28
 				//NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
@@ -5605,11 +5603,22 @@ void initbreakpoint()
 
 
 
-	
+	/*
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x254818 VM_DebugDetect_Instance2
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd31,
+        .target = tersafetsadd31ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5731,15 +5740,7 @@ void initbreakpoint()
 	
 
 	/*
-	//0x254818 VM_DebugDetect_Instance2
-	ter_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd31,
-        .target = tersafetsadd31ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
+	
 	*/
 	
 	/*
