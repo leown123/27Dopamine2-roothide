@@ -493,7 +493,8 @@ int hooked_access(const char *path, int amode) {
 	if(
 		(strcmp(path,"/private/var/containers/Bundle/Application") == 0 )||
 		(strcmp(path,"/Applications") == 0 )||
-		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )
+		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
+		(strstr(path, "Containers/Data/Application") != NULL) 
 	)
 	{
 		return orig_access(path, amode);
