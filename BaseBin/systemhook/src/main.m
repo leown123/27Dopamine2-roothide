@@ -4620,9 +4620,26 @@ static void* exception_handler_thread(void* arg) {
 		if(istersafebp == true)
 		{
 			
-			if(terbptype == 0) //sub_585D0 下发文件hook
+			if(terbptype == 0) 
 			{
-				
+				uint64_t path_ptr = thread_state2.__x[2];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 检测类型: %s", path);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+			    }
+
+				//sub_585D0 下发文件hook
+				/*
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4635,7 +4652,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
-				
+				*/
 			}
 
 			
@@ -5334,6 +5351,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd32 = tersafeadd + 0x193F90;//游戏内置hook
 	mach_vm_address_t tersafetsadd32ret = tersafeadd + 0x194028;
 
+	mach_vm_address_t tersafetsadd33 = tersafeadd + 0x93E04;//
+	mach_vm_address_t tersafetsadd33ret = (mach_vm_address_t)hooked_ret0;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -5513,6 +5533,15 @@ void initbreakpoint()
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
+
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd33,
+        .target = tersafetsadd33ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0x585D0 下发
