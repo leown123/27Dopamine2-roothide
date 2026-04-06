@@ -494,7 +494,9 @@ int hooked_access(const char *path, int amode) {
 		(strcmp(path,"/private/var/containers/Bundle/Application") == 0 )||
 		(strcmp(path,"/Applications") == 0 )||
 		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
-		(strstr(path, "Containers/Data/Application") != NULL) 
+		(strstr(path, "Containers/Data/Application") != NULL) ||
+		(strstr(path, "/PrivateFrameworks/") != NULL) 
+		
 	)
 	{
 		return orig_access(path, amode);
@@ -537,12 +539,24 @@ int hooked_access(const char *path, int amode) {
 
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
-	int rt = orig_stat(path, buf);
+	int rt =  -1;
 
 	if (strstr(path, "/DeltaForceClient.app") != NULL) 
 	{
-        return rt;
+        return orig_stat(path, buf);
     }
+
+	if(
+		(strcmp(path,"/private/var/containers/Bundle/Application") == 0 )||
+		(strcmp(path,"/Applications") == 0 )||
+		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
+		(strstr(path, "Containers/Data/Application") != NULL) ||
+		(strstr(path, "/PrivateFrameworks/") != NULL) 
+		
+	)
+	{
+		return orig_stat(path, buf);
+	}
 
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
@@ -575,7 +589,7 @@ int hooked_stat(const char *path, struct stat *buf) {
         //return 0;
     }
 
-	
+	rt = orig_stat(path, buf);
 	
     return rt;
 }
@@ -583,12 +597,24 @@ int hooked_stat(const char *path, struct stat *buf) {
 // ---------- 钩子函数：lstat ----------
 int hooked_lstat(const char *path, struct stat *buf) {
 
-	int rt = orig_lstat(path, buf);
+	int rt = -1;
 
 	if (strstr(path, "/DeltaForceClient.app") != NULL) 
 	{
-        return rt;
+        return orig_lstat(path, buf);
     }
+
+	if(
+		(strcmp(path,"/private/var/containers/Bundle/Application") == 0 )||
+		(strcmp(path,"/Applications") == 0 )||
+		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
+		(strstr(path, "Containers/Data/Application") != NULL) ||
+		(strstr(path, "/PrivateFrameworks/") != NULL) 
+		
+	)
+	{
+		return orig_lstat(path, buf);
+	}
 
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
@@ -619,6 +645,8 @@ int hooked_lstat(const char *path, struct stat *buf) {
 		NSLog(@"小罪ADD: [+] Hooked hooked_lstat called. Stack trace:\n%@", [NSThread callStackSymbols]);
         //return 0;
     }
+
+	rt = orig_lstat(path, buf);
 
 	return rt;
 
