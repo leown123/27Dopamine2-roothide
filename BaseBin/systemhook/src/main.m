@@ -6288,14 +6288,16 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
+		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
+		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
+		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
+
 		/*
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
-		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
-		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
-		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		
 		*/
 
 		loadandinitshare(); //26.3.21屏蔽
