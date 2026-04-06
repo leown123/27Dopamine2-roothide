@@ -4657,11 +4657,11 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
+				
 				
 
 				//sub_585D0 下发文件hook
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4674,7 +4674,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
-				*/
+				
 			}
 
 			
@@ -4901,7 +4901,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 3) 
 			{
 				
-				NSLog(@"小罪ADD: [tersafe 0x0x93F0C hook] ter线程调用");
+				
 				
 				/*
 				uint64_t path_ptr = thread_state2.__x[2];
@@ -4939,7 +4939,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 				//全局检测开关hook sub_AAB64
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -5134,18 +5134,20 @@ static void* exception_handler_thread(void* arg) {
 			    }
 				
 				
-				*/
+				
 			}
 
 			
 
 			if(terbptype == 4) 
-			{		
+			{	
+				NSLog(@"小罪ADD: [tersafe 0x0x93F0C hook] ter线程调用");
+				
 				//0x254818 VM_DebugDetect_Instance2
 				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe线程 VM_DebugDetect_Instance2触发");
 
 				//0x1E1E28
-				NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
+				//NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
 
 
 				/* 上报警告检测hook sub_824AC
@@ -5172,8 +5174,10 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
+			
 				//0x193F90
-				NSLog(@"小罪ADD: [tersafe 0x193F90 hook] tersafe线程 游戏自带hook触发");
+				//NSLog(@"小罪ADD: [tersafe 0x193F90 hook] tersafe线程 游戏自带hook触发");
 				
 				//sub_1371C0 环境检测
 				//NSLog(@"小罪ADD: [sub_1000475C8 hook] 主线程环境检测触发");
@@ -5425,6 +5429,36 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
+	//0x249FD8 RingBuf_Tick
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd24,
+        .target = tersafetsadd24ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	
+
+	//0x24245C ReportQueue_Enqueue
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd22,
+        .target = tersafetsadd22ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[5] = (Breakpoint){
+        .source = fanweiadd3,
+        .target = fanweiadd3 + 4,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 
 	/*
@@ -5463,26 +5497,7 @@ void initbreakpoint()
     };
 	*/
 
-	//0x249FD8 RingBuf_Tick
-	g_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd24,
-        .target = tersafetsadd24ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 	
-
-	//0x24245C ReportQueue_Enqueue
-	g_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd22,
-        .target = tersafetsadd22ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 
 	/*
 	g_breakpoints[4] = (Breakpoint){
@@ -5534,14 +5549,7 @@ void initbreakpoint()
 	*/
 
 	
-	g_breakpoints[5] = (Breakpoint){
-        .source = fanweiadd3,
-        .target = fanweiadd3 + 4,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
+	
 
 	/*
 	g_breakpoints[5] = (Breakpoint){
@@ -5595,19 +5603,9 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
-	//0x9998 环境
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd1ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
+
 
 	
-
-	/*
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -5617,8 +5615,6 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-	
 
 	//0x24245C ReportQueue_Enqueue
 	ter_breakpoints[1] = (Breakpoint){
@@ -5642,7 +5638,18 @@ void initbreakpoint()
     };
 
 	
+	
+	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	
+	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
         .target = tersafetsadd34ret,
         .s0_val = 29.0f,
@@ -5650,6 +5657,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+
+	//0x9998 环境
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	
 
 	/* 举报三天
@@ -5688,17 +5706,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0xAAB64 控制检测开关
-	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd18,
-        .target = tersafetsadd18ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
+	
 
 	/*
 	//0x1E1E28
@@ -6310,7 +6318,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6348,7 +6356,7 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		while(!Imageaddress)
 		{
