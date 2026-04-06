@@ -3780,7 +3780,7 @@ static void ensurereporter()
 		tersafeadd = Get_tersafe_base();
 	}
 
-	
+	/*
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2E1C00);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x826C);
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
@@ -3789,8 +3789,9 @@ static void ensurereporter()
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
+	*/
 	
-
+	
 	uint64_t huanjingjilu =  (uint64_t)(tersafeadd + 0x2E1D18);
 	uint64_t rd2 = (uint64_t)Read_Long(huanjingjilu);
 	if( rd2 != 0)
@@ -5394,6 +5395,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x824AC 上报警告
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd19,
@@ -5403,7 +5405,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
@@ -5426,6 +5428,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd32,
         .target = tersafetsadd32ret,
@@ -5434,6 +5437,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//BufWriter_WriteField
@@ -5535,6 +5539,7 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
+	/*
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd33,
         .target = tersafetsadd33ret,
@@ -5543,6 +5548,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x585D0 下发
@@ -5591,7 +5597,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x23B6A4 Timer_Fire
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd4,
@@ -5601,7 +5607,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	//0x241968 BufWriter_WriteField环境
@@ -5627,7 +5633,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x1E1E28
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd25,
@@ -5646,6 +5652,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -5979,7 +5986,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	//if(predicatelong >= zuidi && predicatelong<= zuigao)
 
 	if(
-		predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
+		//predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
 		predicatelong == (Imageaddress+0x13003300) || //[RMLeakChecker getInstance]
 		predicatelong == (Imageaddress+0x130033B8)  //[RMReportCenter report:result:]
 
@@ -6284,6 +6291,7 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
+		/*
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
@@ -6291,6 +6299,7 @@ if (load_executable_path() == 0)
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		/*
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
