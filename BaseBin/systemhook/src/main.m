@@ -3809,7 +3809,7 @@ static void ensurereporter()
 		tersafeadd = Get_tersafe_base();
 	}
 
-	/*
+	
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2E1C00);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x826C);
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
@@ -3818,9 +3818,9 @@ static void ensurereporter()
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
-	*/
 	
 	
+	/*
 	uint64_t huanjingjilu =  (uint64_t)(tersafeadd + 0x2E1D18);
 	uint64_t rd2 = (uint64_t)Read_Long(huanjingjilu);
 	if( rd2 != 0)
@@ -3829,7 +3829,9 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: huanjingjilu: 0x%llx ,rd2: 0x%llx", huanjingjilu,rd2);
 
 	}
+	*/
 
+	/*
 	uint64_t huanjingchar =  (uint64_t)(tersafeadd + 0x2E0A68);
 	char rd3 = (char)Read_Char(huanjingchar);
 	if( rd3 != (char)1)
@@ -3838,6 +3840,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: huanjingchar: 0x%llx ,rd3: %d,Read_Char(huanjingchar): %d", huanjingchar,rd3,Read_Char(huanjingchar));
 
 	}
+	*/
 	
 }
 
@@ -4274,10 +4277,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{
-				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
-				
+
+				/*
 				// 上报警告检测hook sub_824AC
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
@@ -4294,6 +4298,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 主线程 警告上报sub_824AC hook] Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
+				*/
 				
 				
 			}
@@ -4652,6 +4657,9 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{
+				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
+				
+				/*
 				uint64_t path_ptr = thread_state2.__x[2];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4667,6 +4675,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
+				*/
 
 				//sub_585D0 下发文件hook
 				/*
@@ -4710,7 +4719,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
-				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
+				
 				/*
 				uint64_t a3  = thread_state2.__x[2];
 				if(a3 < 100)
@@ -5389,7 +5398,7 @@ void initbreakpoint()
 	g_target_addr = wuhouadd + 4;
 	
 
-	/*
+	
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -5398,7 +5407,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+
+	//0x9998 环境
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	
 
 	/*
 	//0x585D0 下发
@@ -5567,6 +5586,16 @@ void initbreakpoint()
 
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
+
+	//0x9998 环境
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd1ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	ter_breakpoints[0] = (Breakpoint){
