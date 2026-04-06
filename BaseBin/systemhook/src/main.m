@@ -4397,7 +4397,7 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				NSLog(@"小罪ADD: [tersafe 0x193F90 hook] 主线程调用 游戏内置Hook");
-				//NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] 主线程调用");
+				
 				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
 				/*
@@ -4878,9 +4878,10 @@ static void* exception_handler_thread(void* arg) {
 			bool iscontainstr = false;
 			if(terbptype == 3) 
 			{
+				NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] ter线程调用");
 
+				/*
 				//下发检测hook sub_824AC
-				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4891,7 +4892,7 @@ static void* exception_handler_thread(void* arg) {
 			        path[bytes_read] = '\0';
 			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_824AC hook] ter线程 检测类型: %s", path);
 				}
-				
+				*/
 
 				//全局检测开关hook sub_AAB64
 				/*
@@ -5591,10 +5592,10 @@ void initbreakpoint()
 	*/
 
 	
-	//0x824AC 上报警告
+	//0x23B6A4 Timer_Fire
 	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd19,
-        .target = tersafetsadd19ret,
+        .source = tersafetsadd4,
+        .target = tersafetsadd4ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
