@@ -4659,23 +4659,6 @@ static void* exception_handler_thread(void* arg) {
 			{
 				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
 				
-				/*
-				uint64_t path_ptr = thread_state2.__x[2];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) 
-				{
-			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 检测类型: %s", path);
-
-					
-			    } else 
-				{
-			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 Failed to read 检测类型 at 0x%llx", path_ptr);
-			    }
-				*/
 
 				//sub_585D0 下发文件hook
 				/*
@@ -4917,7 +4900,27 @@ static void* exception_handler_thread(void* arg) {
 			bool iscontainstr = false;
 			if(terbptype == 3) 
 			{
-				NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] ter线程调用");
+
+				
+				
+				uint64_t path_ptr = thread_state2.__x[2];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 检测类型: %s", path);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+			    }
+				
+			
+				//NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] ter线程调用");
 
 				/*
 				//下发检测hook sub_824AC
@@ -5597,16 +5600,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd33,
-        .target = tersafetsadd33ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
+	
 
 	/*
 	//0x585D0 下发
@@ -5636,6 +5630,16 @@ void initbreakpoint()
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd33,
+        .target = tersafetsadd33ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
