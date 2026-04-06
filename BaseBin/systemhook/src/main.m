@@ -5331,7 +5331,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd31ret = (mach_vm_address_t)hooked_ret1;
 
 	//
-	mach_vm_address_t tersafetsadd32 = tersafeadd + 0x0x193F90;//游戏内置hook
+	mach_vm_address_t tersafetsadd32 = tersafeadd + 0x193F90;//游戏内置hook
 	mach_vm_address_t tersafetsadd32ret = tersafeadd + 0x194028;
 
 	g_source_addr = wuhouadd;
