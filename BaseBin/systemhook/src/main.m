@@ -5986,7 +5986,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	//if(predicatelong >= zuidi && predicatelong<= zuigao)
 
 	if(
-		//predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
+		predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
 		predicatelong == (Imageaddress+0x13003300) || //[RMLeakChecker getInstance]
 		predicatelong == (Imageaddress+0x130033B8)  //[RMReportCenter report:result:]
 
@@ -6291,14 +6291,15 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
+		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
+		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
+		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
+
 		/*
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
-		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
-		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
-		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
 		/*
