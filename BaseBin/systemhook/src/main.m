@@ -4900,9 +4900,10 @@ static void* exception_handler_thread(void* arg) {
 			bool iscontainstr = false;
 			if(terbptype == 3) 
 			{
-
 				
+				NSLog(@"小罪ADD: [tersafe 0x0x93F0C hook] ter线程调用");
 				
+				/*
 				uint64_t path_ptr = thread_state2.__x[2];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4918,6 +4919,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe sub_93E04 hook] ter线程 Failed to read 检测类型 at 0x%llx", path_ptr);
 			    }
+				*/
 				
 			
 				//NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] ter线程调用");
@@ -5397,6 +5399,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd33 = tersafeadd + 0x93E04;//
 	mach_vm_address_t tersafetsadd33ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t tersafetsadd34 = tersafeadd + 0x93F0C;//
+	mach_vm_address_t tersafetsadd34ret = tersafeadd + 0x93F2C;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -5638,8 +5643,8 @@ void initbreakpoint()
 
 	
 	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd33,
-        .target = tersafetsadd33ret,
+        .source = tersafetsadd34,
+        .target = tersafetsadd34ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6358,11 +6363,11 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-
+		*/
 		
 
 		/*
