@@ -4396,10 +4396,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				NSLog(@"小罪ADD: [tersafe 0x193F90 hook] 主线程调用 游戏内置Hook");
 				//NSLog(@"小罪ADD: [tersafe sub_23B6A4(Timer_Fire) hook] 主线程调用");
 				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
-				
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4593,7 +4594,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 				
 				
 			
@@ -4853,8 +4854,16 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 
+				
+
+			}
+
+			bool iscontainstr = false;
+			if(terbptype == 3) 
+			{
+
 				//下发检测hook sub_824AC
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4863,16 +4872,12 @@ static void* exception_handler_thread(void* arg) {
 			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_824AC hook] 检测类型: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 下发检测：sub_824AC hook] ter线程 检测类型: %s", path);
 				}
-				*/
-
-			}
-
-			bool iscontainstr = false;
-			if(terbptype == 3) //全局检测开关hook sub_AAB64
-			{
 				
+
+				//全局检测开关hook sub_AAB64
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4955,10 +4960,10 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					/*
-					result = strstr(path, "mrpcs"); //会三方
-					if (result != NULL) iscontainstr = true;
-					*/
+					
+					//result = strstr(path, "mrpcs"); //会三方
+					//if (result != NULL) iscontainstr = true;
+					
 					
 					result = strstr(path, "anti");
 					if (result != NULL) iscontainstr = true;
@@ -4984,10 +4989,10 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 					
 
-					/*
-					result = strstr(path, "mrmoni");  //会三方
-					if (result != NULL) iscontainstr = true;
-					*/
+					
+					//result = strstr(path, "mrmoni");  //会三方
+					//if (result != NULL) iscontainstr = true;
+					
 
 					
 					result = strstr(path, "sav");
@@ -5065,9 +5070,9 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-
 				
 				
+				*/
 			}
 
 			
@@ -5075,10 +5080,10 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 4) 
 			{		
 				//0x254818 VM_DebugDetect_Instance2
-				NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe线程 VM_DebugDetect_Instance2触发");
+				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe线程 VM_DebugDetect_Instance2触发");
 
 				//0x1E1E28
-				//NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
+				NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
 
 
 				/* 上报警告检测hook sub_824AC
@@ -5103,9 +5108,13 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
  
-			if(terbptype == 5)  //sub_1371C0 环境检测
+			if(terbptype == 5)  
 			{	
-				NSLog(@"小罪ADD: [sub_1000475C8 hook] 主线程环境检测触发");
+				//0x193F90
+				NSLog(@"小罪ADD: [tersafe 0x193F90 hook] tersafe线程 游戏自带hook触发");
+				
+				//sub_1371C0 环境检测
+				//NSLog(@"小罪ADD: [sub_1000475C8 hook] 主线程环境检测触发");
 				//NSLog(@"小罪ADD: [tersafe 0x133124 hook] tersafe线程环境检测");
 				
 				
@@ -5320,12 +5329,16 @@ void initbreakpoint()
 	//4.6闪退
 	mach_vm_address_t tersafetsadd31 = tersafeadd + 0x254818;//VM_DebugDetect_Instance2
 	mach_vm_address_t tersafetsadd31ret = (mach_vm_address_t)hooked_ret1;
-	
+
+	//
+	mach_vm_address_t tersafetsadd32 = tersafeadd + 0x0x193F90;//游戏内置hook
+	mach_vm_address_t tersafetsadd32ret = tersafeadd + 0x194028;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
 
+	/*
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
@@ -5334,6 +5347,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x585D0 下发
@@ -5359,7 +5373,6 @@ void initbreakpoint()
     };
 	*/
 
-	
 	//0x824AC 上报警告
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd19,
@@ -5371,7 +5384,6 @@ void initbreakpoint()
     };
 	
 
-	
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5393,6 +5405,15 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd32,
+        .target = tersafetsadd32ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	/*
 	//BufWriter_WriteField
 	g_breakpoints[4] = (Breakpoint){
@@ -5404,8 +5425,10 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
+
 	
 	
+	/*
 	//0xAAB64 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd18,
@@ -5415,7 +5438,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -5491,6 +5514,7 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
+	/*
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -5500,7 +5524,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	//0x24245C ReportQueue_Enqueue
@@ -5537,9 +5561,9 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x824AC 上报警告
-	ter_breakpoints[2] = (Breakpoint){
+	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd19,
         .target = tersafetsadd19ret,
         .s0_val = 29.0f,
@@ -5547,7 +5571,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x241968 BufWriter_WriteField环境
@@ -5561,6 +5585,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
@@ -5570,8 +5595,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
+	
 	//0x1E1E28
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd25,
@@ -5581,8 +5607,18 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
 
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd32,
+        .target = tersafetsadd32ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	
+
+	/*
 	//0x254818 VM_DebugDetect_Instance2
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd31,
@@ -5592,6 +5628,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 	/*
 	ter_breakpoints[5] = (Breakpoint){
@@ -5615,6 +5652,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//sub_1000475C8
 	ter_breakpoints[5] = (Breakpoint){
         .source = zhuxianchenghjadd1,
@@ -5624,6 +5662,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	ter_breakpoints[6] = (Breakpoint){
@@ -6219,6 +6258,7 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
+		/*
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
@@ -6226,6 +6266,7 @@ if (load_executable_path() == 0)
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		loadandinitshare(); //26.3.21屏蔽
 
