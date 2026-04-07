@@ -5441,6 +5441,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	g_breakpoints[2] = (Breakpoint){
         .source = calladd3,
         .target = calladd3ret,
@@ -5449,6 +5450,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x249FD8 RingBuf_Tick
@@ -5473,6 +5475,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//sub_107A120BC
 	g_breakpoints[4] = (Breakpoint){
         .source = calladd2,
@@ -5482,6 +5485,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
@@ -6153,15 +6157,22 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 }
 
-typedef uint64_t (*GetDataFromTGPAFunc)();
+#include <stdio.h>
+#include <stdlib.h>
+typedef uint64_t (*GetDataFromTGPAFunc)(uint64_t,uint64_t);
 
 // 保存原始函数指针
 static GetDataFromTGPAFunc original_GetDataFromTGPA = NULL;
 
 // 替换函数实现
-uint64_t hooked_GetDataFromTGPA() 
+uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2) 
 {
-	NSLog(@"小罪ADD: systemhook: 主线程hooked_GetDataFromTGPA called");
+	NSLog(@"小罪ADD: systemhook: 主线程hooked_GetDataFromTGPA called,a1=0x%llx,a2=0x%llx",a1,a2);
+
+	uint64_t caller_return_address = (uint64_t)__builtin_return_address(0);
+
+	NSLog(@"小罪ADD: systemhook: 主线程hooked_GetDataFromTGPA caller_return_address: 0x%llx , ptr: 0x%llx",caller_return_address,caller_return_address-Imageaddress);
+
 	NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
 	return 0;
@@ -6416,9 +6427,9 @@ if (load_executable_path() == 0)
 		*/
 
 		
-		//void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
-		//ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
-		//NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
+		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
+		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		
 		
 
