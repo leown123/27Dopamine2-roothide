@@ -5428,6 +5428,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5437,6 +5438,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	//0x24245C ReportQueue_Enqueue
@@ -5615,6 +5617,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x254818 VM_DebugDetect_Instance2
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd31,
@@ -5624,6 +5627,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	//0x24245C ReportQueue_Enqueue
 	ter_breakpoints[1] = (Breakpoint){
@@ -5635,7 +5639,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	//0x249FD8 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5645,7 +5649,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
+	
 	
 	
 	//0xAAB64 控制检测开关
@@ -5658,6 +5662,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	
+	
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
         .target = tersafetsadd34ret,
@@ -5666,6 +5671,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	//0x9998 环境
 	ter_breakpoints[5] = (Breakpoint){
@@ -6319,7 +6325,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6357,6 +6363,7 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
+		*/
 		
 
 		while(!Imageaddress)
@@ -6364,6 +6371,7 @@ if (load_executable_path() == 0)
 			Imageaddress = Get_Imageaddress_base();
 		}
 
+		/*
 		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
@@ -6371,12 +6379,13 @@ if (load_executable_path() == 0)
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 
-		/*
+		
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 		
 
 		/*
