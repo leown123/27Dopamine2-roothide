@@ -4305,9 +4305,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{		
-
+				NSLog(@"小罪ADD: [主程序 sub_10C14EBC4 hook] 主线程触发");
 				
-				
+				/*
 				//0x249FD8 hook
 				int a2 = thread_state2.__x[1];
 
@@ -4397,7 +4397,7 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
-				
+				*/
 				
 
 				
@@ -5414,7 +5414,8 @@ void initbreakpoint()
 	mach_vm_address_t calladd2 = Imageaddress + 0x7A120BC;
 	mach_vm_address_t calladd2ret = (mach_vm_address_t)hooked_ret0;
 
-	
+	mach_vm_address_t calladd3 = Imageaddress + 0xC14EBC4;
+	mach_vm_address_t calladd3ret = (mach_vm_address_t)hooked_ret0;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -5434,6 +5435,15 @@ void initbreakpoint()
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[2] = (Breakpoint){
+        .source = calladd3,
+        .target = calladd3ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
