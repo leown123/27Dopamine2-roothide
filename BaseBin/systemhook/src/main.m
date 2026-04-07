@@ -5441,7 +5441,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	g_breakpoints[2] = (Breakpoint){
         .source = calladd3,
         .target = calladd3ret,
@@ -5450,6 +5450,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
