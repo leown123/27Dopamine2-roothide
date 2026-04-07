@@ -4305,7 +4305,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{		
-				NSLog(@"小罪ADD: [主程序 sub_108E312E8 hook] 主线程触发");
+				NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
 				/*
 				//0x249FD8 hook
@@ -5414,8 +5414,8 @@ void initbreakpoint()
 	mach_vm_address_t calladd2 = Imageaddress + 0x7A120BC;
 	mach_vm_address_t calladd2ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t calladd3 = Imageaddress + 0x8E312E8;//0xC14EBC4
-	mach_vm_address_t calladd3ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t calladd3 = Imageaddress + 0x124DA40;//0x8E312E8
+	mach_vm_address_t calladd3ret = Imageaddress + 0x124DA44;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
