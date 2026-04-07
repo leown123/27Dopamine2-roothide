@@ -5661,8 +5661,11 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
-	
+
+	*/
+
+		
+	// 0x93F0C 闪退
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
         .target = tersafetsadd34ret,
@@ -5671,7 +5674,6 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
 
 	//0x9998 环境
 	ter_breakpoints[5] = (Breakpoint){
