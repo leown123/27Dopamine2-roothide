@@ -1987,8 +1987,8 @@ bool hooked_sub241618(uint64_t a1) {
 
 uint64_t hooked_ret0(uint64_t a1)//
 {
-	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
-	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
@@ -4431,7 +4431,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
-				NSLog(@"小罪ADD: [tersafe 0x193F90 hook] 主线程调用 游戏内置Hook");
+				
+				NSLog(@"小罪ADD: [主程序 sub_107A120BC hook] 主线程调用 游戏内置Hook");
+
+			
+				//NSLog(@"小罪ADD: [tersafe 0x193F90 hook] 主线程调用 游戏内置Hook");
 				
 				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
@@ -5404,6 +5408,14 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd34 = tersafeadd + 0x93F0C;//
 	mach_vm_address_t tersafetsadd34ret = tersafeadd + 0x93F2C;
 
+	mach_vm_address_t calladd1 = Imageaddress + 0x629AC1C;
+	mach_vm_address_t calladd1ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t calladd2 = Imageaddress + 0x7A120BC;
+	mach_vm_address_t calladd2ret = (mach_vm_address_t)hooked_ret0;
+
+	
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -5445,6 +5457,16 @@ void initbreakpoint()
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//sub_107A120BC
+	g_breakpoints[4] = (Breakpoint){
+        .source = calladd2,
+        .target = calladd2ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6384,9 +6406,9 @@ if (load_executable_path() == 0)
 		*/
 
 		
-		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
-		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
-		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		//void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
+		//ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
+		//NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		
 		
 
