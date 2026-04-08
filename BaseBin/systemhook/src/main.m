@@ -4305,9 +4305,30 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{		
-				 
+				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d",a1);
 				uint64_t a1 = thread_state2.__x[0];
-				NSLog(@"小罪ADD: [tersafe 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d",a1);
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d,检测类型: %s",a1,path);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x97C68 hook] Failed to read 检测类型 at 0x%llx,a1:%d", path_ptr,a1);
+			    }
+
+
+
+
+
+
+				
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
 				/*
@@ -4664,8 +4685,24 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{
+				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d",a1);
 				uint64_t a1 = thread_state2.__x[0];
-				NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d",a1);
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d,检测类型: %s",a1,path);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 Failed to read 检测类型 at 0x%llx,a1:%d", path_ptr,a1);
+			    }
+				
 				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
 				/*
