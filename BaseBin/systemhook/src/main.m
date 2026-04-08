@@ -1987,8 +1987,8 @@ bool hooked_sub241618(uint64_t a1) {
 
 uint64_t hooked_ret0(uint64_t a1)//
 {
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
-	NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 0;
 }
 
@@ -4305,7 +4305,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{		
-				NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
+				 
+				uint64_t a1 = thread_state2.__x[0];
+				NSLog(@"小罪ADD: [tersafe 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d",a1);
+				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
 				/*
 				//0x249FD8 hook
@@ -4661,7 +4664,9 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{
-				NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
+				uint64_t a1 = thread_state2.__x[0];
+				NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d",a1);
+				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
 				/*
 				//sub_585D0 下发文件hook				
@@ -5416,6 +5421,9 @@ void initbreakpoint()
 
 	mach_vm_address_t calladd3 = Imageaddress + 0x124DA40;//0x8E312E8
 	mach_vm_address_t calladd3ret = Imageaddress + 0x124DA44;
+
+	mach_vm_address_t tersafetsadd35 = tersafeadd + 0x97C68;//EventReport_Dispatch
+	mach_vm_address_t tersafetsadd35ret = (mach_vm_address_t)hooked_ret0;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -5435,6 +5443,16 @@ void initbreakpoint()
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd35,
+        .target = tersafetsadd35ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5666,6 +5684,18 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
+
+	//0x97C68 EventReport_Dispatch
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd35,
+        .target = tersafetsadd35ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
 
 	//0x24245C ReportQueue_Enqueue
 	ter_breakpoints[1] = (Breakpoint){
