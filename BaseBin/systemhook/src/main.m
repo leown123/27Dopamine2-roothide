@@ -3925,6 +3925,7 @@ static void ensurereporter()
 	}
 	*/
 
+	/*
 	uint64_t RMMemoryMonitorPluginadd = Imageaddress + 0xFE39378;
 	uint64_t newadd = Imageaddress + 0x1879300;
 
@@ -3932,8 +3933,9 @@ static void ensurereporter()
 	if( RMMemoryMonitorPluginlong !=  (uint64_t)(newadd))
 	{
 		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
-		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,newadd: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, newadd,Read_Long(RMMemoryMonitorPluginadd));
+		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
+	*/
 
 	
 }
@@ -6613,7 +6615,7 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
 		
-
+		/*
 		// ---------- 使用 runtime Hook Objective-C 方法 ----------
 		// NSFileManager fileExistsAtPath
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
@@ -6629,7 +6631,7 @@ if (load_executable_path() == 0)
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
-		
+		*/
 
 		while(!Imageaddress)
 		{
