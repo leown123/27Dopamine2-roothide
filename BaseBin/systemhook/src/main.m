@@ -861,6 +861,7 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath called 命中 jailbreakPaths! path:%@",path);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
             return NO;
         }
     }
@@ -872,12 +873,14 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 	
 		if (isJailbreakPath(pathstr)) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	        return NO;
 	    }
 	
 		if (isdocPath(pathstr)) 
 		{
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! pathstr:%s",pathstr);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	        //return YES;
 	    }
 	}
@@ -889,6 +892,7 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
 		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called 命中 jailbreakPaths! path:%@",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
             return NO;
         }
     }
@@ -899,12 +903,14 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 	
 		if (isJailbreakPath(pathstr)) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isJailbreakPath ! pathstr:%s",pathstr);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	        return NO;
 	    }
 	
 		if (isdocPath(pathstr)) 
 		{
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isdocPath ! pathstr:%s",pathstr);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	        //return YES;
 	    }
 	}
@@ -918,6 +924,7 @@ BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     if ([scheme hasPrefix:@"cydia"] || [scheme hasPrefix:@"sileo"] || 
         [scheme hasPrefix:@"zebra"] || [scheme hasPrefix:@"filza"] || [scheme hasPrefix:@"Dopamine"]) {
 		NSLog(@"小罪ADD: hooked_canOpenURL called 命中 jailbreakPaths! scheme:%@",scheme);
+		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
         return NO;
     }
     return ((BOOL(*)(id, SEL, NSURL *))orig_canOpenURL)(self, _cmd, url);
@@ -6497,7 +6504,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6535,7 +6542,23 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
-		*/
+		
+
+		// ---------- 使用 runtime Hook Objective-C 方法 ----------
+		// NSFileManager fileExistsAtPath
+        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
+        orig_fileExistsAtPath = method_getImplementation(m1);
+        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
+
+		//NSFileManager fileExistsAtPath:isDirectory
+        Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
+        orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
+        method_setImplementation(m2, (IMP)hooked_fileExistsAtPath_isDirectory);
+
+		//UIApplication canOpenURL
+        Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
+        orig_canOpenURL = method_getImplementation(m3);
+        method_setImplementation(m3, (IMP)hooked_canOpenURL);
 		
 
 		while(!Imageaddress)
@@ -6565,7 +6588,6 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
-		
 		*/
 
 		loadandinitshare(); //26.3.21屏蔽
@@ -6616,21 +6638,7 @@ if (load_executable_path() == 0)
 
 		
 
-		// ---------- 使用 runtime Hook Objective-C 方法 ----------
-		// NSFileManager fileExistsAtPath
-        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
-        orig_fileExistsAtPath = method_getImplementation(m1);
-        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-
-		//NSFileManager fileExistsAtPath:isDirectory
-        Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
-        orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
-        method_setImplementation(m2, (IMP)hooked_fileExistsAtPath_isDirectory);
-
-		//UIApplication canOpenURL
-        Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
-        orig_canOpenURL = method_getImplementation(m3);
-        method_setImplementation(m3, (IMP)hooked_canOpenURL);
+		
 
 		pthread_t thread1;
     	pthread_create(&thread1, NULL, crchackthread, NULL);
