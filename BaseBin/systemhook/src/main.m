@@ -897,6 +897,11 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		{
 			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 		}
+
+		if(![path hasPrefix:@"/"] ||)
+		{
+			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+		}
 	
 		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
 	    pthread_mutex_lock(&stat_blacklist_mutex);
@@ -932,8 +937,12 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
 	if(path)
 	{
-		
-		
+		const char* pathstr = "";
+		if([path UTF8String])
+		{
+			pathstr = [path UTF8String];
+		}
+
 		if (isJailbreakPath(pathstr)) {
 			@autoreleasepool 
 			{
