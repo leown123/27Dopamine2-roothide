@@ -3925,17 +3925,17 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	uint64_t RMMemoryMonitorPluginadd = Imageaddress + 0xFE39378;
 	uint64_t newadd = Imageaddress + 0x1879300;
 
 	uint64_t RMMemoryMonitorPluginlong = (uint64_t)Read_Long(RMMemoryMonitorPluginadd);
-	if( RMMemoryMonitorPluginlong !=  (uint64_t)(newadd))
+	if(RMMemoryMonitorPluginlong != 0 &&  RMMemoryMonitorPluginlong !=  (uint64_t)(newadd))
 	{
 		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
-	*/
+	
 
 	
 }
