@@ -912,7 +912,7 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		{
 			@autoreleasepool 
 			{
-				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
+				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%@",path);
 				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 			}
 
