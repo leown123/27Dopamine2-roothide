@@ -898,7 +898,7 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 		}
 
-		if(![path hasPrefix:@"/"] ||)
+		if(![path hasPrefix:@"/"] )
 		{
 			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 		}
@@ -968,8 +968,9 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
 BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL *isDirectory) {
 
-	/*
 	const char* pathstr = [path UTF8String];
+	/*
+	
 	if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
 	{
         return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
