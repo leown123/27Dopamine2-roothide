@@ -857,37 +857,47 @@ static IMP orig_canOpenURL;
 
 BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
-	const char* pathstr = [path UTF8String];
-
-	if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
-	{
-        return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
-    }
-
-	if(
-		(strcmp(pathstr,"/private/var/containers/Bundle/Application") == 0 )||
-		(strcmp(pathstr,"/Applications") == 0 )||
-		(strcmp(pathstr,"/private/var/mobile/Containers/Data/Application") == 0 )||
-		(strstr(pathstr, "Containers/Data/Application") != NULL) ||
-		(strstr(pathstr, "/PrivateFrameworks/") != NULL) 
-		
-	)
+	if(!path)
 	{
 		return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 	}
 
-	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
-    pthread_mutex_lock(&stat_blacklist_mutex);
-    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
-    pthread_mutex_unlock(&stat_blacklist_mutex);
+	const char* pathstr = [path UTF8String];
 
-	if (is_blacklisted) 
+	if(pathstr)
 	{
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
-      
-        return NO;
-    }
+	
+		if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
+		{
+	        return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+	    }
+	
+		if(
+			(strcmp(pathstr,"/private/var/containers/Bundle/Application") == 0 )||
+			(strcmp(pathstr,"/Applications") == 0 )||
+			(strcmp(pathstr,"/private/var/mobile/Containers/Data/Application") == 0 )||
+			(strstr(pathstr, "Containers/Data/Application") != NULL) ||
+			(strstr(pathstr, "/PrivateFrameworks/") != NULL) 
+			
+		)
+		{
+			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+		}
+	
+		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+	    pthread_mutex_lock(&stat_blacklist_mutex);
+	    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+	    pthread_mutex_unlock(&stat_blacklist_mutex);
+	
+		if (is_blacklisted) 
+		{
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	      
+	        return NO;
+	    }
+
+	}
 
 
 	//NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
@@ -994,7 +1004,7 @@ BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     if ([scheme hasPrefix:@"cydia"] || [scheme hasPrefix:@"sileo"] || 
         [scheme hasPrefix:@"zebra"] || [scheme hasPrefix:@"filza"] || [scheme hasPrefix:@"Dopamine"]) {
 		NSLog(@"小罪ADD: hooked_canOpenURL called 命中 jailbreakPaths! scheme:%@",scheme);
-		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		NSLog(@"小罪ADD: [+] Hooked hooked_canOpenURL called. Stack trace:\n%@", [NSThread callStackSymbols]);
         return NO;
     }
     return ((BOOL(*)(id, SEL, NSURL *))orig_canOpenURL)(self, _cmd, url);
@@ -6622,6 +6632,7 @@ if (load_executable_path() == 0)
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
 
+		/*
 		//NSFileManager fileExistsAtPath:isDirectory
         Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
         orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
@@ -6631,7 +6642,7 @@ if (load_executable_path() == 0)
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
-		
+		*/
 
 		while(!Imageaddress)
 		{
