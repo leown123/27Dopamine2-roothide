@@ -3809,6 +3809,12 @@ static void ensurereporter()
 		tersafeadd = Get_tersafe_base();
 	}
 
+	while(!Imageaddress)
+	{
+		Imageaddress = Get_Imageaddress_base();
+	}
+
+	
 	
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2E1C00);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x826C);
@@ -3841,6 +3847,17 @@ static void ensurereporter()
 
 	}
 	*/
+
+	uint64_t RMMemoryMonitorPluginadd = Imageaddress + 0x18791C8;
+	uint64_t newadd = Imageaddress + 0x1879300;
+
+	uint64_t RMMemoryMonitorPluginlong = (uint64_t)Read_Long(RMMemoryMonitorPluginadd);
+	if( rd !=  (uint64_t)(newadd))
+	{
+		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
+		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,newadd: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, newadd,Read_Long(RMMemoryMonitorPluginadd);
+	}
+
 	
 }
 
@@ -4304,7 +4321,10 @@ static void* exception_handler_thread(void* arg) {
 			}
 
 			if(bptype == 2) 
-			{		
+			{	
+				NSLog(@"小罪ADD: [tersafe 0x93978 hook] ter线程触发 ScanEngine_GetInstance");
+				
+				/*
 				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d",a1);
 				uint64_t a1 = thread_state2.__x[0];
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4322,7 +4342,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 主线程 0x97C68 hook] Failed to read 检测类型 at 0x%llx,a1:%d", path_ptr,a1);
 			    }
-
+				*/
 
 
 
@@ -4456,7 +4476,9 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				
-				NSLog(@"小罪ADD: [主程序 sub_107A120BC hook] 主线程调用 游戏内置Hook");
+				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
+				
+				//NSLog(@"小罪ADD: [主程序 sub_107A120BC hook] 主线程调用 游戏内置Hook");
 
 			
 				//NSLog(@"小罪ADD: [tersafe 0x193F90 hook] 主线程调用 游戏内置Hook");
@@ -4684,7 +4706,11 @@ static void* exception_handler_thread(void* arg) {
 		{
 			
 			if(terbptype == 0) 
-			{
+			{	
+				
+				NSLog(@"小罪ADD: [tersafe 0x93978 hook] ter线程触发 ScanEngine_GetInstance");
+
+				/*
 				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d",a1);
 				uint64_t a1 = thread_state2.__x[0];
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4702,6 +4728,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 Failed to read 检测类型 at 0x%llx,a1:%d", path_ptr,a1);
 			    }
+				*/
 				
 				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
@@ -4838,7 +4865,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				 
+				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] ter调用 NetObj_GetInstance");
+				
+				/*
 				//0x249FD8 hook
 				int a2 = thread_state2.__x[1];
 
@@ -4928,6 +4957,7 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
+				*/
 				
 				//NSLog(@"小罪ADD: [tersafe 0x24B47C hook] tersafe线程触发VM_DebugDetect_Dispatch 越狱检测");
 
@@ -5461,6 +5491,15 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd35 = tersafeadd + 0x97C68;//EventReport_Dispatch
 	mach_vm_address_t tersafetsadd35ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd36 = tersafeadd + 0x93978;//ScanEngine_GetInstance
+	mach_vm_address_t tersafetsadd36ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd37 = tersafeadd + 0x2409DC;//NetObj_GetInstance
+	mach_vm_address_t tersafetsadd37ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t calladd4 = Imageaddress + 0x18791C8;//
+	mach_vm_address_t calladd4ret = (mach_vm_address_t)hooked_ret0;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -5486,10 +5525,10 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	//0x93978 ScanEngine_GetInstance
 	g_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd35,
-        .target = tersafetsadd35ret,
+        .source = tersafetsadd36,
+        .target = tersafetsadd36ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5542,6 +5581,15 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
+
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	
 	g_breakpoints[5] = (Breakpoint){
@@ -5722,10 +5770,10 @@ void initbreakpoint()
     };
 	*/
 
-	//0x97C68 EventReport_Dispatch
+	//0x93978 ScanEngine_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd35,
-        .target = tersafetsadd35ret,
+        .source = tersafetsadd36,
+        .target = tersafetsadd36ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -5738,6 +5786,16 @@ void initbreakpoint()
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x2409DC NetObj_GetInstance
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
