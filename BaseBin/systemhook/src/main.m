@@ -3929,7 +3929,7 @@ static void ensurereporter()
 	uint64_t newadd = Imageaddress + 0x1879300;
 
 	uint64_t RMMemoryMonitorPluginlong = (uint64_t)Read_Long(RMMemoryMonitorPluginadd);
-	if( rd !=  (uint64_t)(newadd))
+	if( RMMemoryMonitorPluginlong !=  (uint64_t)(newadd))
 	{
 		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,newadd: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, newadd,Read_Long(RMMemoryMonitorPluginadd));
