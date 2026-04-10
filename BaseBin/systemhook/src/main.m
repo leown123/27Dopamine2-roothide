@@ -862,6 +862,8 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 	}
 
+	
+
 	const char* pathstr = [path UTF8String];
 
 	if(pathstr)
@@ -891,8 +893,13 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 	
 		if (is_blacklisted) 
 		{
-			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
-			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			@autoreleasepool 
+			{
+				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
+				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			}
+		
+			
 	      
 	        return NO;
 	    }
@@ -903,8 +910,11 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 	//NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
+			@autoreleasepool 
+			{
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath called 命中 jailbreakPaths! path:%@",path);
 			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			}
 			addCurrentStatThreadToBlacklist();
             return NO;
         }
@@ -915,16 +925,22 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		
 		
 		if (isJailbreakPath(pathstr)) {
+			@autoreleasepool 
+			{
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
 			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			}
 			addCurrentStatThreadToBlacklist();
 	        return NO;
 	    }
 	
 		if (isdocPath(pathstr)) 
 		{
-			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! pathstr:%s",pathstr);
-			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			@autoreleasepool 
+			{
+				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isdocPath ! pathstr:%s",pathstr);
+				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			}
 	        //return YES;
 	    }
 	}
