@@ -857,11 +857,45 @@ static IMP orig_canOpenURL;
 
 BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
+	const char* pathstr = [path UTF8String];
+
+	if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
+	{
+        return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+    }
+
+	if(
+		(strcmp(pathstr,"/private/var/containers/Bundle/Application") == 0 )||
+		(strcmp(pathstr,"/Applications") == 0 )||
+		(strcmp(pathstr,"/private/var/mobile/Containers/Data/Application") == 0 )||
+		(strstr(pathstr, "Containers/Data/Application") != NULL) ||
+		(strstr(pathstr, "/PrivateFrameworks/") != NULL) 
+		
+	)
+	{
+		return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+	}
+
+	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+    pthread_mutex_lock(&stat_blacklist_mutex);
+    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+    pthread_mutex_unlock(&stat_blacklist_mutex);
+
+	if (is_blacklisted) 
+	{
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+      
+        return NO;
+    }
+
+
 	//NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath called 命中 jailbreakPaths! path:%@",path);
 			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			addCurrentStatThreadToBlacklist();
             return NO;
         }
     }
@@ -869,11 +903,11 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 	if(path)
 	{
 		
-		const char* pathstr = [path UTF8String];
-	
+		
 		if (isJailbreakPath(pathstr)) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
 			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			addCurrentStatThreadToBlacklist();
 	        return NO;
 	    }
 	
@@ -888,22 +922,57 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 }
 
 BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL *isDirectory) {
-//NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called ! path:%@",path);
+
+	const char* pathstr = [path UTF8String];
+
+	if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
+	{
+        return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
+    }
+
+	if(
+		(strcmp(pathstr,"/private/var/containers/Bundle/Application") == 0 )||
+		(strcmp(pathstr,"/Applications") == 0 )||
+		(strcmp(pathstr,"/private/var/mobile/Containers/Data/Application") == 0 )||
+		(strstr(pathstr, "Containers/Data/Application") != NULL) ||
+		(strstr(pathstr, "/PrivateFrameworks/") != NULL) 
+		
+	)
+	{
+		return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
+	}
+
+	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+    pthread_mutex_lock(&stat_blacklist_mutex);
+    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+    pthread_mutex_unlock(&stat_blacklist_mutex);
+
+	if (is_blacklisted) 
+	{
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 is_blacklisted黑名单线程 ! path:%s",path);
+		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath_isDirectory called. Stack trace:\n%@", [NSThread callStackSymbols]);
+      
+        return NO;
+    }
+
+
+	//NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
 		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called 命中 jailbreakPaths! path:%@",path);
 		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		addCurrentStatThreadToBlacklist();
             return NO;
         }
     }
 
 	if(path)
 	{
-		const char* pathstr = [path UTF8String];
-	
+		
 		if (isJailbreakPath(pathstr)) {
 			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 isJailbreakPath ! pathstr:%s",pathstr);
 			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+			addCurrentStatThreadToBlacklist();
 	        return NO;
 	    }
 	
@@ -921,6 +990,7 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 BOOL hooked_canOpenURL(id self, SEL _cmd, NSURL *url) {
     NSString *scheme = [url scheme];
 	NSLog(@"小罪ADD: scheme called ! scheme:%@",scheme);
+
     if ([scheme hasPrefix:@"cydia"] || [scheme hasPrefix:@"sileo"] || 
         [scheme hasPrefix:@"zebra"] || [scheme hasPrefix:@"filza"] || [scheme hasPrefix:@"Dopamine"]) {
 		NSLog(@"小罪ADD: hooked_canOpenURL called 命中 jailbreakPaths! scheme:%@",scheme);
@@ -4329,7 +4399,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x93978 hook] ter线程触发 ScanEngine_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 				
 				/*
 				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d",a1);
@@ -4715,7 +4785,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 0) 
 			{	
 				
-				NSLog(@"小罪ADD: [tersafe 0x93978 hook] ter线程触发 ScanEngine_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
 				/*
 				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d",a1);
@@ -5499,8 +5569,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd35 = tersafeadd + 0x97C68;//EventReport_Dispatch
 	mach_vm_address_t tersafetsadd35ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd36 = tersafeadd + 0x93978;//ScanEngine_GetInstance
-	mach_vm_address_t tersafetsadd36ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd36 = tersafeadd + 0x939A4;//ScanEngine_GetInstance
+	mach_vm_address_t tersafetsadd36ret = tersafeadd + 0x939B4;
 
 	mach_vm_address_t tersafetsadd37 = tersafeadd + 0x2409DC;//NetObj_GetInstance
 	mach_vm_address_t tersafetsadd37ret = (mach_vm_address_t)hooked_ret0;
