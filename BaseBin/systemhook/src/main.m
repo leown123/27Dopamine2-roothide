@@ -3981,7 +3981,19 @@ static void ensurereporter()
 		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
-	
+
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0xF946630;
+	uint64_t TssSDKOnResumeptr = Imageaddress + 0xF946648;
+
+	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
+	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
+
+	if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
+	{
+		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
+		NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumeptr: 0x%llx ,TssSDKOnResumelong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumeptr, TssSDKOnResumelong,Read_Long(TssSDKOnResumeptr));
+
+	}
 
 	
 }
