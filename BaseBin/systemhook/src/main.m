@@ -862,18 +862,11 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 	}
 
-	
-
-	const char* pathstr = [path UTF8String];
-
-	if(pathstr)
-	{
-	
+		/*
 		if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
 		{
 	        return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 	    }
-	
 		if(
 			(strcmp(pathstr,"/private/var/containers/Bundle/Application") == 0 )||
 			(strcmp(pathstr,"/Applications") == 0 )||
@@ -882,6 +875,25 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 			(strstr(pathstr, "/PrivateFrameworks/") != NULL) 
 			
 		)
+		{
+			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+		}
+		*/
+
+		if([path hasPrefix:@"/DeltaForceClient.app"])
+		{
+			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+		}
+
+		if(
+			[path isEqualToString:@"/private/var/containers/Bundle/Application"] ||
+			[path isEqualToString:@"/Applications"] ||
+			[path isEqualToString:@"/private/var/mobile/Containers/Data/Application"] ||
+			[path hasPrefix:@"/DeltaForceClient.app"] ||
+			[path hasPrefix:@"Containers/Data/Application"] ||
+			[path hasPrefix:@"/PrivateFrameworks/"] 
+
+			)
 		{
 			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 		}
@@ -898,13 +910,11 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%s",path);
 				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 			}
-		
-			
-	      
+
 	        return NO;
 	    }
 
-	}
+	
 
 
 	//NSLog(@"小罪ADD: hooked_fileExistsAtPath called ! path:%@",path);
@@ -912,8 +922,8 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
         if ([path hasPrefix:black] || [path isEqualToString:black]) {
 			@autoreleasepool 
 			{
-			NSLog(@"小罪ADD: hooked_fileExistsAtPath called 命中 jailbreakPaths! path:%@",path);
-			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+				NSLog(@"小罪ADD: hooked_fileExistsAtPath called 命中 jailbreakPaths! path:%@",path);
+				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 			}
 			addCurrentStatThreadToBlacklist();
             return NO;
@@ -927,8 +937,8 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		if (isJailbreakPath(pathstr)) {
 			@autoreleasepool 
 			{
-			NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
-			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 isJailbreakPath ! pathstr:%s",pathstr);
+				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
 			}
 			addCurrentStatThreadToBlacklist();
 	        return NO;
@@ -949,13 +959,12 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 
 BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL *isDirectory) {
 
+	/*
 	const char* pathstr = [path UTF8String];
-
 	if (strstr(pathstr, "/DeltaForceClient.app") != NULL) 
 	{
         return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
     }
-
 	if(
 		(strcmp(pathstr,"/private/var/containers/Bundle/Application") == 0 )||
 		(strcmp(pathstr,"/Applications") == 0 )||
@@ -967,6 +976,7 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 	{
 		return ((BOOL(*)(id, SEL, NSString *, BOOL *))orig_fileExistsAtPath_isDirectory)(self, _cmd, path, isDirectory);
 	}
+	*/
 
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
