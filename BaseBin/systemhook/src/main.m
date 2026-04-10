@@ -6615,7 +6615,7 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
 		
-		/*
+		
 		// ---------- 使用 runtime Hook Objective-C 方法 ----------
 		// NSFileManager fileExistsAtPath
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
@@ -6631,7 +6631,7 @@ if (load_executable_path() == 0)
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
-		*/
+		
 
 		while(!Imageaddress)
 		{
