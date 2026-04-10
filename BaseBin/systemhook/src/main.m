@@ -3855,7 +3855,7 @@ static void ensurereporter()
 	if( rd !=  (uint64_t)(newadd))
 	{
 		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
-		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,newadd: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, newadd,Read_Long(RMMemoryMonitorPluginadd);
+		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,newadd: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, newadd,Read_Long(RMMemoryMonitorPluginadd));
 	}
 
 	
