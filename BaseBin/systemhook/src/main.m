@@ -4256,8 +4256,8 @@ static bool cached_flag400 = false; // false: 未缓存, true: 已缓存
 static uint8_t cached_struct128[128];
 static uint8_t cached_struct576[576];
 
-static uint8_t cached_struct576[160];
-static uint8_t cached_struct576[400];
+static uint8_t cached_struct160[160];
+static uint8_t cached_struct400[400];
 
 
 static void* exception_handler_thread(void* arg) {
