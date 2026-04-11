@@ -4249,8 +4249,15 @@ int terbptype = -1;
 static bool cached_flag128 = false; // false: 未缓存, true: 已缓存
 static bool cached_flag576 = false; // false: 未缓存, true: 已缓存
 
+static bool cached_flag160 = false; // false: 未缓存, true: 已缓存
+static bool cached_flag400 = false; // false: 未缓存, true: 已缓存
+
+
 static uint8_t cached_struct128[128];
 static uint8_t cached_struct576[576];
+
+static uint8_t cached_struct576[160];
+static uint8_t cached_struct576[400];
 
 
 static void* exception_handler_thread(void* arg) {
@@ -4499,7 +4506,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 128 || shujusize == 576 )// 
+				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 )// 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
@@ -4532,6 +4539,38 @@ static void* exception_handler_thread(void* arg) {
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
 							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 576出现，已替换");
+						}
+					}
+
+					if (shujusize == 160) 
+					{
+						if (!cached_flag160) 
+						{
+							// 首次出现 160 字节，缓存
+				            memcpy((void *)cached_struct160, (void *)thread_state2.__x[0], 160);
+				            cached_flag160 = true;
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 160 首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 160);
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 160 出现，已替换");
+						}
+					}
+
+					if (shujusize == 400) 
+					{
+						if (!cached_flag400) 
+						{
+							// 首次出现 400 字节，缓存
+				            memcpy((void *)cached_struct400, (void *)thread_state2.__x[0], 400);
+				            cached_flag160 = true;
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 400 首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 400);
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 400 出现，已替换");
 						}
 					}
 
@@ -5015,7 +5054,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 128 || shujusize == 576 )// 
+				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 )// 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
@@ -5039,15 +5078,47 @@ static void* exception_handler_thread(void* arg) {
 					{
 						if (!cached_flag576) 
 						{
-							// 首次出现576字节，缓存
+							// 首次出现  576字节，缓存
 				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
 				            cached_flag576 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 576首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 576 首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 576出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 576 出现，已替换");
+						}
+					}
+
+					if (shujusize == 160) 
+					{
+						if (!cached_flag160) 
+						{
+							// 首次出现 160 字节，缓存
+				            memcpy((void *)cached_struct160, (void *)thread_state2.__x[0], 160);
+				            cached_flag160 = true;
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 160 首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 160);
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 160 出现，已替换");
+						}
+					}
+
+					if (shujusize == 400) 
+					{
+						if (!cached_flag400) 
+						{
+							// 首次出现 400 字节，缓存
+				            memcpy((void *)cached_struct400, (void *)thread_state2.__x[0], 400);
+				            cached_flag160 = true;
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 400 首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 400);
+							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 400 出现，已替换");
 						}
 					}
 
@@ -6716,14 +6787,12 @@ if (load_executable_path() == 0)
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
 		
 
-		
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-
+		*/
 		
 
 		loadandinitshare(); //26.3.21屏蔽
