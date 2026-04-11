@@ -5185,6 +5185,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 3) 
 			{
 				
+				NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
 				
 				/*
@@ -5223,7 +5224,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 				//全局检测开关hook sub_AAB64
-				
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -5416,7 +5417,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 				
 				
 			}
@@ -5708,6 +5709,9 @@ void initbreakpoint()
 
 	mach_vm_address_t calladd4 = Imageaddress + 0x18791C8;//
 	mach_vm_address_t calladd4ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd38 = tersafeadd + 0x244894;//VM_DispatchPendingCallbacks
+	mach_vm_address_t tersafetsadd38ret = (mach_vm_address_t)hooked_ret0;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6025,7 +6029,16 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+
+	//0x244894 VM_DispatchPendingCallbacks
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd38,
+        .target = tersafetsadd38ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 	/*
 	//0xAAB64 控制检测开关
