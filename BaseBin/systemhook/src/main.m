@@ -4459,7 +4459,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 				
 				/*
 				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] 主线程触发 EventReport_Dispatch,a1:%d",a1);
@@ -4488,7 +4488,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				/*
+				
 				//0x249FD8 hook
 				int a2 = thread_state2.__x[1];
 
@@ -4578,7 +4578,7 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
-				*/
+				
 				
 
 				
@@ -4844,8 +4844,8 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				
-				NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] ter调用 NetObj_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
 				/*
 				//NSLog(@"小罪ADD: [tersafe 0x97C68 hook] ter线程触发 EventReport_Dispatch,a1:%d",a1);
@@ -5002,9 +5002,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] ter调用 NetObj_GetInstance");
 				
-				/*
+				
+				
 				//0x249FD8 hook
 				int a2 = thread_state2.__x[1];
 
@@ -5094,7 +5094,7 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
 					
 				}
-				*/
+				
 				
 				//NSLog(@"小罪ADD: [tersafe 0x24B47C hook] tersafe线程触发VM_DebugDetect_Dispatch 越狱检测");
 
@@ -5662,6 +5662,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x93978 ScanEngine_GetInstance
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd36,
@@ -5671,6 +5672,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	g_breakpoints[2] = (Breakpoint){
@@ -5684,7 +5686,7 @@ void initbreakpoint()
 	*/
 	
 
-	/*
+	
 	//0x249FD8 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5694,7 +5696,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	//0x24245C ReportQueue_Enqueue
@@ -5907,11 +5909,24 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x93978 ScanEngine_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd36,
         .target = tersafetsadd36ret,
         .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	
+	//0x2409DC NetObj_GetInstance
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -5929,17 +5944,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	//0x2409DC NetObj_GetInstance
-	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd37,
-        .target = tersafetsadd37ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-
-	/*
+	
 	//0x249FD8 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5951,7 +5956,7 @@ void initbreakpoint()
     };
 	
 	
-	
+	/*
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6697,7 +6702,7 @@ if (load_executable_path() == 0)
 			Imageaddress = Get_Imageaddress_base();
 		}
 
-		/*
+		
 		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
@@ -6705,21 +6710,21 @@ if (load_executable_path() == 0)
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
-
 		
+
+		/* 三天应该是这里
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 		
 
-		/*
+		
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 
-		*/
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
