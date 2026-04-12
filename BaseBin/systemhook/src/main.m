@@ -4883,7 +4883,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] ter调用 NetObj_GetInstance");
+				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
 				/*
@@ -4908,7 +4908,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
-				/*
+				
 				//sub_585D0 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
@@ -4922,15 +4922,16 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
-				*/
+				
 				
 			}
 
 			
 			if(terbptype == 1) 
 			{
+				NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter调用 VM_DispatchPendingCallbacks");
 
-				
+				/*
 				//异常上报ReportQueue_Enqueue sub_24245C
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
@@ -4948,7 +4949,7 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x800) result = @"超过0x800的未知异常";
 
 				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-				
+				*/
 				
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
 				
@@ -5185,7 +5186,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 3) 
 			{
 				
-				NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
+				//NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
 				
 				/*
@@ -5224,7 +5225,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 				//全局检测开关hook sub_AAB64
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -5417,7 +5418,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 				
 				
 			}
@@ -5426,7 +5427,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x0x93F0C hook] ter线程调用");
+				NSLog(@"小罪ADD: [tersafe 0x93F0C hook] ter线程调用");
 				
 
 				//0x1E1E28
@@ -5796,6 +5797,7 @@ void initbreakpoint()
     };
 	*/
 
+	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
         .target = tersafetsadd37ret,
@@ -5960,7 +5962,7 @@ void initbreakpoint()
 
 
 
-	/*
+	
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -5970,7 +5972,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x254818 VM_DebugDetect_Instance2
@@ -5996,7 +5998,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x2409DC NetObj_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6006,13 +6008,26 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	
-
+	/*
 	//0x24245C ReportQueue_Enqueue
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	
+	//0x244894 VM_DispatchPendingCallbacks
+	ter_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd38,
+        .target = tersafetsadd38ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6030,17 +6045,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	//0x244894 VM_DispatchPendingCallbacks
-	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd38,
-        .target = tersafetsadd38ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	
-	/*
+
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6051,9 +6056,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	*/
-
-		
 	// 0x93F0C 闪退
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
