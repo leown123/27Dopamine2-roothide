@@ -5185,6 +5185,7 @@ static void* exception_handler_thread(void* arg) {
 			bool iscontainstr = false;
 			if(terbptype == 3) 
 			{
+				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
@@ -5224,8 +5225,8 @@ static void* exception_handler_thread(void* arg) {
 				}
 				*/
 
+				/*
 				//全局检测开关hook sub_AAB64
-				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -5418,6 +5419,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
+				*/
 				
 				
 				
@@ -5997,19 +5999,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-
-	/*
-	//0x2409DC NetObj_GetInstance
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd37,
-        .target = tersafetsadd37ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
 	
 	/*
 	//0x24245C ReportQueue_Enqueue
@@ -6045,11 +6034,22 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-
+	/*
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x2409DC NetObj_GetInstance
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
