@@ -4883,7 +4883,22 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
+
+				//sub_585D0 下发文件hook				
+				uint64_t path_ptr = thread_state2.__x[0];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) {
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Path: %s", path);
+			    } else 
+				{
+			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
+			    }
+				
+				//NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
@@ -4909,21 +4924,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
-				/*
-				//sub_585D0 下发文件hook				
-				uint64_t path_ptr = thread_state2.__x[0];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) {
-			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Path: %s", path);
-			    } else 
-				{
-			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
-			    }
-				*/
+				
 				
 				
 			}
@@ -5961,6 +5962,7 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
+	/*
 	//0x2409DC NetObj_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd37,
@@ -5970,8 +5972,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
+	
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -5981,8 +5984,6 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-	
 
 	/*
 	//0x254818 VM_DebugDetect_Instance2
