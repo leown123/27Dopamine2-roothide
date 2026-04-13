@@ -4932,26 +4932,6 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 1) 
 			{
 				NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter调用 VM_DispatchPendingCallbacks");
-
-				/*
-				//异常上报ReportQueue_Enqueue sub_24245C
-				uint64_t myptr = thread_state2.__x[1];
-				int opcode = Read_Int(myptr);
-				//const char* result = "";
-				NSString *result = @"0";
-
-				if(opcode < 0x100) result = @"小于0x100未的知异常";
-				if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
-				if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
-				if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
-				if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
-				if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
-				if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
-				if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
-				if(opcode >= 0x800) result = @"超过0x800的未知异常";
-
-				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-				*/
 				
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
 				
@@ -5187,7 +5167,24 @@ static void* exception_handler_thread(void* arg) {
 			bool iscontainstr = false;
 			if(terbptype == 3) 
 			{
-				
+				//异常上报ReportQueue_Enqueue sub_24245C
+				uint64_t myptr = thread_state2.__x[1];
+				int opcode = Read_Int(myptr);
+				//const char* result = "";
+				NSString *result = @"0";
+
+				if(opcode < 0x100) result = @"小于0x100未的知异常";
+				if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
+				if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
+				if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
+				if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
+				if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
+				if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
+				if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
+				if(opcode >= 0x800) result = @"超过0x800的未知异常";
+
+				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+			
 				
 				//NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
@@ -5227,7 +5224,7 @@ static void* exception_handler_thread(void* arg) {
 				}
 				*/
 
-				
+				/*
 				//全局检测开关hook sub_AAB64
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
@@ -5421,7 +5418,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 				
 				
 				
@@ -6011,19 +6008,6 @@ void initbreakpoint()
     };
 	*/
 	
-	/*
-	//0x24245C ReportQueue_Enqueue
-	ter_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd22,
-        .target = tersafetsadd22ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-	
 	//0x244894 VM_DispatchPendingCallbacks
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd38,
@@ -6045,11 +6029,22 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x24245C ReportQueue_Enqueue
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd22,
+        .target = tersafetsadd22ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
