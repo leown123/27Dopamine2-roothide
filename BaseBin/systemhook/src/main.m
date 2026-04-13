@@ -4883,6 +4883,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
@@ -4908,7 +4909,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [tersafe 0x254818 hook] tersafe模块 VM_DebugDetect_Instance2 触发");
 				
-				
+				/*
 				//sub_585D0 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
@@ -4922,6 +4923,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
+				*/
 				
 				
 			}
@@ -5185,7 +5187,7 @@ static void* exception_handler_thread(void* arg) {
 			bool iscontainstr = false;
 			if(terbptype == 3) 
 			{
-				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
+				
 				
 				//NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
@@ -5225,7 +5227,7 @@ static void* exception_handler_thread(void* arg) {
 				}
 				*/
 
-				/*
+				
 				//全局检测开关hook sub_AAB64
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
@@ -5419,7 +5421,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 				
 				
 				
@@ -5962,9 +5964,17 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
+	//0x2409DC NetObj_GetInstance
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
-
-	
+	/*
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -5974,6 +5984,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -6034,22 +6045,11 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	//0xAAB64 控制检测开关
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-	//0x2409DC NetObj_GetInstance
-	ter_breakpoints[3] = (Breakpoint){
-        .source = tersafetsadd37,
-        .target = tersafetsadd37ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
