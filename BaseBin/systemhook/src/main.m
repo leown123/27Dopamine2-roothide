@@ -4883,6 +4883,8 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+
+				bool iscontainstr = false;
 				//全局检测开关hook sub_AAB64
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
@@ -5360,7 +5362,7 @@ static void* exception_handler_thread(void* arg) {
 
 			}
 
-			bool iscontainstr = false;
+			
 			if(terbptype == 3) 
 			{
 				//异常上报ReportQueue_Enqueue sub_24245C
