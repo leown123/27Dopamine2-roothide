@@ -4883,7 +4883,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-
+				/*
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AAB64
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -5078,8 +5078,9 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
+				*/
 
-				/*
+				
 				//sub_585D0 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
@@ -5093,7 +5094,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
-				*/
+				
 				
 				//NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
 				
@@ -5974,6 +5975,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xAAB64 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd18,
@@ -5983,8 +5985,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
+	
 	//0x585D0 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -5994,7 +5997,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x254818 VM_DebugDetect_Instance2
@@ -6721,7 +6724,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6767,6 +6770,8 @@ if (load_executable_path() == 0)
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
 
+		*/
+
 		/*
 		//NSFileManager fileExistsAtPath:isDirectory
         Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
@@ -6794,7 +6799,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 		
 
-		/* 三天应该是这里
+		
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
@@ -6803,7 +6808,7 @@ if (load_executable_path() == 0)
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 		
 
 		loadandinitshare(); //26.3.21屏蔽
