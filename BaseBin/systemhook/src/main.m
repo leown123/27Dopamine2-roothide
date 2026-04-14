@@ -3925,6 +3925,8 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     return kr_all;
 }
 
+bool hadexchanged = false;
+
 static void ensurereporter()
 {
 	while(!tersafeadd)
@@ -3988,13 +3990,22 @@ static void ensurereporter()
 	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
 	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
 
-	if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
+
+	//if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
+	if(TssSDKOnResumelong != 0 && !hadexchanged)
 	{
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
 		forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
-		NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumeptr: 0x%llx ,TssSDKOnResumelong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumeptr, TssSDKOnResumelong,Read_Long(TssSDKOnResumeptr));
+
+		if(Read_Long(TssSDKOnResumeptr) == TssSDKOnPauselong && Read_Long(TssSDKOnPauseptr) == TssSDKOnResumelong)
+		{
+			hadexchanged = true;
+			NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumeptr: 0x%llx ,TssSDKOnResumelong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumeptr, TssSDKOnResumelong,Read_Long(TssSDKOnResumeptr));
 		NSLog(@"小罪ADD: ensurereporter: TssSDKOnPauseptr: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKOnPauseptr): 0x%llx", TssSDKOnPauseptr, TssSDKOnPauselong,Read_Long(TssSDKOnPauseptr));
 
+		}
+		
+		
 	}
 
 	
