@@ -3927,6 +3927,12 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 
 bool hadexchanged = false;
 
+typedef uint64_t (*TssSDKOnPauseFunc)();
+static TssSDKOnPauseFunc original_TssSDKOnPause = NULL;
+
+typedef uint64_t (*TssSDKOnResumeFunc)();
+static TssSDKOnResumeFunc original_TssSDKOnResume = NULL;
+
 static void ensurereporter()
 {
 	while(!tersafeadd)
@@ -3941,13 +3947,13 @@ static void ensurereporter()
 
 	
 	
-	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2E1C00);
-	uint64_t retadd = (uint64_t)(tersafeadd + 0x826C);
+	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
+	uint64_t retadd = (uint64_t)(tersafeadd + 0x55B0);
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
 	if( rd != retadd)
 	{
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
-		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x826C: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
+		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x55B0: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
 	
 	
@@ -3974,8 +3980,8 @@ static void ensurereporter()
 	*/
 
 	
-	uint64_t RMMemoryMonitorPluginadd = Imageaddress + 0xFE39378;
-	uint64_t newadd = Imageaddress + 0x1879300;
+	uint64_t RMMemoryMonitorPluginadd = Imageaddress + 0x108EBBD0;
+	uint64_t newadd = Imageaddress + 0x1A1C858;
 
 	uint64_t RMMemoryMonitorPluginlong = (uint64_t)Read_Long(RMMemoryMonitorPluginadd);
 	if(RMMemoryMonitorPluginlong != 0 &&  RMMemoryMonitorPluginlong !=  (uint64_t)(newadd))
@@ -3984,13 +3990,26 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
 
-	uint64_t TssSDKOnPauseptr = Imageaddress + 0xF946630;
-	uint64_t TssSDKOnResumeptr = Imageaddress + 0xF946648;
+	/*
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
+	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE658;
+	*/
+
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0xE3B4DC0;
+	uint64_t TssSDKOnResumeptr = Imageaddress + 0xE3B4DE4;
 
 	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
 	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
 
+	if(TssSDKOnResumelong != 0 && TssSDKOnPauselong != 0)
+	{
+		  original_TssSDKOnPause = (TssSDKOnPauseFunc)TssSDKOnPauseptr;
+		  original_TssSDKOnResume = (TssSDKOnResumeFunc)TssSDKOnResumeptr;
+		  original_TssSDKOnPause();
+		  original_TssSDKOnResume();
+	}
 
+	/*
 	//if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
 	if(TssSDKOnResumelong != 0 && !hadexchanged)
 	{
@@ -4007,6 +4026,7 @@ static void ensurereporter()
 		
 		
 	}
+	*/
 
 	
 }
