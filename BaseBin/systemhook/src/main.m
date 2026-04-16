@@ -2192,7 +2192,7 @@ void* crchackthread(void* aa)
 		ret = DobbyHook((void*)crcfunc_addr5, (void*)hooked_sub_2327EC, (void **)&orig_sub_2327EC);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe crcfunc_addr5: %s", ret == 0 ? "success" : "failed");
 
-		long tmpfunadd1 = tersafeadd + 0x585D0;
+		long tmpfunadd1 = tersafeadd + 0x582A4;
 		ret = DobbyHook((void *)tmpfunadd1, (void *)hooked_sub_585D0, (void **)&orig_sub_585D0);
 		NSLog(@"小罪ADD: [Dobby] hook tersafe tmpfunadd1: %s", ret == 0 ? "success" : "failed");
 		*/
@@ -4451,7 +4451,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 
@@ -4509,7 +4509,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
 				
-				//0x249FD8 hook
+				//0x218D58 hook
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -4521,7 +4521,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 )// 
 				{
-					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
 					if (shujusize == 128) 
 					{
@@ -4530,12 +4530,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct128, (void *)thread_state2.__x[0], 128);
 				            cached_flag128 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 128首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 128首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct128, 128);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 128出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 128出现，已替换");
 						}
 					}
 
@@ -4546,12 +4546,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
 				            cached_flag576 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 576首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 576首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 576出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 576出现，已替换");
 						}
 					}
 
@@ -4562,12 +4562,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现 160 字节，缓存
 				            memcpy((void *)cached_struct160, (void *)thread_state2.__x[0], 160);
 				            cached_flag160 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 160 首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 160 首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 160);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 160 出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 160 出现，已替换");
 						}
 					}
 
@@ -4578,12 +4578,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现 400 字节，缓存
 				            memcpy((void *)cached_struct400, (void *)thread_state2.__x[0], 400);
 				            cached_flag160 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 400 首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 400 首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 400);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发 400 出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 400 出现，已替换");
 						}
 					}
 
@@ -4600,19 +4600,19 @@ static void* exception_handler_thread(void* arg) {
 					
 					//thread_state2.__x[0] = 1;
 
-					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 
 					
 				}
 				else
 				{
-					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发放行(非576或128)（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
@@ -4622,12 +4622,12 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
-					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 				}
 				
@@ -4640,7 +4640,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			}
 
-			if(bptype == 3) //异常上报ReportQueue_Enqueue sub_24245C
+			if(bptype == 3) //异常上报ReportQueue_Enqueue sub_210EAC
 			{
 					uint64_t myptr = thread_state2.__x[1];
 					int opcode = Read_Int(myptr);
@@ -4657,7 +4657,7 @@ static void* exception_handler_thread(void* arg) {
 					if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
 					if(opcode >= 0x800) result = @"超过0x800的未知异常";
 	
-					NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue 主线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue 主线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
 					
 	
 			}
@@ -4665,7 +4665,7 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				
-				NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [主程序 sub_107A120BC hook] 主线程调用 游戏内置Hook");
 
@@ -4877,7 +4877,7 @@ static void* exception_handler_thread(void* arg) {
 			//if(bptype == 5)
 			{
 				
-				//NSLog(@"小罪ADD: [tersafe sub_9998 hook] 主线程触发");
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 
 				//uint64_t a2 = thread_state2.__x[1];
 				//NSLog(@"小罪ADD: [tersafe 0x2412D0 BufWriter_Init hook] 主线程触发,a2:%d",a2);
@@ -5094,7 +5094,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 				
-				//sub_585D0 下发文件hook				
+				//sub_582A4 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -5102,14 +5102,14 @@ static void* exception_handler_thread(void* arg) {
 			                                              (mach_vm_address_t)path, &bytes_read);
 			    if (kr == KERN_SUCCESS && bytes_read > 0) {
 			        path[bytes_read] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Path: %s", path);
+			        NSLog(@"小罪ADD: [tersafe 三角洲 sub_582A4 或王者0x57B58 hook] tersafe线程 Path: %s", path);
 			    } else 
 				{
-			        //NSLog(@"小罪ADD: [tersafe 三角洲sub_585D0 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
+			        //NSLog(@"小罪ADD: [tersafe 三角 sub_582A4 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
 				
 				
-				//NSLog(@"小罪ADD: [tersafe 0x2409DC hook] 主线程调用 NetObj_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
@@ -5143,7 +5143,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 1) 
 			{
-				NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter调用 VM_DispatchPendingCallbacks");
+				NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter调用 VM_DispatchPendingCallbacks");
 				
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
 				
@@ -5197,7 +5197,7 @@ static void* exception_handler_thread(void* arg) {
 				    }
 				
 				    //NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx", depth, current_fp, ret_addr);
-				    if(ret_addr == (uint64_t)(tersafeadd + 0x249FDC))
+				    if(ret_addr == (uint64_t)(tersafeadd + 0x218D5C))
 					{
 						NSLog(@"小罪ADD: [mach异常： 三角洲hooked_sub241578 hook] Frame %d: FP=0x%llx, Return Address=0x%llx,ptr:0x%llx", depth, current_fp, ret_addr,ret_addr - tersafeadd);
 						istargetadd = true;
@@ -5239,7 +5239,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 				
-				//0x249FD8 hook
+				//0x218D58 hook
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -5251,7 +5251,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 )// 
 				{
-					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
 					if (shujusize == 128) 
 					{
@@ -5260,12 +5260,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct128, (void *)thread_state2.__x[0], 128);
 				            cached_flag128 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 128首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 128首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct128, 128);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 128出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 128出现，已替换");
 						}
 					}
 
@@ -5276,12 +5276,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现  576字节，缓存
 				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
 				            cached_flag576 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 576 首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 576 首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 576 出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 576 出现，已替换");
 						}
 					}
 
@@ -5292,12 +5292,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现 160 字节，缓存
 				            memcpy((void *)cached_struct160, (void *)thread_state2.__x[0], 160);
 				            cached_flag160 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 160 首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 160 首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 160);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 160 出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 160 出现，已替换");
 						}
 					}
 
@@ -5308,12 +5308,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现 400 字节，缓存
 				            memcpy((void *)cached_struct400, (void *)thread_state2.__x[0], 400);
 				            cached_flag160 = true;
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 400 首次出现，已记录");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 400 首次出现，已记录");
 						}
 						else
 						{
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 400);
-							NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] ter线程范围检测触发 400 出现，已替换");
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发 400 出现，已替换");
 						}
 					}
 
@@ -5330,19 +5330,19 @@ static void* exception_handler_thread(void* arg) {
 					
 					//thread_state2.__x[0] = 1;
 
-					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 
 					
 				}
 				else
 				{
-					NSLog(@"小罪ADD: [tersafe 0x249FD8 hook] 主线程范围检测触发放行(非576或128)（sub_2418E0 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
@@ -5352,12 +5352,12 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x249FDC);
-					bp->target = (uint64_t)(tersafeadd + 0x2418E0);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
-					//bp->target = (uint64_t)(tersafeadd + 0x249FDC);
+					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 				}
 				
@@ -5379,7 +5379,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 3) 
 			{
-				//异常上报ReportQueue_Enqueue sub_24245C
+				//异常上报 ReportQueue_Enqueue sub_210EAC
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
 				//const char* result = "";
@@ -5395,10 +5395,10 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
 				if(opcode >= 0x800) result = @"超过0x800的未知异常";
 
-				NSLog(@"小罪ADD: [tersafe sub_24245C hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+				NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
 			
 				
-				//NSLog(@"小罪ADD: [tersafe 0x244894 hook] ter线程 VM_DispatchPendingCallbacks called");
+				//NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
 				
 				/*
@@ -5443,7 +5443,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x93F0C hook] ter线程调用");
+				NSLog(@"小罪ADD: [tersafe 0x93C10 hook] ter线程调用");
 				
 
 				//0x1E1E28
@@ -5474,7 +5474,7 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
-				NSLog(@"小罪ADD: [tersafe sub_9998 hook] tersafe触发"); //sub_9998 环境检测hook
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 			
 				//0x193F90
 				//NSLog(@"小罪ADD: [tersafe 0x193F90 hook] tersafe线程 游戏自带hook触发");
@@ -5577,16 +5577,16 @@ void initbreakpoint()
           g_source_addr, g_target_addr);
 	*/
 
-	mach_vm_address_t wuhouadd   = Imageaddress + 0x2F72298;
-	mach_vm_address_t fanweiadd1 = Imageaddress + 0x16CA6F8 ;
-    mach_vm_address_t fanweiadd2 = Imageaddress + 0x16CA720 ;
-    mach_vm_address_t fanweiadd3 = Imageaddress + 0x16C9F98 ;
-    mach_vm_address_t fanweiadd4 = Imageaddress + 0x16C9FC0 ;
+	mach_vm_address_t wuhouadd   = Imageaddress + 0x3355BF0 ;
+	mach_vm_address_t fanweiadd1 = Imageaddress + 0x1828738 ;
+    mach_vm_address_t fanweiadd2 = Imageaddress + 0x1828760 ;
+    mach_vm_address_t fanweiadd3 = Imageaddress + 0x1827FD8 ;
+    mach_vm_address_t fanweiadd4 = Imageaddress + 0x1828000 ;
 
-	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x585D0;
+	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x582A4;
 	mach_vm_address_t tersafetsadd1ret = (mach_vm_address_t)hooked_sub_585D0;
 
-	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x585D0;
+	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x582A4;
 	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_585D0;
 
 	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x241578;//范围检测1
@@ -5620,7 +5620,7 @@ void initbreakpoint()
 
 	//ai过检测
 
-	mach_vm_address_t tersafetsadd11 = tersafeadd + 0x9998;//
+	mach_vm_address_t tersafetsadd11 = tersafeadd + 0x6CF8;//
 	mach_vm_address_t tersafetsadd11ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t tersafetsadd12 = tersafeadd + 0x3FCE8;//
@@ -5658,14 +5658,14 @@ void initbreakpoint()
 	//mach_vm_address_t tersafetsadd21ret = (mach_vm_address_t)hooked_sub241578;
 	mach_vm_address_t tersafetsadd21ret = (mach_vm_address_t)hooked_ret1;
 
-	mach_vm_address_t tersafetsadd22 = tersafeadd + 0x24245C;//
+	mach_vm_address_t tersafetsadd22 = tersafeadd + 0x210EAC;//
 	mach_vm_address_t tersafetsadd22ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t tersafetsadd23 = tersafeadd + 0x258948;//
 	mach_vm_address_t tersafetsadd23ret = tersafeadd + 0x258950;
 
-	mach_vm_address_t tersafetsadd24 = tersafeadd + 0x249FD8;//单纯范围的检测
-	mach_vm_address_t tersafetsadd24ret = tersafeadd + 0x249FDC;
+	mach_vm_address_t tersafetsadd24 = tersafeadd + 0x218D58;//单纯范围的检测
+	mach_vm_address_t tersafetsadd24ret = tersafeadd + 0x218D5C;
 
 	mach_vm_address_t tersafetsadd25 = tersafeadd + 0x1E1E28;//自瞄hook检测
 	mach_vm_address_t tersafetsadd25ret = (mach_vm_address_t)hooked_ret1;
@@ -5703,8 +5703,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd33 = tersafeadd + 0x93E04;//
 	mach_vm_address_t tersafetsadd33ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd34 = tersafeadd + 0x93F0C;//
-	mach_vm_address_t tersafetsadd34ret = tersafeadd + 0x93F2C;
+	mach_vm_address_t tersafetsadd34 = tersafeadd + 0x93C10;//
+	mach_vm_address_t tersafetsadd34ret = tersafeadd + 0x93C30;
 
 	mach_vm_address_t calladd1 = Imageaddress + 0x629AC1C;
 	mach_vm_address_t calladd1ret = (mach_vm_address_t)hooked_ret0;
@@ -5721,13 +5721,13 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd36 = tersafeadd + 0x939A4;//ScanEngine_GetInstance
 	mach_vm_address_t tersafetsadd36ret = tersafeadd + 0x939B4;
 
-	mach_vm_address_t tersafetsadd37 = tersafeadd + 0x2409DC;//NetObj_GetInstance
+	mach_vm_address_t tersafetsadd37 = tersafeadd + 0x20F42C;//NetObj_GetInstance
 	mach_vm_address_t tersafetsadd37ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t calladd4 = Imageaddress + 0x18791C8;//
 	mach_vm_address_t calladd4ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd38 = tersafeadd + 0x244894;//VM_DispatchPendingCallbacks
+	mach_vm_address_t tersafetsadd38 = tersafeadd + 0x2132C8;//VM_DispatchPendingCallbacks
 	mach_vm_address_t tersafetsadd38ret = (mach_vm_address_t)hooked_ret0;
 	
 	g_source_addr = wuhouadd;
@@ -5744,7 +5744,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	//0x9998 环境
+	//0x6CF8 环境
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
@@ -5779,7 +5779,7 @@ void initbreakpoint()
 	
 
 	
-	//0x249FD8 RingBuf_Tick
+	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
@@ -5791,7 +5791,7 @@ void initbreakpoint()
 	
 	
 
-	//0x24245C ReportQueue_Enqueue
+	//0x210EAC ReportQueue_Enqueue  很重要，没有就直接三方了
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
@@ -5835,7 +5835,7 @@ void initbreakpoint()
 	
 
 	/*
-	//0x585D0 下发
+	//0x582A4 下发
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -5977,7 +5977,7 @@ void initbreakpoint()
     g_breakpoint_count = 6;
 
 	/*
-	//0x2409DC NetObj_GetInstance
+	//0x20F42C NetObj_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd37,
         .target = tersafetsadd37ret,
@@ -6001,7 +6001,7 @@ void initbreakpoint()
 	*/
 
 	
-	//0x585D0 下发
+	//0x582A4 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -6036,7 +6036,7 @@ void initbreakpoint()
     };
 	*/
 	
-	//0x244894 VM_DispatchPendingCallbacks
+	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd38,
         .target = tersafetsadd38ret,
@@ -6047,7 +6047,7 @@ void initbreakpoint()
     };
 
 	
-	//0x249FD8 RingBuf_Tick
+	//0x218D58 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
@@ -6058,7 +6058,7 @@ void initbreakpoint()
     };
 
 
-	//0x24245C ReportQueue_Enqueue
+	//0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
@@ -6068,7 +6068,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	// 0x93F0C 闪退
+	// 0x93C10 闪退
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
         .target = tersafetsadd34ret,
@@ -6078,7 +6078,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	//0x9998 环境
+	//0x6CF8 环境
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
@@ -6165,7 +6165,7 @@ void initbreakpoint()
     };
 
 	
-	////0x24245C ReportQueue_Enqueue
+	////0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
@@ -6474,8 +6474,8 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 	if(
 		//predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
-		predicatelong == (Imageaddress+0x13003300) || //[RMLeakChecker getInstance]
-		predicatelong == (Imageaddress+0x130033B8)  //[RMReportCenter report:result:]
+		predicatelong == (Imageaddress+0x13D4DE80) || //[RMLeakChecker getInstance]
+		predicatelong == (Imageaddress+0x13D4DF38)  //[RMReportCenter report:result:]
 
 		/*
 		predicatelong == (Imageaddress+0x130026B0) ||
@@ -6803,22 +6803,22 @@ if (load_executable_path() == 0)
 		}
 
 		
-		void *dispatch_once_ptr = (void *)(Imageaddress+0xDA72C30);
+		void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
-		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xDA79640);
+		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 		
 
 		
-		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xDA71850);
+		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		
 
-		void *InitTGPA_ptr = (void *)(Imageaddress+0xDA7185C);
+		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		
