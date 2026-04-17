@@ -3990,13 +3990,15 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE658;
-	*/
+	
 
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0xE3B4DC0;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0xE3B4DE4;
+	
 
 	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
 	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
@@ -4008,25 +4010,26 @@ static void ensurereporter()
 		  original_TssSDKOnPause();
 		  original_TssSDKOnResume();
 	}
+	*/
 
 	/*
-	//if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
-	if(TssSDKOnResumelong != 0 && !hadexchanged)
+	if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
+	//if(TssSDKOnResumelong != 0 && !hadexchanged)
 	{
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
-		forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
+		//forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
 
 		if(Read_Long(TssSDKOnResumeptr) == TssSDKOnPauselong && Read_Long(TssSDKOnPauseptr) == TssSDKOnResumelong)
 		{
 			hadexchanged = true;
 			NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumeptr: 0x%llx ,TssSDKOnResumelong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumeptr, TssSDKOnResumelong,Read_Long(TssSDKOnResumeptr));
-		NSLog(@"小罪ADD: ensurereporter: TssSDKOnPauseptr: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKOnPauseptr): 0x%llx", TssSDKOnPauseptr, TssSDKOnPauselong,Read_Long(TssSDKOnPauseptr));
+			//NSLog(@"小罪ADD: ensurereporter: TssSDKOnPauseptr: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKOnPauseptr): 0x%llx", TssSDKOnPauseptr, TssSDKOnPauselong,Read_Long(TssSDKOnPauseptr));
 
 		}
 		
 		
 	}
-	*/
+	
 
 	
 }
@@ -6624,6 +6627,36 @@ int hooked_proc_regionfilename(int pid, uint64_t address, char *buf, uint32_t bu
     return orig_proc_regionfilename(pid, address, buf, buf_size);
 }
 
+typedef uint64_t (*TssSDKGetReportDataFunc)();
+static TssSDKGetReportDataFunc original_TssSDKGetReportData = NULL;
+static TssSDKGetReportDataFunc original_TssSDKGetReportData2 = NULL;
+static TssSDKGetReportDataFunc original_TssSDKGetReportData3 = NULL;
+
+// 替换函数实现
+uint64_t hooked_TssSDKGetReportData() 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程 hooked_TssSDKGetReportData called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_TssSDKGetReportData called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    return 0;
+}
+
+uint64_t hooked_TssSDKGetReportData2() 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程 hooked_TssSDKGetReportData called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_TssSDKGetReportData called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    return 0;
+}
+
+uint64_t hooked_TssSDKGetReportData3() 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程 hooked_TssSDKGetReportData called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_TssSDKGetReportData called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    return 0;
+}
+
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -6832,7 +6865,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 		
 
-		
+		/*
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
@@ -6841,8 +6874,20 @@ if (load_executable_path() == 0)
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		
-		
+		*/
+
+		void *TssSDKGetReportData_ptr = (void *)(Imageaddress+0xE3B4D84);
+		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
+		void *TssSDKGetReportData3_ptr = (void *)(Imageaddress+0xE3B4D9C);
+
+		ret = DobbyHook(TssSDKGetReportData_ptr, (void *)hooked_TssSDKGetReportData, (void **)&original_TssSDKGetReportData);
+		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook(TssSDKGetReportData2_ptr, (void *)hooked_TssSDKGetReportData2, (void **)&original_TssSDKGetReportData2);
+		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr2: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
+		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
