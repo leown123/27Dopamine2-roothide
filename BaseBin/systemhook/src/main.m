@@ -4021,7 +4021,8 @@ static void ensurereporter()
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
 		//forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
 
-		if(Read_Long(TssSDKOnResumeptr) == TssSDKOnPauselong && Read_Long(TssSDKOnPauseptr) == TssSDKOnResumelong)
+		if(Read_Long(TssSDKOnResumeptr) == TssSDKOnPauselong)
+		//&& Read_Long(TssSDKOnPauseptr) == TssSDKOnResumelong)
 		{
 			hadexchanged = true;
 			NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumeptr: 0x%llx ,TssSDKOnResumelong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumeptr, TssSDKOnResumelong,Read_Long(TssSDKOnResumeptr));
