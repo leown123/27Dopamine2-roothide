@@ -4008,14 +4008,10 @@ static void ensurereporter()
 
 	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
 	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
-	
 
 	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0xE3B4DC0;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0xE3B4DE4;
-	
-
-	
 
 	if(TssSDKOnResumelong != 0 && TssSDKOnPauselong != 0)
 	{
@@ -4777,13 +4773,13 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
-				thread_state2.__x[0] = tersafeadd + 0x2B8E32;
+				//thread_state2.__x[0] = tersafeadd + 0x2B8E32;
 				
-				NSLog(@"小罪ADD: [tersafe 0x2B2AC hook] 主线程调用 tss_get_report_data2");
-				
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
-				
+				//NSLog(@"小罪ADD: [tersafe 0x2B2AC hook] 主线程调用 tss_get_report_data2");
+
 				//NSLog(@"小罪ADD: [主程序 sub_107A120BC hook] 主线程调用 游戏内置Hook");
 
 			
@@ -5994,7 +5990,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6004,7 +6000,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x2B2AC tss_get_report_data2
@@ -6972,7 +6968,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -7017,7 +7013,7 @@ if (load_executable_path() == 0)
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-
+		*/
 		
 
 		/*
