@@ -2121,6 +2121,12 @@ uint64_t hooked_ret1()
 	return 1;
 }
 
+uint64_t hooked_ret8()
+{
+	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return 8;
+}
+
 uint64_t hooked_ret2B8E32()
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
