@@ -4647,7 +4647,7 @@ static void* exception_handler_thread(void* arg) {
 						{
 							// 首次出现 1000 字节，缓存
 				            memcpy((void *)cached_struct1000, (void *)thread_state2.__x[0], 1000);
-				            cached_flag160 = true;
+				            cached_flag1000 = true;
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 首次出现，已记录");
 						}
 						else
@@ -5424,7 +5424,7 @@ static void* exception_handler_thread(void* arg) {
 						{
 							// 首次出现 1000 字节，缓存
 				            memcpy((void *)cached_struct1000, (void *)thread_state2.__x[0], 1000);
-				            cached_flag160 = true;
+				            cached_flag1000 = true;
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 首次出现，已记录");
 						}
 						else
