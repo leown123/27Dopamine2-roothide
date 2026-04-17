@@ -3993,6 +3993,9 @@ static void ensurereporter()
 	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE658;
+
+	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
+	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
 	
 
 	/*
@@ -4000,8 +4003,7 @@ static void ensurereporter()
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0xE3B4DE4;
 	
 
-	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
-	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
+	
 
 	if(TssSDKOnResumelong != 0 && TssSDKOnPauselong != 0)
 	{
