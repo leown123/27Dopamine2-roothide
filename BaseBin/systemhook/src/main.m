@@ -4652,7 +4652,8 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
+							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
+							vm_copy(mach_task_self(), (void *)cached_struct1000, 1000, (void *)thread_state2.__x[0])
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
 						}
 					}
@@ -6955,7 +6956,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -7000,7 +7001,7 @@ if (load_executable_path() == 0)
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-		*/
+		
 		
 
 		/*
@@ -7041,7 +7042,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		/*
+		
 		void *TssSDKGetReportData_ptr = (void *)(Imageaddress+0xE3B4D84);
 		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
 		void *TssSDKGetReportData3_ptr = (void *)(Imageaddress+0xE3B4D9C);
@@ -7054,7 +7055,7 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
