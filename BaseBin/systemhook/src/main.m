@@ -4291,12 +4291,16 @@ static bool cached_flag576 = false; // false: 未缓存, true: 已缓存
 static bool cached_flag160 = false; // false: 未缓存, true: 已缓存
 static bool cached_flag400 = false; // false: 未缓存, true: 已缓存
 
+static bool cached_flag1000 = false; // false: 未缓存, true: 已缓存
+
 
 static uint8_t cached_struct128[128];
 static uint8_t cached_struct576[576];
 
 static uint8_t cached_struct160[160];
 static uint8_t cached_struct400[400];
+
+static uint8_t cached_struct1000[1000];
 
 
 static void* exception_handler_thread(void* arg) {
@@ -4546,7 +4550,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 )// 
+				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 || shujusize == 1000 )// 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
@@ -4614,6 +4618,22 @@ static void* exception_handler_thread(void* arg) {
 						}
 					}
 
+					if (shujusize == 1000) 
+					{
+						if (!cached_flag1000) 
+						{
+							// 首次出现 1000 字节，缓存
+				            memcpy((void *)cached_struct1000, (void *)thread_state2.__x[0], 1000);
+				            cached_flag160 = true;
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
+						}
+					}
+
 
 					
 					
@@ -4646,7 +4666,7 @@ static void* exception_handler_thread(void* arg) {
 					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
 					thread_state2.__sp = new_sp;
 
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
+					bp->target = (uint64_t)(tersafeadd + 0x210334);
 					
 				}
 				else
@@ -4665,7 +4685,7 @@ static void* exception_handler_thread(void* arg) {
 					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
 					thread_state2.__sp = new_sp;
 
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
+					bp->target = (uint64_t)(tersafeadd + 0x210334);
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
@@ -4676,7 +4696,7 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
 					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					//bp->target = (uint64_t)(tersafeadd + 0x210330);
+					//bp->target = (uint64_t)(tersafeadd + 0x210334);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
@@ -5309,7 +5329,7 @@ static void* exception_handler_thread(void* arg) {
 				int shujusize = Read_Int(thread_state2.__x[0] + 0x18);
 
 				
-				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 )// 
+				if(shujusize == 128 || shujusize == 576 || shujusize == 160 || shujusize == 400 || shujusize == 1000 )// 
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
@@ -5377,6 +5397,22 @@ static void* exception_handler_thread(void* arg) {
 						}
 					}
 
+					if (shujusize == 1000) 
+					{
+						if (!cached_flag1000) 
+						{
+							// 首次出现 1000 字节，缓存
+				            memcpy((void *)cached_struct1000, (void *)thread_state2.__x[0], 1000);
+				            cached_flag160 = true;
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 首次出现，已记录");
+						}
+						else
+						{
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
+							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
+						}
+					}
+
 
 					
 					
@@ -5409,14 +5445,14 @@ static void* exception_handler_thread(void* arg) {
 					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
 					thread_state2.__sp = new_sp;
 
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
+					bp->target = (uint64_t)(tersafeadd + 0x210334);
 					
 
 					
 				}
 				else
 				{
-					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
 					//new
 					uint64_t old_sp = thread_state2.__sp;
@@ -5430,7 +5466,7 @@ static void* exception_handler_thread(void* arg) {
 					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
 					thread_state2.__sp = new_sp;
 
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
+					bp->target = (uint64_t)(tersafeadd + 0x210334);
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
