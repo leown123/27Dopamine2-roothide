@@ -4536,6 +4536,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 				//0x218D58 hook
+				//sub_210330 hook 
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -4629,16 +4630,42 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 
-					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
-					
+					//old
+					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					//bp->target = (uint64_t)(tersafeadd + 0x210330);
 
+					//new
+					uint64_t old_sp = thread_state2.__sp;
+				    uint64_t x20 = thread_state2.__x[20];
+				    uint64_t x19 = thread_state2.__x[19];
+					uint64_t new_sp = old_sp - 0x20;
+					mach_vm_address_t dest_addr = new_sp;
+
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
+					dest_addr = new_sp + 8;
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
+					thread_state2.__sp = new_sp;
+
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 				}
 				else
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+					
+					//new
+					uint64_t old_sp = thread_state2.__sp;
+				    uint64_t x20 = thread_state2.__x[20];
+				    uint64_t x19 = thread_state2.__x[19];
+					uint64_t new_sp = old_sp - 0x20;
+					mach_vm_address_t dest_addr = new_sp;
+
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
+					dest_addr = new_sp + 8;
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
+					thread_state2.__sp = new_sp;
+
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
@@ -4648,8 +4675,8 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
+					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					//bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
@@ -4691,7 +4718,13 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				thread_state2.__x[0] = 0;
+				uint64_t myptr = thread_state2.__x[X29];
+				int code = -1846500911;
+				forcewritenew(long(myptr - 0x6C),code);
+				NSLog(@"小罪ADD: [tersafe 0x2AB80 hook] 主线程调用 tss_get_report_data2");
+				
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [主程序 sub_107A120BC hook] 主线程调用 游戏内置Hook");
 
@@ -5266,6 +5299,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 				//0x218D58 hook
+				//sub_210330 hook
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -5359,8 +5393,22 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 
-					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					//old
+					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					//bp->target = (uint64_t)(tersafeadd + 0x210330);
+
+					//new
+					uint64_t old_sp = thread_state2.__sp;
+				    uint64_t x20 = thread_state2.__x[20];
+				    uint64_t x19 = thread_state2.__x[19];
+					uint64_t new_sp = old_sp - 0x20;
+					mach_vm_address_t dest_addr = new_sp;
+
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
+					dest_addr = new_sp + 8;
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
+					thread_state2.__sp = new_sp;
+
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 
@@ -5369,6 +5417,20 @@ static void* exception_handler_thread(void* arg) {
 				else
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
+
+					//new
+					uint64_t old_sp = thread_state2.__sp;
+				    uint64_t x20 = thread_state2.__x[20];
+				    uint64_t x19 = thread_state2.__x[19];
+					uint64_t new_sp = old_sp - 0x20;
+					mach_vm_address_t dest_addr = new_sp;
+
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
+					dest_addr = new_sp + 8;
+					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
+					thread_state2.__sp = new_sp;
+
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
@@ -5378,8 +5440,8 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					bp->target = (uint64_t)(tersafeadd + 0x210330);
+					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					//bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
@@ -5755,6 +5817,12 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd38 = tersafeadd + 0x2132C8;//VM_DispatchPendingCallbacks
 	mach_vm_address_t tersafetsadd38ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd39 = tersafeadd + 0x2AB80;//tss_get_report_data2
+	mach_vm_address_t tersafetsadd39ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd40 = tersafeadd + 0x210330;//全量范围检测
+	mach_vm_address_t tersafetsadd40ret = tersafeadd + 0x210334;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -5804,7 +5872,7 @@ void initbreakpoint()
 	*/
 	
 
-	
+	/*
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5814,6 +5882,19 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
+
+	//RingBuf_Ticknew
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd40,
+        .target = tersafetsadd40ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
 	
 	
 
@@ -5839,10 +5920,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
         .target = tersafetsadd37ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x2AB80 tss_get_report_data2
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd39,
+        .target = tersafetsadd39ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6072,12 +6165,23 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
+	/*
 	//0x218D58 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//RingBuf_Ticknew
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd40,
+        .target = tersafetsadd40ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -6793,7 +6897,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -6839,7 +6943,7 @@ if (load_executable_path() == 0)
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
 
-		*/
+		
 
 		/*
 		//NSFileManager fileExistsAtPath:isDirectory
@@ -6879,6 +6983,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
+		/*
 		void *TssSDKGetReportData_ptr = (void *)(Imageaddress+0xE3B4D84);
 		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
 		void *TssSDKGetReportData3_ptr = (void *)(Imageaddress+0xE3B4D9C);
@@ -6891,6 +6996,7 @@ if (load_executable_path() == 0)
 
 		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		loadandinitshare(); //26.3.21屏蔽
 
