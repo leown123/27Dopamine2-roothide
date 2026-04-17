@@ -2121,7 +2121,13 @@ uint64_t hooked_ret1()
 	return 1;
 }
 
-uint64_t hooked_ret8()
+uint64_t hooked_ret2B8E32()
+{
+	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return tersafeadd + 0x2B8E32;
+}
+
+uint64_t hooked_ret()
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
 	return 8;
@@ -4738,11 +4744,9 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				
-				thread_state2.__x[0] = 0;
-				uint64_t myptr = thread_state2.__x[29] - 0x6C;
-				int code = -1846500911;
-				forcewritenew(myptr,code);
-				NSLog(@"小罪ADD: [tersafe 0x2AB80 hook] 主线程调用 tss_get_report_data2");
+				thread_state2.__x[0] = tersafeadd + 0x2B8E32;
+				
+				NSLog(@"小罪ADD: [tersafe 0x2B2AC hook] 主线程调用 tss_get_report_data2");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
@@ -5854,8 +5858,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd38 = tersafeadd + 0x2132C8;//VM_DispatchPendingCallbacks
 	mach_vm_address_t tersafetsadd38ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd39 = tersafeadd + 0x2AB80;//tss_get_report_data2
-	mach_vm_address_t tersafetsadd39ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd39 = tersafeadd + 0x2B2AC;//tss_get_report_data2
+	mach_vm_address_t tersafetsadd39ret = (mach_vm_address_t)hooked_ret2B8E32;
 
 	mach_vm_address_t tersafetsadd40 = tersafeadd + 0x210330;//全量范围检测
 	mach_vm_address_t tersafetsadd40ret = tersafeadd + 0x210334;
@@ -5968,7 +5972,7 @@ void initbreakpoint()
     };
 	*/
 
-	//0x2AB80 tss_get_report_data2
+	//0x2B2AC tss_get_report_data2
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd39,
         .target = tersafetsadd39ret,
