@@ -4719,9 +4719,9 @@ static void* exception_handler_thread(void* arg) {
 			{
 				
 				thread_state2.__x[0] = 0;
-				uint64_t myptr = thread_state2.__x[29];
+				uint64_t myptr = thread_state2.__x[29] - 0x6C;
 				int code = -1846500911;
-				forcewritenew(long((long)myptr - 0x6C),code);
+				forcewritenew(myptr,code);
 				NSLog(@"小罪ADD: [tersafe 0x2AB80 hook] 主线程调用 tss_get_report_data2");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
