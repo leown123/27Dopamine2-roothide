@@ -4012,7 +4012,7 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
 	//if(TssSDKOnResumelong != 0 && !hadexchanged)
 	{
