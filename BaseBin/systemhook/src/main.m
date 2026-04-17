@@ -4028,7 +4028,7 @@ static void ensurereporter()
 	}
 	
 
-	/*
+	
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4056,7 +4056,7 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2count3ptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
-	*/
+	
 
 }
 
@@ -6011,7 +6011,7 @@ void initbreakpoint()
     };
 	
 
-	/*
+	
 	//0x582A4 下发
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
@@ -6021,7 +6021,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x24B47C VM_DebugDetect_Dispatch 越狱检测
