@@ -4653,7 +4653,7 @@ static void* exception_handler_thread(void* arg) {
 						else
 						{
 							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
-							vm_copy(mach_task_self(), (void *)cached_struct1000, 1000, (void *)thread_state2.__x[0])
+							vm_copy(mach_task_self(), (vm_address_t)cached_struct1000, 1000, (vm_address_t)thread_state2.__x[0]);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
 						}
 					}
