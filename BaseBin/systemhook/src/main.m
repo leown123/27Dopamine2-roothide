@@ -4044,9 +4044,34 @@ static void ensurereporter()
 		
 		
 	}
-	
 
-	
+	//TssSDKGetReportData2 count
+	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
+	int count = (int)Read_Int(TssSDKGetReportData2countptr);
+	if( count != 0)
+	{
+		forcewritenew(TssSDKGetReportData2countptr,0);
+		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2countptr: 0x%llx ,count: %d", TssSDKGetReportData2countptr,count);
+	}
+
+	//TssSDKGetReportData2 count2
+	uint64_t TssSDKGetReportData2count2ptr =  (uint64_t)(tersafeadd + 0x2B8E32);
+	int count2 = (int)Read_Int(TssSDKGetReportData2count2ptr);
+	if( count2 != 0)
+	{
+		forcewritenew(TssSDKGetReportData2count2ptr,0);
+		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count2ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count2ptr,count2);
+	}
+
+	//TssSDKGetReportData2 count3
+	uint64_t TssSDKGetReportData2count3ptr =  (uint64_t)(tersafeadd + 0x2B8EC4);
+	int count3 = (int)Read_Int(TssSDKGetReportData2count3ptr);
+	if( count3 != 0)
+	{
+		forcewritenew(TssSDKGetReportData2count3ptr,0);
+		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
+	}
+
 }
 
 // =============================================================================
@@ -5978,6 +6003,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x2B2AC tss_get_report_data2
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd39,
@@ -5987,8 +6013,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
