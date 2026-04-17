@@ -4054,6 +4054,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2countptr: 0x%llx ,count: %d", TssSDKGetReportData2countptr,count);
 	}
 
+	/*
 	//TssSDKGetReportData2 count2
 	uint64_t TssSDKGetReportData2count2ptr =  (uint64_t)(tersafeadd + 0x2B8E32);
 	int count2 = (int)Read_Int(TssSDKGetReportData2count2ptr);
@@ -4071,6 +4072,7 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2count3ptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
+	*/
 
 }
 
