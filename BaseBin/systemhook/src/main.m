@@ -4803,25 +4803,29 @@ static void* exception_handler_thread(void* arg) {
 
 				//先还原
 			    uint64_t sp = thread_state2.__sp;
-			    uint64_t new_x29 = sp + 0x50;
-			    thread_state2.__x[29] = new_x29;   // X29 即帧指针
+				
+			    //uint64_t new_x29 = sp + 0x50;
+			    //thread_state2.__x[29] = new_x29;   // X29 即帧指针
+				
+				uint64_t new_x29 = sp + 0x50;
+			    thread_state2.__fp = new_x29;   // 使用 __fp 而不是 __x[29]
 
 				uint64_t open_id_ptr = thread_state2.__x[2];
-			    char path1[1024] = {0};
+			    char open_idpath1[1024] = {0};
 			    mach_vm_size_t bytes_read1 = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(path1)-1,
-			                                              (mach_vm_address_t)path1, &bytes_read1);
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(open_idpath1)-1,
+			                                              (mach_vm_address_t)open_idpath1, &bytes_read1);
 				uint64_t role_id_ptr = thread_state2.__x[3];
-			    char path2[1024] = {0};
+			    char role_idpath2[1024] = {0};
 			    mach_vm_size_t bytes_read2 = 0;
-			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(path2)-1,
-			                                              (mach_vm_address_t)path2, &bytes_read2);
+			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(role_idpath2)-1,
+			                                              (mach_vm_address_t)role_idpath2, &bytes_read2);
 	
 			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
 				{
-			        open_id[bytes_read1] = '\0';
-					role_id[bytes_read2] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_id , role_id);
+			        open_idpath1[bytes_read1] = '\0';
+					role_idpath2[bytes_read2] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
 
 					
 			    } else 
