@@ -4565,8 +4565,8 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 				//0x218D58 hook
-				//sub_210330 hook 
-				//0x21033C hook
+					//sub_210330 hook 
+					//0x21033C hook
 				int a2 = thread_state2.__x[1];
 
 				int v2 = Read_Int(thread_state2.__x[0] + 0x10) + 1;
@@ -4655,17 +4655,17 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
-							vm_copy(mach_task_self(), (vm_address_t)cached_struct1000, 1000, (vm_address_t)thread_state2.__x[0]);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
+							//vm_copy(mach_task_self(), (vm_address_t)cached_struct1000, 1000, (vm_address_t)thread_state2.__x[0]);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
 						}
 					}
 					
-
+					/*
 					int newx8 = Read_Int(thread_state2.__x[0] + 0x10);
 					thread_state2.__x[8] = newx8;
 					bp->target = (uint64_t)(tersafeadd + 0x210340);
-					
+					*/
 					
 					
 					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
@@ -4682,8 +4682,8 @@ static void* exception_handler_thread(void* arg) {
 					
 
 					//old
-					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					//bp->target = (uint64_t)(tersafeadd + 0x210330);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 
 					/*
 					//new
@@ -4705,10 +4705,12 @@ static void* exception_handler_thread(void* arg) {
 				else
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
-	
+
+					/*
 					int newx8 = Read_Int(thread_state2.__x[0] + 0x10);
 					thread_state2.__x[8] = newx8;
 					bp->target = (uint64_t)(tersafeadd + 0x210340);
+					*/
 	
 					/*
 					//new
@@ -4734,8 +4736,8 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					//bp->target = (uint64_t)(tersafeadd + 0x210334);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
@@ -5451,10 +5453,11 @@ static void* exception_handler_thread(void* arg) {
 						}
 					}
 
+					/*
 					int newx8 = Read_Int(thread_state2.__x[0] + 0x10);
 					thread_state2.__x[8] = newx8;
 					bp->target = (uint64_t)(tersafeadd + 0x210340);
-					
+					*/
 					
 					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
@@ -5470,8 +5473,8 @@ static void* exception_handler_thread(void* arg) {
 					
 
 					//old
-					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					//bp->target = (uint64_t)(tersafeadd + 0x210330);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 
 					/*
 					//new
@@ -5495,6 +5498,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
+					/*
 					//new
 					uint64_t old_sp = thread_state2.__sp;
 				    uint64_t x20 = thread_state2.__x[20];
@@ -5508,6 +5512,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp = new_sp;
 
 					bp->target = (uint64_t)(tersafeadd + 0x210334);
+					*/
 					
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
@@ -5517,8 +5522,8 @@ static void* exception_handler_thread(void* arg) {
 					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
 					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
-					//thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
-					//bp->target = (uint64_t)(tersafeadd + 0x210330);
+					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
+					bp->target = (uint64_t)(tersafeadd + 0x210330);
 					
 					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
 					//thread_state2.__x[0] = 1;
@@ -5949,7 +5954,7 @@ void initbreakpoint()
 	*/
 	
 
-	/*
+	
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -5959,7 +5964,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//RingBuf_Ticknew
@@ -6241,7 +6246,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
+	
 	//0x218D58 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -6251,7 +6256,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//RingBuf_Ticknew
