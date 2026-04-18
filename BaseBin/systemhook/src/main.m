@@ -4006,8 +4006,11 @@ static void ensurereporter()
 	}
 
 	
-	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
+	//uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
+
+	//uint64_t TssSDKFreeptr = Imageaddress + 0x103DE608;
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE608; //伪装成free
 
 	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
 	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
@@ -4036,10 +4039,12 @@ static void ensurereporter()
 	if(Read_Long(TssSDKOnPausediaoyongptr) != 0 && Read_Long(TssSDKFreediaoyongptr) != 0 )
 	{
 		 original_TssSDKOnPause =(TssSDKOnPauseFunc)TssSDKOnPausediaoyongptr;
-		 original_TssSDKFree = (TssSDKFreeFunc)TssSDKFreediaoyongptr;
+
+		 
+		 //original_TssSDKFree = (TssSDKFreeFunc)TssSDKFreediaoyongptr;
 
 		 original_TssSDKOnPause();
-		 original_TssSDKFree();
+		 //original_TssSDKFree();
 	
 	}
 
