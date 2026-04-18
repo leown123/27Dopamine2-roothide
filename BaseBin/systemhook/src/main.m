@@ -4828,8 +4828,25 @@ static void* exception_handler_thread(void* arg) {
 					role_idpath2[bytes_read2] = '\0';
 			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
 
-					
-			    } else 
+					//open_idpath1: 7916182520048297861
+
+					if(open_idpath1)
+					{
+						const char *new_open_id   = "7916182520048297860";
+
+						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
+				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
+				        if (kr == KERN_SUCCESS) 
+						{
+				             NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 成功将 open_id 替换为 %s", new_open_id);
+				        } else {
+				            NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook]  主线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
+				        }
+
+					}
+
+			    } 
+				else 
 				{
 			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
 			    }
@@ -5099,10 +5116,27 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        open_idpath1[bytes_read1] = '\0';
 					role_idpath2[bytes_read2] = '\0';
-			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
+			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
 
-					
-			    } else 
+					//open_idpath1: 7916182520048297861
+
+					if(open_idpath1)
+					{
+						const char *new_open_id   = "7916182520048297860";
+
+						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
+				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
+				        if (kr == KERN_SUCCESS) 
+						{
+				             NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 成功将 open_id 替换为 %s", new_open_id);
+				        } else {
+				            NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook]  ter线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
+				        }
+
+					}
+
+			    } 
+				else 
 				{
 			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
 			    }
