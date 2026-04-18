@@ -4800,6 +4800,7 @@ static void* exception_handler_thread(void* arg) {
 			{
 
 				//0x2A2B0 _tp2_setuserinfo
+				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo 主线程 called !");
 
 				//先还原
 			    uint64_t sp = thread_state2.__sp;
@@ -5071,6 +5072,43 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				//0x2A2B0 _tp2_setuserinfo
+				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
+
+				//先还原
+			    uint64_t sp = thread_state2.__sp;
+				
+			    //uint64_t new_x29 = sp + 0x50;
+			    //thread_state2.__x[29] = new_x29;   // X29 即帧指针
+				
+				uint64_t new_x29 = sp + 0x50;
+			    thread_state2.__fp = new_x29;   // 使用 __fp 而不是 __x[29]
+
+				uint64_t open_id_ptr = thread_state2.__x[2];
+			    char open_idpath1[1024] = {0};
+			    mach_vm_size_t bytes_read1 = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(open_idpath1)-1,
+			                                              (mach_vm_address_t)open_idpath1, &bytes_read1);
+				uint64_t role_id_ptr = thread_state2.__x[3];
+			    char role_idpath2[1024] = {0};
+			    mach_vm_size_t bytes_read2 = 0;
+			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(role_idpath2)-1,
+			                                              (mach_vm_address_t)role_idpath2, &bytes_read2);
+	
+			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
+				{
+			        open_idpath1[bytes_read1] = '\0';
+					role_idpath2[bytes_read2] = '\0';
+			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
+			    }
+		
+
+			
 				/*
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AAB64
@@ -5268,7 +5306,7 @@ static void* exception_handler_thread(void* arg) {
 			    }
 				*/
 
-				
+				/*
 				//sub_582A4 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
@@ -5282,7 +5320,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角 sub_582A4 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
-				
+				*/
 				
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
@@ -6271,12 +6309,23 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x582A4 下发
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x2A2B0 _tp2_setuserinfo
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd41,
+        .target = tersafetsadd41ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
