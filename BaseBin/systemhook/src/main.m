@@ -3945,6 +3945,9 @@ static TssSDKOnPauseFunc original_TssSDKOnPause = NULL;
 typedef uint64_t (*TssSDKOnResumeFunc)();
 static TssSDKOnResumeFunc original_TssSDKOnResume = NULL;
 
+typedef uint64_t (*TssSDKFreeFunc)();
+static TssSDKFreeFunc original_TssSDKFree = NULL;
+
 static void ensurereporter()
 {
 	while(!tersafeadd)
@@ -4026,10 +4029,22 @@ static void ensurereporter()
 		
 		
 	}
-	
-	
 
+	uint64_t TssSDKOnPausediaoyongptr = Imageaddress + 0xE3B4DC0;
+	uint64_t TssSDKFreediaoyongptr = Imageaddress + 0xE3B4D78;
+
+	if(Read_Long(TssSDKOnPausediaoyongptr) != 0 && Read_Long(TssSDKFreediaoyongptr) != 0 )
+	{
+		 original_TssSDKOnPause =(TssSDKOnPauseFunc)TssSDKOnPausediaoyongptr;
+		 original_TssSDKFree = (TssSDKFreeFunc)TssSDKFreediaoyongptr;
+
+		 original_TssSDKOnPause();
+		 original_TssSDKFree();
 	
+	}
+
+
+	/*
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4057,7 +4072,7 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2count3ptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
-	
+	*/
 	
 
 }
