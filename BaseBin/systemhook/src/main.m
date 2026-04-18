@@ -7059,16 +7059,19 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
+		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
+		ret = DobbyHook(TssSDKGetReportData2_ptr, (void *)hooked_TssSDKGetReportData2, (void **)&original_TssSDKGetReportData2);
+		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr2: %s", ret == 0 ? "success" : "failed");
+
 		/*
 		void *TssSDKGetReportData_ptr = (void *)(Imageaddress+0xE3B4D84);
-		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
+		
 		void *TssSDKGetReportData3_ptr = (void *)(Imageaddress+0xE3B4D9C);
 
 		ret = DobbyHook(TssSDKGetReportData_ptr, (void *)hooked_TssSDKGetReportData, (void **)&original_TssSDKGetReportData);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr: %s", ret == 0 ? "success" : "failed");
 
-		ret = DobbyHook(TssSDKGetReportData2_ptr, (void *)hooked_TssSDKGetReportData2, (void **)&original_TssSDKGetReportData2);
-		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr2: %s", ret == 0 ? "success" : "failed");
+		
 
 		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
