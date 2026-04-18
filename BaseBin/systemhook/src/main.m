@@ -4799,7 +4799,40 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				//0x2A2B0 _tp2_setuserinfo
+
+				//先还原
+			    uint64_t sp = thread_state2.__sp;
+			    uint64_t new_x29 = sp + 0x50;
+			    thread_state2.__x[29] = new_x29;   // X29 即帧指针
+
+				uint64_t open_id_ptr = thread_state2.__x[2];
+			    char path1[1024] = {0};
+			    mach_vm_size_t bytes_read1 = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(path1)-1,
+			                                              (mach_vm_address_t)path1, &bytes_read1);
+				uint64_t role_id_ptr = thread_state2.__x[3];
+			    char path2[1024] = {0};
+			    mach_vm_size_t bytes_read2 = 0;
+			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(path2)-1,
+			                                              (mach_vm_address_t)path2, &bytes_read2);
+	
+			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
+				{
+			        open_id[bytes_read1] = '\0';
+					role_id[bytes_read2] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_id , role_id);
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
+			    }
+
+
+				
+
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
 				//thread_state2.__x[0] = tersafeadd + 0x2B8E32;
 				
@@ -5925,6 +5958,9 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd40 = tersafeadd + 0x21033C;//全量范围检测
 	mach_vm_address_t tersafetsadd40ret = tersafeadd + 0x210340;
+
+	mach_vm_address_t tersafetsadd41 = tersafeadd + 0x2A2B0;//_tp2_setuserinfo
+	mach_vm_address_t tersafetsadd41ret = tersafeadd + 0x2A2B4;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6020,7 +6056,17 @@ void initbreakpoint()
     };
 	*/
 
-	
+	//0x2A2B0 _tp2_setuserinfo
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd41,
+        .target = tersafetsadd41ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	/*
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6030,6 +6076,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
