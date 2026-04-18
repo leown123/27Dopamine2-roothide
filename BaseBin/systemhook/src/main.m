@@ -5961,6 +5961,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//RingBuf_Ticknew
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd40,
@@ -5970,6 +5971,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	//0x210EAC ReportQueue_Enqueue  很重要，没有就直接三方了
 	g_breakpoints[3] = (Breakpoint){
@@ -6251,6 +6253,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//RingBuf_Ticknew
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd40,
@@ -6260,6 +6263,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 
 	//0x210EAC ReportQueue_Enqueue
@@ -7041,11 +7045,11 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		/*
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
