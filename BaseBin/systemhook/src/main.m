@@ -5898,8 +5898,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd39 = tersafeadd + 0x2B2AC;//tss_get_report_data2
 	mach_vm_address_t tersafetsadd39ret = (mach_vm_address_t)hooked_ret2B8E32;
 
-	mach_vm_address_t tersafetsadd40 = tersafeadd + 0x210330;//全量范围检测
-	mach_vm_address_t tersafetsadd40ret = tersafeadd + 0x210334;
+	mach_vm_address_t tersafetsadd40 = tersafeadd + 0x21033C;//全量范围检测
+	mach_vm_address_t tersafetsadd40ret = tersafeadd + 0x210340;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -5970,10 +5970,6 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
-	
-	
-	
 
 	//0x210EAC ReportQueue_Enqueue  很重要，没有就直接三方了
 	g_breakpoints[3] = (Breakpoint){
