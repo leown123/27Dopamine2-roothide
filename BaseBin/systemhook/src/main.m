@@ -995,7 +995,7 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 
 	if (is_blacklisted) 
 	{
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 is_blacklisted黑名单线程 ! path:%s",path);
+		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 is_blacklisted黑名单线程 ! path:%s",pathstr);
 		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath_isDirectory called. Stack trace:\n%@", [NSThread callStackSymbols]);
       
         return NO;
@@ -4029,7 +4029,7 @@ static void ensurereporter()
 	
 	
 
-	/*
+	
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4057,7 +4057,7 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2count3ptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
-	*/
+	
 	
 
 }
