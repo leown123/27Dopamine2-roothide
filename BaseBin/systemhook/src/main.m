@@ -5109,7 +5109,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-
+				NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
@@ -5379,7 +5379,8 @@ static void* exception_handler_thread(void* arg) {
 			    }
 				*/
 				
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+			
 				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
@@ -6067,6 +6068,9 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd42 = tersafeadd + 0x20FCF4;//sub_20FCF4 跟 ReportQueue_Enqueue有关的wirte
 	mach_vm_address_t tersafetsadd42ret = (mach_vm_address_t)hooked_reta1;
+
+	mach_vm_address_t tersafetsadd43 = tersafeadd + 0x2103B8;//sub_2103B8 上面的闪退处理
+	mach_vm_address_t tersafetsadd43ret = (mach_vm_address_t)hooked_ret1;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6361,11 +6365,22 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
-	
+	/*
 	//0x20F42C NetObj_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd37,
         .target = tersafetsadd37ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x2103B8 新写法闪退
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd43,
+        .target = tersafetsadd43ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
