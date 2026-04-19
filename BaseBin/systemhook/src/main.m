@@ -4012,7 +4012,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4046,7 +4046,7 @@ static void ensurereporter()
 		
 		
 	}
-	*/
+	
 
 	/*
 	uint64_t TssSDKOnPausediaoyongptr = Imageaddress + 0xE3B4DC0;
