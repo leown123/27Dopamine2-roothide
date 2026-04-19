@@ -4005,13 +4005,12 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
-	
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
-	uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
-	uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
+	//uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
+	//uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
 
 	//uint64_t TssSDKFreeptr = Imageaddress + 0x103DE608;
 	//uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE608; //伪装成free
@@ -4024,8 +4023,8 @@ static void ensurereporter()
 	{
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
 
-		forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
-		forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
+		//forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
+		//forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
 		
 		//forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
 
@@ -4040,6 +4039,7 @@ static void ensurereporter()
 		
 		
 	}
+	*/
 
 	/*
 	uint64_t TssSDKOnPausediaoyongptr = Imageaddress + 0xE3B4DC0;
@@ -4059,7 +4059,7 @@ static void ensurereporter()
 	*/
 
 
-	
+	/*
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4068,6 +4068,7 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2countptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2countptr: 0x%llx ,count: %d", TssSDKGetReportData2countptr,count);
 	}
+	*/
 
 	/*
 	//TssSDKGetReportData2 count2
@@ -6100,9 +6101,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-	
 
-	
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -6112,7 +6111,6 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
 
 	/*
 	//RingBuf_Ticknew
