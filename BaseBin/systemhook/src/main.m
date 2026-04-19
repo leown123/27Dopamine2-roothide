@@ -5413,7 +5413,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 1) 
 			{
-				NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter调用 VM_DispatchPendingCallbacks");
+				//NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter调用 VM_DispatchPendingCallbacks");
 				
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
 				
