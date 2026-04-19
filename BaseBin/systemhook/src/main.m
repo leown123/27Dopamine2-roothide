@@ -2139,7 +2139,7 @@ uint64_t hooked_ret()
 	return 8;
 }
 
-uint64_t hooked_reta1(uina§t64_t a1)//
+uint64_t hooked_reta1(uint64_t a1)//
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
