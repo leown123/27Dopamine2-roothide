@@ -4010,8 +4010,8 @@ static void ensurereporter()
 	
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
-	uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
-	uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
+	//uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
+	//uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
 
 	//uint64_t TssSDKFreeptr = Imageaddress + 0x103DE608;
 	//uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE608; //伪装成free
@@ -4024,8 +4024,8 @@ static void ensurereporter()
 	{
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
 
-		forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
-		forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
+		//forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
+		//forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
 		
 		//forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
 
@@ -4808,7 +4808,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
-
+				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo 主线程 called !");
 
@@ -4861,7 +4861,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
 			    }
-
+				*/
 
 				
 
@@ -4878,7 +4878,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
-				/*
+				
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4887,7 +4887,7 @@ static void* exception_handler_thread(void* arg) {
 			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
 					bool iscontainstr = false;
 
 					const char* result = "";
@@ -4962,7 +4962,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					
+					/*
 					//result = strstr(path, "mrpcs"); //会三方
 					//if (result != NULL) iscontainstr = true;
 					
@@ -5046,20 +5046,20 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					
 
 					if(iscontainstr == true)
 					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 主线程 准备干掉字符串并返回0: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 						//thread_state2.__sp -= 0x40;
 						//bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
 					else
 					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 主线程 暂时不干掉的检测类型: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 暂时不干掉的检测类型: %s", path);
 						thread_state2.__sp -= 0x40;
 						bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
@@ -5067,12 +5067,12 @@ static void* exception_handler_thread(void* arg) {
 					
 			    } else 
 				{
-			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] 主线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 Failed to read 检测类型 at 0x%llx", path_ptr);
 					// 模拟 SUB SP, SP, #0x40
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 				
 				
 			
@@ -5100,6 +5100,8 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+
+				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
 
@@ -5152,12 +5154,12 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
 			    }
-		
+				*/
 
 			
-				/*
+				
 				bool iscontainstr = false;
-				//全局检测开关hook sub_AAB64
+				//全局检测开关hook sub_AA880
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -5166,7 +5168,7 @@ static void* exception_handler_thread(void* arg) {
 			    if (kr == KERN_SUCCESS && bytes_read > 0) 
 				{
 			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] 检测类型: %s", path);
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
 
 					const char* result = "";
 					
@@ -5240,7 +5242,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					
+					/*
 					//result = strstr(path, "mrpcs"); //会三方
 					//if (result != NULL) iscontainstr = true;
 					
@@ -5324,20 +5326,20 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					
 
 					if(iscontainstr == true)
 					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 						//thread_state2.__sp -= 0x40;
 						//bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
 					else
 					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关sub_AAB64 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
 						thread_state2.__sp -= 0x40;
 						bp->target = (uint64_t)(thread_state2.__pc + 4);
 					}
@@ -5345,12 +5347,12 @@ static void* exception_handler_thread(void* arg) {
 					
 			    } else 
 				{
-			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AAB64 hook] tersafe线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 Failed to read 检测类型 at 0x%llx", path_ptr);
 					// 模拟 SUB SP, SP, #0x40
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 
 				/*
 				//sub_582A4 下发文件hook				
@@ -5954,8 +5956,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd17 = tersafeadd + 0x108DC4;//
 	mach_vm_address_t tersafetsadd17ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd18 = tersafeadd + 0xAAB64;//
-	mach_vm_address_t tersafetsadd18ret = tersafeadd + 0xAAB68;//
+	mach_vm_address_t tersafetsadd18 = tersafeadd + 0xAA880;//
+	mach_vm_address_t tersafetsadd18ret = tersafeadd + 0xAA884;//
 
 	mach_vm_address_t tersafetsadd19 = tersafeadd + 0x824AC;//
 	mach_vm_address_t tersafetsadd19ret = (mach_vm_address_t)hooked_ret0;
@@ -6144,6 +6146,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x2A2B0 _tp2_setuserinfo
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd41,
@@ -6153,6 +6156,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//NetObj_GetInstance
@@ -6253,7 +6257,7 @@ void initbreakpoint()
 	
 	
 	/*
-	//0xAAB64 检测控制开关
+	//0xAA880 检测控制开关
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -6343,8 +6347,8 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0xAAB64 控制检测开关
+	
+	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
@@ -6353,7 +6357,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x582A4 下发
@@ -6367,6 +6371,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x2A2B0 _tp2_setuserinfo
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd41,
@@ -6376,6 +6381,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
