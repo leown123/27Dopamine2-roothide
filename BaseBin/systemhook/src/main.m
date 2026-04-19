@@ -6158,7 +6158,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6168,7 +6168,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
@@ -6193,7 +6193,7 @@ void initbreakpoint()
     };
 	
 
-	
+	/*
 	//0x582A4 下发
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd1,
@@ -6203,6 +6203,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
