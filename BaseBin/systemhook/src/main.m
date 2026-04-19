@@ -2139,6 +2139,13 @@ uint64_t hooked_ret()
 	return 8;
 }
 
+uint64_t hooked_reta1(uina§t64_t a1)//
+{
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return a1;
+}
+
 typedef double (*subD9424_t)();
 static subD9424_t orig_subD9424 = NULL;
 
@@ -4776,17 +4783,16 @@ static void* exception_handler_thread(void* arg) {
 					
 				}
 				
-				
 
-				
-				
-
-				
-				
 			}
 
 			if(bptype == 3) //异常上报ReportQueue_Enqueue sub_210EAC
 			{
+				//0x20FCF4 ReportQueue_Enqueue write
+				NSLog(@"小罪ADD: [tersafe 0x20FCF4 hook] 主线程 ReportQueue_Enqueue write called");
+
+			
+					/*
 					uint64_t myptr = thread_state2.__x[1];
 					int opcode = Read_Int(myptr);
 					//const char* result = "";
@@ -4803,7 +4809,7 @@ static void* exception_handler_thread(void* arg) {
 					if(opcode >= 0x800) result = @"超过0x800的未知异常";
 	
 					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue 主线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-					
+					*/
 	
 			}
 
@@ -5694,7 +5700,11 @@ static void* exception_handler_thread(void* arg) {
 
 			
 			if(terbptype == 3) 
-			{
+			{	
+				//0x20FCF4 ReportQueue_Enqueue write
+				NSLog(@"小罪ADD: [tersafe 0x20FCF4 hook] ter线程 ReportQueue_Enqueue write called");
+			
+				/*
 				//异常上报 ReportQueue_Enqueue sub_210EAC
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
@@ -5712,7 +5722,7 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x800) result = @"超过0x800的未知异常";
 
 				NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-			
+				*/
 				
 				//NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
@@ -6054,6 +6064,9 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd41 = tersafeadd + 0x2A2B0;//_tp2_setuserinfo
 	mach_vm_address_t tersafetsadd41ret = tersafeadd + 0x2A2B4;
+
+	mach_vm_address_t tersafetsadd42 = tersafeadd + 0x20FCF4;//sub_20FCF4 跟 ReportQueue_Enqueue有关的wirte
+	mach_vm_address_t tersafetsadd42ret = (mach_vm_address_t)hooked_reta1;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6124,10 +6137,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x210EAC ReportQueue_Enqueue  很重要，没有就直接三方了
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x20FCF4 ReportQueue_Enqueue write
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd42,
+        .target = tersafetsadd42ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6443,12 +6468,23 @@ void initbreakpoint()
     };
 	*/
 
-
+	/*
 	//0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
         .target = tersafetsadd22ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x20FCF4 ReportQueue_Enqueue write
+	ter_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd42,
+        .target = tersafetsadd42ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -6537,10 +6573,6 @@ void initbreakpoint()
 	
 
 	/*
-	
-	*/
-	
-	/*
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd28,
         .target = tersafetsadd28ret,
@@ -6550,16 +6582,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
-	////0x210EAC ReportQueue_Enqueue
-	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd22,
-        .target = tersafetsadd22ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 	*/
 
 	/*
@@ -7285,9 +7307,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
 		*/
 
+		/*
 		void *ReportQueue_ptr = (void *)(tersafeadd+0x210EAC);
 		ret = DobbyHook(ReportQueue_ptr, (void *)hooked_ReportQueue, (void **)&original_ReportQueue);
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		loadandinitshare(); //26.3.21屏蔽
 
