@@ -4808,6 +4808,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo 主线程 called !");
@@ -4865,7 +4867,7 @@ static void* exception_handler_thread(void* arg) {
 
 				
 
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				
 				
 				//thread_state2.__x[0] = tersafeadd + 0x2B8E32;
 				
@@ -4878,7 +4880,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
-				
+				/*
 				uint64_t path_ptr = thread_state2.__x[1];
 			    char path[1024] = {0};
 			    mach_vm_size_t bytes_read = 0;
@@ -4962,7 +4964,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					/*
+					//以上屏蔽也会三方
 					//result = strstr(path, "mrpcs"); //会三方
 					//if (result != NULL) iscontainstr = true;
 					
@@ -5046,7 +5048,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					
 
@@ -5072,7 +5074,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 				
 				
 			
@@ -5242,7 +5244,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					/*
+					//上面全部关闭也会三方
 					//result = strstr(path, "mrpcs"); //会三方
 					//if (result != NULL) iscontainstr = true;
 					
@@ -5326,7 +5328,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					
 
