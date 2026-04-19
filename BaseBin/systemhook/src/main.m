@@ -4010,8 +4010,8 @@ static void ensurereporter()
 	
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
-	//uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
-	//uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
+	uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
+	uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
 
 	//uint64_t TssSDKFreeptr = Imageaddress + 0x103DE608;
 	//uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE608; //伪装成free
@@ -4024,8 +4024,8 @@ static void ensurereporter()
 	{
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
 
-		//forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
-		//forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
+		forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
+		forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
 		
 		//forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
 
@@ -4059,7 +4059,7 @@ static void ensurereporter()
 	*/
 
 
-	/*
+	
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4069,7 +4069,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2countptr: 0x%llx ,count: %d", TssSDKGetReportData2countptr,count);
 	}
 
-	
+	/*
 	//TssSDKGetReportData2 count2
 	uint64_t TssSDKGetReportData2count2ptr =  (uint64_t)(tersafeadd + 0x2B8E32);
 	int count2 = (int)Read_Int(TssSDKGetReportData2count2ptr);
