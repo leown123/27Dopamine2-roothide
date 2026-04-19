@@ -7020,6 +7020,30 @@ uint64_t hooked_TssSDKGetReportData3()
     return 0;
 }
 
+typedef uint64_t (*ReportQueueFunc)(uint64_t,uint64_t);
+static ReportQueueFunc original_ReportQueue = NULL;
+
+uint64_t hooked_ReportQueue(uint64_t x0,uint64_t x1) 
+{
+		
+		int opcode = Read_Int(x1);
+		NSString *result = @"0";
+
+		if(opcode < 0x100) result = @"小于0x100未的知异常";
+		if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
+		if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
+		if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
+		if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
+		if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
+		if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
+		if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
+		if(opcode >= 0x800) result = @"超过0x800的未知异常";
+
+		NSLog(@"小罪ADD: hooked_ReportQueue: 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+			
+				
+}
+
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -7215,6 +7239,11 @@ if (load_executable_path() == 0)
 			Imageaddress = Get_Imageaddress_base();
 		}
 
+		while(!tersafeadd)
+		{
+			tersafeadd = Get_tersafe_base();
+		}
+
 		
 		void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
@@ -7255,6 +7284,10 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
 		*/
+
+		void *ReportQueue_ptr = (void *)(tersafeadd+0x210EAC);
+		ret = DobbyHook(ReportQueue_ptr, (void *)hooked_ReportQueue, (void **)&original_ReportQueue);
+		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
