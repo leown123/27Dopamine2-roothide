@@ -3961,7 +3961,7 @@ static void ensurereporter()
 	}
 
 	
-	
+	/*
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x55B0);
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
@@ -3970,7 +3970,7 @@ static void ensurereporter()
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x55B0: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
-	
+	*/
 	
 	/*
 	uint64_t huanjingjilu =  (uint64_t)(tersafeadd + 0x2E1D18);
@@ -7152,7 +7152,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -7207,7 +7207,7 @@ if (load_executable_path() == 0)
         Method m3 = class_getInstanceMethod([UIApplication class], @selector(canOpenURL:));
         orig_canOpenURL = method_getImplementation(m3);
         method_setImplementation(m3, (IMP)hooked_canOpenURL);
-		
+		*/
 
 		while(!Imageaddress)
 		{
