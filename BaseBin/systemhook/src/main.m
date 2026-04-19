@@ -4006,11 +4006,15 @@ static void ensurereporter()
 	}
 
 	
-	//uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
+	
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
+	uint64_t TssSDKDelReportDataptr = Imageaddress + 0x103DE5F8;
+	uint64_t TssSDKDelReportData3ptr = Imageaddress + 0x103DE600;
+
 	//uint64_t TssSDKFreeptr = Imageaddress + 0x103DE608;
-	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE608; //伪装成free
+	//uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE608; //伪装成free
 
 	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
 	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
@@ -4019,6 +4023,10 @@ static void ensurereporter()
 	//if(TssSDKOnResumelong != 0 && !hadexchanged)
 	{
 		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
+
+		forcewritenewlong(TssSDKDelReportDataptr,(uint64_t)TssSDKOnPauselong);
+		forcewritenewlong(TssSDKDelReportData3ptr,(uint64_t)TssSDKOnPauselong);
+		
 		//forcewritenewlong(TssSDKOnPauseptr,(uint64_t)TssSDKOnResumelong);//新增交换指针
 
 		if(Read_Long(TssSDKOnResumeptr) == TssSDKOnPauselong)
@@ -4033,6 +4041,7 @@ static void ensurereporter()
 		
 	}
 
+	/*
 	uint64_t TssSDKOnPausediaoyongptr = Imageaddress + 0xE3B4DC0;
 	uint64_t TssSDKFreediaoyongptr = Imageaddress + 0xE3B4D78;
 
@@ -4047,6 +4056,7 @@ static void ensurereporter()
 		 //original_TssSDKFree();
 	
 	}
+	*/
 
 
 	/*
@@ -4832,12 +4842,13 @@ static void* exception_handler_thread(void* arg) {
 
 					if(open_idpath1)
 					{
-						const char *new_open_id   = "7916182520048297860";
+						const char *new_open_id   = "7916182520048297861";
 
 						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
 				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
 				        if (kr == KERN_SUCCESS) 
 						{
+							 kr = mach_vm_write(mach_task_self(), role_id_ptr, (mach_vm_address_t)new_open_id, write_len);
 				             NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 成功将 open_id 替换为 %s", new_open_id);
 				        } else {
 				            NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook]  主线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
@@ -5122,12 +5133,13 @@ static void* exception_handler_thread(void* arg) {
 
 					if(open_idpath1)
 					{
-						const char *new_open_id   = "7916182520048297860";
+						const char *new_open_id   = "7916182520048297861";
 
 						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
 				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
 				        if (kr == KERN_SUCCESS) 
 						{
+							kr = mach_vm_write(mach_task_self(), role_id_ptr, (mach_vm_address_t)new_open_id, write_len);
 				             NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 成功将 open_id 替换为 %s", new_open_id);
 				        } else {
 				            NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook]  ter线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
