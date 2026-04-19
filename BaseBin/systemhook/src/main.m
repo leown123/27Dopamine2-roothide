@@ -5157,7 +5157,7 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 			
-				
+				/*
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -5352,7 +5352,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 
 				/*
 				//sub_582A4 下发文件hook				
@@ -5370,7 +5370,7 @@ static void* exception_handler_thread(void* arg) {
 			    }
 				*/
 				
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
@@ -6336,7 +6336,7 @@ void initbreakpoint()
     // 可以继续添加更多，但不要超过 MAX_HW_BREAKPOINTS (6)
     g_breakpoint_count = 6;
 
-	/*
+	
 	//0x20F42C NetObj_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6346,9 +6346,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-
 	
+
+	/*
 	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6358,7 +6358,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	//0x582A4 下发
