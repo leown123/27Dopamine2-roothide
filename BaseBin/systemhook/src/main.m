@@ -4100,6 +4100,38 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
 	*/
+
+	uint64_t yueyuptr1 =  (uint64_t)(tersafeadd + 0x2B8D98);
+	int yueyuptr1count = Read_Int(yueyuptr1);
+	if( yueyuptr1count != 1)
+	{
+		forcewritenew(yueyuptr1,1);
+		NSLog(@"小罪ADD: ensurereporter: yueyuptr1: 0x%llx ,yueyuptr1count: %d", yueyuptr1,yueyuptr1count);
+	}
+
+	uint64_t yueyuptr2=  (uint64_t)(tersafeadd + 0x2B7038);
+	int yueyuptr2count = Read_Int(yueyuptr2);
+	if( yueyuptr2count != 1)
+	{
+		forcewritenew(yueyuptr2,1);
+		NSLog(@"小罪ADD: ensurereporter: yueyuptr2: 0x%llx ,yueyuptr2count: %d", yueyuptr2,yueyuptr2count);
+	}
+
+	uint64_t yueyuptr2=  (uint64_t)(tersafeadd + 0x2B7038);
+	int yueyuptr2count = Read_Int(yueyuptr2);
+	if( yueyuptr2count != 1)
+	{
+		forcewritenew(yueyuptr2,1);
+		NSLog(@"小罪ADD: ensurereporter: yueyuptr2: 0x%llx ,yueyuptr2count: %d", yueyuptr2,yueyuptr2count);
+	}
+
+	uint64_t yueyuptr3=  (uint64_t)(tersafeadd + 0x2B7040);
+	long yueyuptr3count = Read_Long(yueyuptr3);
+	if( yueyuptr3count != 0)
+	{
+		forcewritenewlong(yueyuptr3,0);
+		NSLog(@"小罪ADD: ensurereporter: yueyuptr3: 0x%llx ,yueyuptr3count: %lx", yueyuptr3,yueyuptr3count);
+	}
 	
 
 }
@@ -4793,10 +4825,10 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 3) //异常上报ReportQueue_Enqueue sub_210EAC
 			{
 				//0x20FCF4 ReportQueue_Enqueue write
-				NSLog(@"小罪ADD: [tersafe 0x20FCF4 hook] 主线程 ReportQueue_Enqueue write called");
+				//NSLog(@"小罪ADD: [tersafe 0x20FCF4 hook] 主线程 ReportQueue_Enqueue write called");
 
 			
-					/*
+					
 					uint64_t myptr = thread_state2.__x[1];
 					int opcode = Read_Int(myptr);
 					//const char* result = "";
@@ -4813,13 +4845,17 @@ static void* exception_handler_thread(void* arg) {
 					if(opcode >= 0x800) result = @"超过0x800的未知异常";
 	
 					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue 主线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-					*/
+					
 	
 			}
 
 			if(bptype== 4)
 			{
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				//0x20FD6C 查询容器容量
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+
+			
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -5113,7 +5149,10 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
+				//0x20FD6C 查询容器容量
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+			
+				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
@@ -5707,9 +5746,9 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 3) 
 			{	
 				//0x20FCF4 ReportQueue_Enqueue write
-				NSLog(@"小罪ADD: [tersafe 0x20FCF4 hook] ter线程 ReportQueue_Enqueue write called");
+				//NSLog(@"小罪ADD: [tersafe 0x20FCF4 hook] ter线程 ReportQueue_Enqueue write called");
 			
-				/*
+				
 				//异常上报 ReportQueue_Enqueue sub_210EAC
 				uint64_t myptr = thread_state2.__x[1];
 				int opcode = Read_Int(myptr);
@@ -5727,7 +5766,7 @@ static void* exception_handler_thread(void* arg) {
 				if(opcode >= 0x800) result = @"超过0x800的未知异常";
 
 				NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue tersafe线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-				*/
+				
 				
 				//NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter线程 VM_DispatchPendingCallbacks called");
 				
@@ -6075,6 +6114,9 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd43 = tersafeadd + 0x2103B8;//sub_2103B8 上面的闪退处理
 	mach_vm_address_t tersafetsadd43ret = (mach_vm_address_t)hooked_ret1;
+
+	mach_vm_address_t tersafetsadd44 = tersafeadd + 0x20FD6C;//sub_20FD6C 查询容器容量
+	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret0;
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6145,7 +6187,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x210EAC ReportQueue_Enqueue  很重要，没有就直接三方了
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
@@ -6155,8 +6197,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x20FCF4 ReportQueue_Enqueue write
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd42,
@@ -6166,6 +6209,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//sub_107A120BC
@@ -6202,6 +6246,18 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
+
+	//0x20FD6C 查询容器容量
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
 	
 
 	/*
@@ -6216,7 +6272,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -6225,7 +6281,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
@@ -6383,11 +6439,23 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x2103B8 新写法闪退
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd43,
         .target = tersafetsadd43ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x20FD6C 查询容器容量
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -6465,7 +6533,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
 	//0x218D58 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -6489,7 +6556,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd22,
@@ -6499,8 +6566,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x20FCF4 ReportQueue_Enqueue write
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd42,
@@ -6510,7 +6578,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
+	*/
+	
 	// 0x93C10 闪退
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
@@ -7087,6 +7156,34 @@ uint64_t hooked_ReportQueue(uint64_t x0,uint64_t x1)
 				
 }
 
+typedef unsigned int (*sleep_func_t)(unsigned int seconds);
+sleep_func_t orig_sleep = NULL;
+
+// 自定义的替换函数
+unsigned int hooked_sleep(unsigned int seconds) 
+{
+
+	NSLog(@"小罪ADD: systemhook: ter线程 hooked_sleep called");
+	uint64_t caller_return_address = (uint64_t)__builtin_return_address(0);
+
+	NSLog(@"小罪ADD: systemhook: hooked_sleep caller_return_address: 0x%llx , ptr: 0x%llx",caller_return_address,caller_return_address-tersafeadd);
+
+	NSLog(@"小罪ADD: [+] Hooked hooked_sleep called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+	kern_return_t kr = thread_suspend(mach_thread_self());
+
+    //printf("[Dobby Hook] sleep(%u) called\n", seconds);
+    
+    // 可以修改参数，例如强制睡眠时间减半
+    // seconds = seconds / 2;
+    
+    // 调用原函数
+    //unsigned int ret = orig_sleep(seconds);
+
+    // 可以修改返回值，例如强制返回 0
+    // return 0;
+    return ret;
+}
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -7335,6 +7432,10 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(ReportQueue_ptr, (void *)hooked_ReportQueue, (void **)&original_ReportQueue);
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
+
+		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
+		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
+		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
 
 		loadandinitshare(); //26.3.21屏蔽
 
