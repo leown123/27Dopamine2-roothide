@@ -4117,20 +4117,20 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr2: 0x%llx ,yueyuptr2count: %d", yueyuptr2,yueyuptr2count);
 	}
 
-	uint64_t yueyuptr2=  (uint64_t)(tersafeadd + 0x2B7038);
-	int yueyuptr2count = Read_Int(yueyuptr2);
-	if( yueyuptr2count != 1)
-	{
-		forcewritenew(yueyuptr2,1);
-		NSLog(@"小罪ADD: ensurereporter: yueyuptr2: 0x%llx ,yueyuptr2count: %d", yueyuptr2,yueyuptr2count);
-	}
-
 	uint64_t yueyuptr3=  (uint64_t)(tersafeadd + 0x2B7040);
 	long yueyuptr3count = Read_Long(yueyuptr3);
 	if( yueyuptr3count != 0)
 	{
 		forcewritenewlong(yueyuptr3,0);
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr3: 0x%llx ,yueyuptr3count: %lx", yueyuptr3,yueyuptr3count);
+	}
+
+	uint64_t yueyuptr4 =  (uint64_t)(tersafeadd + 0x2B8D98);
+	int yueyuptr4count = Read_Int(yueyuptr4);
+	if( yueyuptr4count != 1)
+	{
+		forcewritenew(yueyuptr4,1);
+		NSLog(@"小罪ADD: ensurereporter: yueyuptr4: 0x%llx ,yueyuptr4count: %d", yueyuptr4,yueyuptr4count);
 	}
 	
 
@@ -7181,8 +7181,8 @@ unsigned int hooked_sleep(unsigned int seconds)
     //unsigned int ret = orig_sleep(seconds);
 
     // 可以修改返回值，例如强制返回 0
-    // return 0;
-    return ret;
+    return 0;
+    //return ret;
 }
 
 //入口
