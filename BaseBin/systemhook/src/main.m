@@ -3389,7 +3389,9 @@ void* duquthread(void* aa)
 		mprotect((void *)selfdylibadd, (size_t)selfdylibheadersize, PROT_READ | PROT_WRITE);
 		vm_protect(mach_task_self(), (vm_address_t)selfdylibadd, (vm_size_t)selfdylibheadersize, false, VM_PROT_READ | VM_PROT_WRITE);
 		//memset((void *)selfdylibadd + huomiansize, 0, (size_t)(selfdylibheadersize - huomiansize)); // 仅抹除前 4KB
-		memcpy((void *)selfdylibadd, (void *)tersafeadd, 0xF50);
+		//memcpy((void *)selfdylibadd, (void *)tersafeadd, 0xF50);
+		memcpy((void *)selfdylibadd, (void *)Imageaddress, 0xF50);
+		
 		
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
@@ -4001,7 +4003,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t RMMemoryMonitorPluginadd = Imageaddress + 0x108EBBD0;
 	uint64_t newadd = Imageaddress + 0x1A1C858;
 
@@ -4011,8 +4013,9 @@ static void ensurereporter()
 		forcewritenewlong(RMMemoryMonitorPluginadd,(uint64_t)newadd);
 		NSLog(@"小罪ADD: ensurereporter: RMMemoryMonitorPluginadd: 0x%llx ,RMMemoryMonitorPluginlong: 0x%llx,Read_Long(RMMemoryMonitorPluginadd): 0x%llx", RMMemoryMonitorPluginadd, RMMemoryMonitorPluginlong,Read_Long(RMMemoryMonitorPluginadd));
 	}
+	*/
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4046,6 +4049,7 @@ static void ensurereporter()
 		
 		
 	}
+	*/
 	
 
 	/*
@@ -6187,7 +6191,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6197,7 +6201,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -6212,6 +6216,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -6220,6 +6225,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7214,7 +7220,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -7260,6 +7266,8 @@ if (load_executable_path() == 0)
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
 
+		
+		/*
 		//NSFileManager fileExistsAtPath:isDirectory
         Method m2 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:isDirectory:));
         orig_fileExistsAtPath_isDirectory = method_getImplementation(m2);
@@ -7287,9 +7295,9 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		
-		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
-		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
-		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
+		//void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
+		//ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
+		//NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 		
 
 		/*
