@@ -4015,7 +4015,7 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4049,7 +4049,7 @@ static void ensurereporter()
 		
 		
 	}
-	*/
+	
 	
 
 	/*
@@ -6257,9 +6257,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	
-	
-
 	/*
 	//0x2B2AC tss_get_report_data2
 	g_breakpoints[4] = (Breakpoint){
@@ -7162,15 +7159,22 @@ sleep_func_t orig_sleep = NULL;
 // 自定义的替换函数
 unsigned int hooked_sleep(unsigned int seconds) 
 {
-
-	NSLog(@"小罪ADD: systemhook: ter线程 hooked_sleep called");
 	uint64_t caller_return_address = (uint64_t)__builtin_return_address(0);
 
-	NSLog(@"小罪ADD: systemhook: hooked_sleep caller_return_address: 0x%llx , ptr: 0x%llx",caller_return_address,caller_return_address-tersafeadd);
+	if(caller_return_address == (uint64_t)(tersafeadd + 0x0x2138f4))
+	{
+		NSLog(@"小罪ADD: systemhook: ter线程 hooked_sleep called");
+		
+	
+		NSLog(@"小罪ADD: systemhook: hooked_sleep caller_return_address: 0x%llx , ptr: 0x%llx",caller_return_address,caller_return_address-tersafeadd);
+	
+		NSLog(@"小罪ADD: [+] Hooked hooked_sleep called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	
+		kern_return_t kr = thread_suspend(mach_thread_self());
 
-	NSLog(@"小罪ADD: [+] Hooked hooked_sleep called. Stack trace:\n%@", [NSThread callStackSymbols]);
+		return 0;
+	}
 
-	kern_return_t kr = thread_suspend(mach_thread_self());
 
     //printf("[Dobby Hook] sleep(%u) called\n", seconds);
     
@@ -7178,11 +7182,11 @@ unsigned int hooked_sleep(unsigned int seconds)
     // seconds = seconds / 2;
     
     // 调用原函数
-    //unsigned int ret = orig_sleep(seconds);
+    unsigned int ret = orig_sleep(seconds);
 
     // 可以修改返回值，例如强制返回 0
-    return 0;
-    //return ret;
+    //return 0;
+    return ret;
 }
 
 //入口
@@ -7433,11 +7437,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		/*
+		
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
