@@ -7161,7 +7161,7 @@ unsigned int hooked_sleep(unsigned int seconds)
 {
 	uint64_t caller_return_address = (uint64_t)__builtin_return_address(0);
 
-	if(caller_return_address == (uint64_t)(tersafeadd + 0x0x2138f4))
+	if(caller_return_address == (uint64_t)(tersafeadd + 0x2138f4))
 	{
 		NSLog(@"小罪ADD: systemhook: ter线程 hooked_sleep called");
 		
