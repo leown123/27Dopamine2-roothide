@@ -4015,7 +4015,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4049,7 +4049,7 @@ static void ensurereporter()
 		
 		
 	}
-	
+	*/
 	
 
 	/*
@@ -4070,7 +4070,7 @@ static void ensurereporter()
 	*/
 
 
-	/*
+	
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4079,9 +4079,9 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2countptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2countptr: 0x%llx ,count: %d", TssSDKGetReportData2countptr,count);
 	}
-	*/
+	
 
-	/*
+	
 	//TssSDKGetReportData2 count2
 	uint64_t TssSDKGetReportData2count2ptr =  (uint64_t)(tersafeadd + 0x2B8E32);
 	int count2 = (int)Read_Int(TssSDKGetReportData2count2ptr);
@@ -4099,8 +4099,9 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2count3ptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
-	*/
+	
 
+	
 	uint64_t yueyuptr1 =  (uint64_t)(tersafeadd + 0x2B8D98);
 	int yueyuptr1count = Read_Int(yueyuptr1);
 	if( yueyuptr1count != 1)
@@ -4580,7 +4581,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{
-				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
+				//0x154108 commit_patch_memory
+				NSLog(@"小罪ADD: [tersafe 0x154108 hook] 主线程触发commit_patch_memory"); 
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 
@@ -5844,7 +5847,11 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
-				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
+				//0x154108 commit_patch_memory
+				NSLog(@"小罪ADD: [tersafe 0x154108 hook] tersafe线程触发commit_patch_memory"); 
+			
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
+				
 			
 				//0x193F90
 				//NSLog(@"小罪ADD: [tersafe 0x193F90 hook] tersafe线程 游戏自带hook触发");
@@ -6117,6 +6124,11 @@ void initbreakpoint()
 
 	mach_vm_address_t tersafetsadd44 = tersafeadd + 0x20FD6C;//sub_20FD6C 查询容器容量
 	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd45 = tersafeadd + 0x154108;//sub_154108 commit_patch_memory
+	mach_vm_address_t tersafetsadd45ret = (mach_vm_address_t)hooked_ret1;
+
+	
 	
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6132,6 +6144,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x6CF8 环境
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
@@ -6141,6 +6154,19 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
+
+	//0x154108 commit_patch_memory
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd45,
+        .target = tersafetsadd45ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
 
 	/*
 	//0x93978 ScanEngine_GetInstance
@@ -6587,11 +6613,23 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x6CF8 环境
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x154108 commit_patch_memory
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd45,
+        .target = tersafetsadd45ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
