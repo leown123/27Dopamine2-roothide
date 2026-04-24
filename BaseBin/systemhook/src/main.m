@@ -4585,10 +4585,13 @@ static void* exception_handler_thread(void* arg) {
 				uint64_t a2 = thread_state2.__x[1];
 				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
 
-				if(a2 == 2 || a2 == 3)
+				if(a2 == 2)// || a2 == 3
 				{
-					bp->target = (uint64_t)(hooked_ret0);
-					NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent TssSDKOnPause或TssSDKOnResume触发，直接返回0",a2); 
+					thread_state2.__x[1] = 3;
+					//bp->target = (uint64_t)(hooked_ret0);
+					NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent TssSDKOnPause触发：a2:%d改为:%d",a2,thread_state2.__x[1]);
+					thread_state2.__sp = thread_state2.__sp - 0x30;
+					bp->target = (uint64_t)(tersafeadd + 0x3F748);
 				}
 				else
 				{
@@ -5864,13 +5867,15 @@ static void* exception_handler_thread(void* arg) {
 			{	
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
-				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] tersafe线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
+				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] ter线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
 
-				if(a2 == 2 || a2 == 3)
+				if(a2 == 2)// || a2 == 3
 				{
-					bp->target = (uint64_t)(hooked_ret0);
-					NSLog(@"小罪ADD: [tersafe 0x3F744 hook] tersafe线程触发TssSDKDispatchMonitorEvent TssSDKOnPause或TssSDKOnResume触发，直接返回0",a2); 
-		
+					thread_state2.__x[1] = 3;
+					//bp->target = (uint64_t)(hooked_ret0);
+					NSLog(@"小罪ADD: [tersafe 0x3F744 hook] ter线程触发TssSDKDispatchMonitorEvent TssSDKOnPause触发：a2:%d改为:%d",a2,thread_state2.__x[1]);
+					thread_state2.__sp = thread_state2.__sp - 0x30;
+					bp->target = (uint64_t)(tersafeadd + 0x3F748);
 				}
 				else
 				{
