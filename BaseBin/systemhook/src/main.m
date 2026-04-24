@@ -4015,7 +4015,7 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4049,7 +4049,7 @@ static void ensurereporter()
 		
 		
 	}
-	*/
+	
 	
 
 	/*
@@ -4070,7 +4070,7 @@ static void ensurereporter()
 	*/
 
 
-	
+	/*
 	//TssSDKGetReportData2 count
 	uint64_t TssSDKGetReportData2countptr =  (uint64_t)(tersafeadd + 0x2B8EC0);
 	int count = (int)Read_Int(TssSDKGetReportData2countptr);
@@ -4099,7 +4099,7 @@ static void ensurereporter()
 		forcewritenew(TssSDKGetReportData2count3ptr,0);
 		NSLog(@"小罪ADD: ensurereporter: TssSDKGetReportData2count3ptr: 0x%llx ,count2: %d", TssSDKGetReportData2count3ptr,count3);
 	}
-	
+	*/
 
 	
 	uint64_t yueyuptr1 =  (uint64_t)(tersafeadd + 0x2B8D98);
@@ -4581,8 +4581,23 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{
+				//0x3F744 TssSDKDispatchMonitorEvent
+				uint64_t a2 = thread_state2.__x[1];
+				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
+
+				if(a2 == 2 || a2 == 3)
+				{
+					bp->target = (uint64_t)(hooked_ret0);
+					NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent TssSDKOnPause或TssSDKOnResume触发，直接返回0",a2); 
+				}
+				else
+				{
+					thread_state2.__sp = thread_state2.__sp - 0x30;
+					bp->target = (uint64_t)(tersafeadd + 0x3F748);
+				}
+			
 				//0x154108 commit_patch_memory
-				NSLog(@"小罪ADD: [tersafe 0x154108 hook] 主线程触发commit_patch_memory"); 
+				//NSLog(@"小罪ADD: [tersafe 0x154108 hook] 主线程触发commit_patch_memory"); 
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C hook] 主线程触发 VM_DebugDetect_Dispatch");
@@ -5847,8 +5862,26 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				//0x3F744 TssSDKDispatchMonitorEvent
+				uint64_t a2 = thread_state2.__x[1];
+				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] tersafe线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
+
+				if(a2 == 2 || a2 == 3)
+				{
+					bp->target = (uint64_t)(hooked_ret0);
+					NSLog(@"小罪ADD: [tersafe 0x3F744 hook] tersafe线程触发TssSDKDispatchMonitorEvent TssSDKOnPause或TssSDKOnResume触发，直接返回0",a2); 
+		
+				}
+				else
+				{
+					thread_state2.__sp = thread_state2.__sp - 0x30;
+					bp->target = (uint64_t)(tersafeadd + 0x3F748);
+				}
+				
+			
+			
 				//0x154108 commit_patch_memory
-				NSLog(@"小罪ADD: [tersafe 0x154108 hook] tersafe线程触发commit_patch_memory"); 
+				//NSLog(@"小罪ADD: [tersafe 0x154108 hook] tersafe线程触发commit_patch_memory"); 
 			
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 				
@@ -6128,6 +6161,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd45 = tersafeadd + 0x154108;//sub_154108 commit_patch_memory
 	mach_vm_address_t tersafetsadd45ret = (mach_vm_address_t)hooked_ret1;
 
+	mach_vm_address_t tersafetsadd46 = tersafeadd + 0x3F744;//sub_3F744 TssSDKDispatchMonitorEvent
+	mach_vm_address_t tersafetsadd46ret = tersafeadd + 0x3F748;
+
+	
+
 	
 	
 	g_source_addr = wuhouadd;
@@ -6156,6 +6194,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x154108 commit_patch_memory
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd45,
@@ -6165,7 +6204,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
+	//0x3F744 TssSDKDispatchMonitorEvent
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd46,
+        .target = tersafetsadd46ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 
 	/*
@@ -6625,10 +6674,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x154108 commit_patch_memory
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd45,
         .target = tersafetsadd45ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x3F744 TssSDKDispatchMonitorEvent
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd46,
+        .target = tersafetsadd46ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7434,9 +7495,9 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		
-		//void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
-		//ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
-		//NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
+		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
+		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
+		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
 		
 
 		/*
