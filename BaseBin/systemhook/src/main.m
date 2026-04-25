@@ -4042,7 +4042,7 @@ static void ensurereporter()
 		//&& Read_Long(TssSDKOnPauseptr) == TssSDKOnResumelong)
 		{
 			//hadexchanged = true;
-			NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumeptr: 0x%llx ,TssSDKOnResumelong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumeptr, TssSDKOnResumelong,Read_Long(TssSDKOnResumeptr));
+			NSLog(@"小罪ADD: ensurereporter: TssSDKOnResumelong: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumelong, TssSDKOnPauselong,Read_Long(TssSDKOnResumeptr));
 			//NSLog(@"小罪ADD: ensurereporter: TssSDKOnPauseptr: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKOnPauseptr): 0x%llx", TssSDKOnPauseptr, TssSDKOnPauselong,Read_Long(TssSDKOnPauseptr));
 
 		}
@@ -4581,6 +4581,62 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				//0x2A2B0 _tp2_setuserinfo
+				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo 主线程 called !");
+
+				thread_state2.__x[0] = 3;
+
+				//先还原
+			    uint64_t sp = thread_state2.__sp;
+				
+			    //uint64_t new_x29 = sp + 0x50;
+			    //thread_state2.__x[29] = new_x29;   // X29 即帧指针
+				
+				uint64_t new_x29 = sp + 0x50;
+			    thread_state2.__fp = new_x29;   // 使用 __fp 而不是 __x[29]
+
+				uint64_t open_id_ptr = thread_state2.__x[2];
+			    char open_idpath1[1024] = {0};
+			    mach_vm_size_t bytes_read1 = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(open_idpath1)-1,
+			                                              (mach_vm_address_t)open_idpath1, &bytes_read1);
+				uint64_t role_id_ptr = thread_state2.__x[3];
+			    char role_idpath2[1024] = {0};
+			    mach_vm_size_t bytes_read2 = 0;
+			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(role_idpath2)-1,
+			                                              (mach_vm_address_t)role_idpath2, &bytes_read2);
+	
+			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
+				{
+			        open_idpath1[bytes_read1] = '\0';
+					role_idpath2[bytes_read2] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
+
+					//open_idpath1: 7916182520048297861
+
+					if(open_idpath1)
+					{
+						const char *new_open_id   = "7916182520048297861";
+
+						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
+				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
+				        if (kr == KERN_SUCCESS) 
+						{
+							 kr = mach_vm_write(mach_task_self(), role_id_ptr, (mach_vm_address_t)new_open_id, write_len);
+				             NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 成功将 open_id 替换为 %s", new_open_id);
+				        } else {
+				            NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook]  主线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
+				        }
+
+					}
+
+			    } 
+				else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
+			    }
+
+			
 				/*
 				//0x33DA4 tp2_setgamestatus
 				uint64_t a1 = thread_state2.__x[0];
@@ -4602,11 +4658,12 @@ static void* exception_handler_thread(void* arg) {
 				}
 				*/
 
-				
+				/*
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
 				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent a2:%d,直接返回0",a2); 
-
+				*/
+				
 				/*
 				if(a2 == 2)// || a2 == 3
 				{
@@ -4902,60 +4959,6 @@ static void* exception_handler_thread(void* arg) {
 			
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
-				/*
-				//0x2A2B0 _tp2_setuserinfo
-				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo 主线程 called !");
-
-				//先还原
-			    uint64_t sp = thread_state2.__sp;
-				
-			    //uint64_t new_x29 = sp + 0x50;
-			    //thread_state2.__x[29] = new_x29;   // X29 即帧指针
-				
-				uint64_t new_x29 = sp + 0x50;
-			    thread_state2.__fp = new_x29;   // 使用 __fp 而不是 __x[29]
-
-				uint64_t open_id_ptr = thread_state2.__x[2];
-			    char open_idpath1[1024] = {0};
-			    mach_vm_size_t bytes_read1 = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(open_idpath1)-1,
-			                                              (mach_vm_address_t)open_idpath1, &bytes_read1);
-				uint64_t role_id_ptr = thread_state2.__x[3];
-			    char role_idpath2[1024] = {0};
-			    mach_vm_size_t bytes_read2 = 0;
-			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(role_idpath2)-1,
-			                                              (mach_vm_address_t)role_idpath2, &bytes_read2);
-	
-			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
-				{
-			        open_idpath1[bytes_read1] = '\0';
-					role_idpath2[bytes_read2] = '\0';
-			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
-
-					//open_idpath1: 7916182520048297861
-
-					if(open_idpath1)
-					{
-						const char *new_open_id   = "7916182520048297861";
-
-						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
-				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
-				        if (kr == KERN_SUCCESS) 
-						{
-							 kr = mach_vm_write(mach_task_self(), role_id_ptr, (mach_vm_address_t)new_open_id, write_len);
-				             NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 成功将 open_id 替换为 %s", new_open_id);
-				        } else {
-				            NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook]  主线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
-				        }
-
-					}
-
-			    } 
-				else 
-				{
-			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
-			    }
-				*/
 
 				
 
@@ -5198,62 +5201,7 @@ static void* exception_handler_thread(void* arg) {
 				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
-				/*
-				//0x2A2B0 _tp2_setuserinfo
-				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
 
-				//先还原
-			    uint64_t sp = thread_state2.__sp;
-				
-			    //uint64_t new_x29 = sp + 0x50;
-			    //thread_state2.__x[29] = new_x29;   // X29 即帧指针
-				
-				uint64_t new_x29 = sp + 0x50;
-			    thread_state2.__fp = new_x29;   // 使用 __fp 而不是 __x[29]
-
-				uint64_t open_id_ptr = thread_state2.__x[2];
-			    char open_idpath1[1024] = {0};
-			    mach_vm_size_t bytes_read1 = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(open_idpath1)-1,
-			                                              (mach_vm_address_t)open_idpath1, &bytes_read1);
-				uint64_t role_id_ptr = thread_state2.__x[3];
-			    char role_idpath2[1024] = {0};
-			    mach_vm_size_t bytes_read2 = 0;
-			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(role_idpath2)-1,
-			                                              (mach_vm_address_t)role_idpath2, &bytes_read2);
-	
-			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
-				{
-			        open_idpath1[bytes_read1] = '\0';
-					role_idpath2[bytes_read2] = '\0';
-			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
-
-					//open_idpath1: 7916182520048297861
-
-					if(open_idpath1)
-					{
-						const char *new_open_id   = "7916182520048297861";
-
-						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
-				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
-				        if (kr == KERN_SUCCESS) 
-						{
-							kr = mach_vm_write(mach_task_self(), role_id_ptr, (mach_vm_address_t)new_open_id, write_len);
-				             NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 成功将 open_id 替换为 %s", new_open_id);
-				        } else {
-				            NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook]  ter线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
-				        }
-
-					}
-
-			    } 
-				else 
-				{
-			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
-			    }
-				*/
-
-			
 				/*
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
@@ -5889,6 +5837,61 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				//0x2A2B0 _tp2_setuserinfo
+				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
+
+				thread_state2.__x[0] = 3;
+
+				//先还原
+			    uint64_t sp = thread_state2.__sp;
+				
+			    //uint64_t new_x29 = sp + 0x50;
+			    //thread_state2.__x[29] = new_x29;   // X29 即帧指针
+				
+				uint64_t new_x29 = sp + 0x50;
+			    thread_state2.__fp = new_x29;   // 使用 __fp 而不是 __x[29]
+
+				uint64_t open_id_ptr = thread_state2.__x[2];
+			    char open_idpath1[1024] = {0};
+			    mach_vm_size_t bytes_read1 = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), open_id_ptr, sizeof(open_idpath1)-1,
+			                                              (mach_vm_address_t)open_idpath1, &bytes_read1);
+				uint64_t role_id_ptr = thread_state2.__x[3];
+			    char role_idpath2[1024] = {0};
+			    mach_vm_size_t bytes_read2 = 0;
+			    kr = mach_vm_read_overwrite(mach_task_self(), role_id_ptr, sizeof(role_idpath2)-1,
+			                                              (mach_vm_address_t)role_idpath2, &bytes_read2);
+	
+			    if (kr == KERN_SUCCESS && bytes_read1 > 0 && bytes_read2 > 0) 
+				{
+			        open_idpath1[bytes_read1] = '\0';
+					role_idpath2[bytes_read2] = '\0';
+			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 _tp2_setuserinfo open_id: %s ,role_id: %s",open_idpath1 , role_idpath2);
+
+					//open_idpath1: 7916182520048297861
+
+					if(open_idpath1)
+					{
+						const char *new_open_id   = "7916182520048297861";
+
+						size_t write_len = strlen(new_open_id) + 1; // 19 + 1 = 20
+				        kr = mach_vm_write(mach_task_self(), open_id_ptr, (mach_vm_address_t)new_open_id, write_len);
+				        if (kr == KERN_SUCCESS) 
+						{
+							kr = mach_vm_write(mach_task_self(), role_id_ptr, (mach_vm_address_t)new_open_id, write_len);
+				             NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程触发 成功将 open_id 替换为 %s", new_open_id);
+				        } else {
+				            NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook]  ter线程触发 mach_vm_write 失败: %s", mach_error_string(kr));
+				        }
+
+					}
+
+			    } 
+				else 
+				{
+			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
+			    }
+			
 				/*
 				//0x33DA4 tp2_setgamestatus
 				uint64_t a1 = thread_state2.__x[0];
@@ -5911,10 +5914,11 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 			
-				
+				/*
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
 				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] ter线程触发TssSDKDispatchMonitorEvent a2:%d,直接返回0",a2); 
+				*/
 
 				/*
 				if(a2 == 2)// || a2 == 3
@@ -6264,11 +6268,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x3F744 TssSDKDispatchMonitorEvent
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd46,
         .target = tersafetsadd46ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x2A2B0 _tp2_setuserinfo
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd41,
+        .target = tersafetsadd41ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6368,19 +6383,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-
-	/*
-	//0x2A2B0 _tp2_setuserinfo
-	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd41,
-        .target = tersafetsadd41ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
+	
 	/*
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
@@ -6757,11 +6760,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x3F744 TssSDKDispatchMonitorEvent
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd46,
         .target = tersafetsadd46ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x2A2B0 _tp2_setuserinfo
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd41,
+        .target = tersafetsadd41ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
