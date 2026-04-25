@@ -4015,7 +4015,7 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4049,7 +4049,7 @@ static void ensurereporter()
 		
 		
 	}
-	*/
+	
 	
 
 	/*
@@ -4581,6 +4581,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				/*
 				//0x33DA4 tp2_setgamestatus
 				uint64_t a1 = thread_state2.__x[0];
 				NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] 主线程触发 tp2_setgamestatus a2:%d",a1); 
@@ -4599,12 +4600,14 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp = thread_state2.__sp - 0x20;
 					bp->target = (uint64_t)(tersafeadd + 0x33DA8);
 				}
+				*/
 
-				/*
+				
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
-				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
+				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent a2:%d,直接返回0",a2); 
 
+				/*
 				if(a2 == 2)// || a2 == 3
 				{
 					thread_state2.__x[1] = 3;
@@ -5886,6 +5889,7 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				/*
 				//0x33DA4 tp2_setgamestatus
 				uint64_t a1 = thread_state2.__x[0];
 				NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] ter线程触发 tp2_setgamestatus a2:%d",a1); 
@@ -5904,14 +5908,15 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp = thread_state2.__sp - 0x20;
 					bp->target = (uint64_t)(tersafeadd + 0x33DA8);
 				}
-
+				*/
 
 			
-				/*
+				
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
-				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] ter线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
+				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] ter线程触发TssSDKDispatchMonitorEvent a2:%d,直接返回0",a2); 
 
+				/*
 				if(a2 == 2)// || a2 == 3
 				{
 					thread_state2.__x[1] = 3;
@@ -6211,7 +6216,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd45ret = (mach_vm_address_t)hooked_ret1;
 
 	mach_vm_address_t tersafetsadd46 = tersafeadd + 0x3F744;//sub_3F744 TssSDKDispatchMonitorEvent
-	mach_vm_address_t tersafetsadd46ret = tersafeadd + 0x3F748;
+	mach_vm_address_t tersafetsadd46ret = (mach_vm_address_t)hooked_ret0;
+	//mach_vm_address_t tersafetsadd46ret = tersafeadd + 0x3F748;
 
 	mach_vm_address_t tersafetsadd47 = tersafeadd + 0x33DA4;//sub_33DA4 tp2_setgamestatus
 	mach_vm_address_t tersafetsadd47ret = tersafeadd + 0x33DA8;
@@ -6258,7 +6264,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x3F744 TssSDKDispatchMonitorEvent
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd46,
@@ -6268,8 +6274,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x33DA4 tp2_setgamestatus
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd47,
@@ -6279,6 +6286,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x93978 ScanEngine_GetInstance
@@ -6749,7 +6757,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x3F744 TssSDKDispatchMonitorEvent
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd46,
@@ -6759,8 +6767,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
 
+
+	/*
 	//0x33DA4 tp2_setgamestatus
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd47,
@@ -6770,6 +6779,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	
 
