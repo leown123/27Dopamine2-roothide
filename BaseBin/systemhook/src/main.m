@@ -4580,7 +4580,27 @@ static void* exception_handler_thread(void* arg) {
 			}
 
 			if(bptype == 1)
-			{
+			{	
+				//0x33DA4 tp2_setgamestatus
+				uint64_t a1 = thread_state2.__x[0];
+				NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] 主线程触发 tp2_setgamestatus a2:%d",a1); 
+
+				if(a1 == 1)// || a2 == 3
+				{
+					thread_state2.__x[1] = 2;
+					//bp->target = (uint64_t)(hooked_ret0);
+					NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] 主线程触发 TssSDKOnResume 触发：a1:%d改为:%d",a1,thread_state2.__x[1]);
+					thread_state2.__sp = thread_state2.__sp - 0x20;
+					bp->target = (uint64_t)(tersafeadd + 0x33DA8);
+				}
+				else
+				{
+					NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] 主线程触发 TssSDKOnPause 触发，放行");
+					thread_state2.__sp = thread_state2.__sp - 0x20;
+					bp->target = (uint64_t)(tersafeadd + 0x33DA8);
+				}
+
+				/*
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
 				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] 主线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
@@ -4598,6 +4618,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp = thread_state2.__sp - 0x30;
 					bp->target = (uint64_t)(tersafeadd + 0x3F748);
 				}
+				*/
 			
 				//0x154108 commit_patch_memory
 				//NSLog(@"小罪ADD: [tersafe 0x154108 hook] 主线程触发commit_patch_memory"); 
@@ -5865,6 +5886,28 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				//0x33DA4 tp2_setgamestatus
+				uint64_t a1 = thread_state2.__x[0];
+				NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] ter线程触发 tp2_setgamestatus a2:%d",a1); 
+
+				if(a1 == 1)// || a2 == 3
+				{
+					thread_state2.__x[1] = 2;
+					//bp->target = (uint64_t)(hooked_ret0);
+					NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] ter线程触发 TssSDKOnResume 触发：a1:%d改为:%d",a1,thread_state2.__x[1]);
+					thread_state2.__sp = thread_state2.__sp - 0x20;
+					bp->target = (uint64_t)(tersafeadd + 0x33DA8);
+				}
+				else
+				{
+					NSLog(@"小罪ADD: [tersafe 0x33DA4 hook] ter线程触发 TssSDKOnPause 触发，放行");
+					thread_state2.__sp = thread_state2.__sp - 0x20;
+					bp->target = (uint64_t)(tersafeadd + 0x33DA8);
+				}
+
+
+			
+				/*
 				//0x3F744 TssSDKDispatchMonitorEvent
 				uint64_t a2 = thread_state2.__x[1];
 				NSLog(@"小罪ADD: [tersafe 0x3F744 hook] ter线程触发TssSDKDispatchMonitorEvent a2:%d",a2); 
@@ -5882,6 +5925,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp = thread_state2.__sp - 0x30;
 					bp->target = (uint64_t)(tersafeadd + 0x3F748);
 				}
+				*/
 				
 			
 			
@@ -6169,6 +6213,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd46 = tersafeadd + 0x3F744;//sub_3F744 TssSDKDispatchMonitorEvent
 	mach_vm_address_t tersafetsadd46ret = tersafeadd + 0x3F748;
 
+	mach_vm_address_t tersafetsadd47 = tersafeadd + 0x33DA4;//sub_33DA4 tp2_setgamestatus
+	mach_vm_address_t tersafetsadd47ret = tersafeadd + 0x33DA8;
+
 	
 
 	
@@ -6211,6 +6258,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x3F744 TssSDKDispatchMonitorEvent
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd46,
@@ -6220,7 +6268,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//0x33DA4 tp2_setgamestatus
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd47,
+        .target = tersafetsadd47ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0x93978 ScanEngine_GetInstance
@@ -6691,10 +6749,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x3F744 TssSDKDispatchMonitorEvent
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd46,
         .target = tersafetsadd46ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x33DA4 tp2_setgamestatus
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd47,
+        .target = tersafetsadd47ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
