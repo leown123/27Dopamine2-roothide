@@ -4581,6 +4581,199 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				//0xAA880 检测控制开关
+
+				bool iscontainstr = false;
+				//全局检测开关hook sub_AA880
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
+
+					const char* result = "";
+					
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "report");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "screenshot");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "900");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "check");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "cert");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "IDFV");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "tfp");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "device");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "Logout");
+					//if (result != NULL) iscontainstr = true;
+
+
+					//上面全部关闭也会三方
+					//result = strstr(path, "mrpcs"); //会三方
+					//if (result != NULL) iscontainstr = true;
+					
+					
+					result = strstr(path, "anti");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs_");
+					if (result != NULL) iscontainstr = true;
+			
+					/*
+					result = strstr(path, "ts");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tcj");
+					if (result != NULL) iscontainstr = true;
+
+					
+					result = strstr(path, "gcloud");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "sc");
+					if (result != NULL) iscontainstr = true;
+
+					
+					result = strstr(path, "dl");
+					if (result != NULL) iscontainstr = true;
+					
+
+					
+					//result = strstr(path, "mrmoni");  //会三方
+					//if (result != NULL) iscontainstr = true;
+					
+
+					
+					result = strstr(path, "sav");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ac");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ios");
+					if (result != NULL) iscontainstr = true;
+					
+					result = strstr(path, "ob");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+
+					
+					result = strstr(path, "filt");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ne");
+					if (result != NULL) iscontainstr = true;
+					
+
+					
+					result = strstr(path, "mt");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "game");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "Game");
+					if (result != NULL) iscontainstr = true;
+					
+
+					
+					result = strstr(path, "ip");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ds");
+					if (result != NULL) iscontainstr = true;
+					
+					result = strstr(path, "port");
+					if (result != NULL) iscontainstr = true;
+					*/
+
+					
+
+					if(iscontainstr == true)
+					{
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 准备干掉字符串并返回0: %s", path);
+						bp->target = (uint64_t)(hooked_ret0);
+						//thread_state2.__sp -= 0x40;
+						//bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+					else
+					{
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 暂时不干掉的检测类型: %s", path);
+						thread_state2.__sp -= 0x40;
+						bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+					// 模拟 SUB SP, SP, #0x40
+					thread_state2.__sp -= 0x40;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+			    }
+			
+				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo 主线程 called !");
 
@@ -4635,6 +4828,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe 主线程 0x2A2B0 hook] 主线程触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
 			    }
+				*/
 
 			
 				/*
@@ -4975,202 +5169,6 @@ static void* exception_handler_thread(void* arg) {
 				
 				//NSLog(@"小罪ADD: [tersafe sub_241968(BufWriter_WriteField) hook] 主线程调用");
 				
-				/*
-				uint64_t path_ptr = thread_state2.__x[1];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) 
-				{
-			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
-					bool iscontainstr = false;
-
-					const char* result = "";
-					
-					result = strstr(path, "scan");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "report");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "screenshot");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "process");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "dylib");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "900");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "module");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "check");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cert");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "IDFV");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "chk");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "jb");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "jail");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tfp");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "device");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "force");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "enc");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "Logout");
-					if (result != NULL) iscontainstr = true;
-
-
-					//以上屏蔽也会三方
-					//result = strstr(path, "mrpcs"); //会三方
-					//if (result != NULL) iscontainstr = true;
-					
-					
-					result = strstr(path, "anti");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					
-					result = strstr(path, "ts");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tcj");
-					if (result != NULL) iscontainstr = true;
-
-					
-					result = strstr(path, "gcloud");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "sc");
-					if (result != NULL) iscontainstr = true;
-
-					
-					result = strstr(path, "dl");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					//result = strstr(path, "mrmoni");  //会三方
-					//if (result != NULL) iscontainstr = true;
-					
-
-					
-					result = strstr(path, "sav");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ac");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ios");
-					if (result != NULL) iscontainstr = true;
-					
-					result = strstr(path, "ob");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, ".img");
-					if (result != NULL) iscontainstr = true;
-
-					
-					result = strstr(path, "filt");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ne");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					result = strstr(path, "mt");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cs_");
-					if (result != NULL) iscontainstr = true;
-					
-					
-
-					
-					result = strstr(path, "game");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "Game");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					result = strstr(path, "ip");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ds");
-					if (result != NULL) iscontainstr = true;
-					
-					result = strstr(path, "port");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-
-					if(iscontainstr == true)
-					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 准备干掉字符串并返回0: %s", path);
-						bp->target = (uint64_t)(hooked_ret0);
-						//thread_state2.__sp -= 0x40;
-						//bp->target = (uint64_t)(thread_state2.__pc + 4);
-					}
-					else
-					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 暂时不干掉的检测类型: %s", path);
-						thread_state2.__sp -= 0x40;
-						bp->target = (uint64_t)(thread_state2.__pc + 4);
-					}
-
-					
-			    } else 
-				{
-			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 Failed to read 检测类型 at 0x%llx", path_ptr);
-					// 模拟 SUB SP, SP, #0x40
-					thread_state2.__sp -= 0x40;
-					bp->target = (uint64_t)(thread_state2.__pc + 4);
-			    }
-				*/
-				
 				
 			
 			}
@@ -5202,202 +5200,6 @@ static void* exception_handler_thread(void* arg) {
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
-				/*
-				bool iscontainstr = false;
-				//全局检测开关hook sub_AA880
-				uint64_t path_ptr = thread_state2.__x[1];
-			    char path[1024] = {0};
-			    mach_vm_size_t bytes_read = 0;
-			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
-			                                              (mach_vm_address_t)path, &bytes_read);
-			    if (kr == KERN_SUCCESS && bytes_read > 0) 
-				{
-			        path[bytes_read] = '\0';
-			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
-
-					const char* result = "";
-					
-					result = strstr(path, "scan");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "report");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "screenshot");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "process");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "dylib");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "900");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "module");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "check");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cert");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "IDFV");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "chk");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "jb");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "jail");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tfp");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "device");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "force");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "enc");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "Logout");
-					if (result != NULL) iscontainstr = true;
-
-
-					//上面全部关闭也会三方
-					//result = strstr(path, "mrpcs"); //会三方
-					//if (result != NULL) iscontainstr = true;
-					
-					
-					result = strstr(path, "anti");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					
-					result = strstr(path, "ts");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tcj");
-					if (result != NULL) iscontainstr = true;
-
-					
-					result = strstr(path, "gcloud");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "sc");
-					if (result != NULL) iscontainstr = true;
-
-					
-					result = strstr(path, "dl");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					//result = strstr(path, "mrmoni");  //会三方
-					//if (result != NULL) iscontainstr = true;
-					
-
-					
-					result = strstr(path, "sav");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ac");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ios");
-					if (result != NULL) iscontainstr = true;
-					
-					result = strstr(path, "ob");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, ".img");
-					if (result != NULL) iscontainstr = true;
-
-					
-					result = strstr(path, "filt");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ne");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					result = strstr(path, "mt");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cs_");
-					if (result != NULL) iscontainstr = true;
-					
-					
-
-					
-					result = strstr(path, "game");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "Game");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-					result = strstr(path, "ip");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "ds");
-					if (result != NULL) iscontainstr = true;
-					
-					result = strstr(path, "port");
-					if (result != NULL) iscontainstr = true;
-					
-
-					
-
-					if(iscontainstr == true)
-					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
-						bp->target = (uint64_t)(hooked_ret0);
-						//thread_state2.__sp -= 0x40;
-						//bp->target = (uint64_t)(thread_state2.__pc + 4);
-					}
-					else
-					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
-						thread_state2.__sp -= 0x40;
-						bp->target = (uint64_t)(thread_state2.__pc + 4);
-					}
-
-					
-			    } else 
-				{
-			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 Failed to read 检测类型 at 0x%llx", path_ptr);
-					// 模拟 SUB SP, SP, #0x40
-					thread_state2.__sp -= 0x40;
-					bp->target = (uint64_t)(thread_state2.__pc + 4);
-			    }
-				*/
 
 				/*
 				//sub_582A4 下发文件hook				
@@ -5837,6 +5639,204 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				//0xAA880 检测控制开关
+
+				bool iscontainstr = false;
+				//全局检测开关hook sub_AA880
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
+
+					const char* result = "";
+					
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "report");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "screenshot");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "900");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "check");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "cert");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "IDFV");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "tfp");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "device");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "Logout");
+					//if (result != NULL) iscontainstr = true;
+
+
+					
+					//result = strstr(path, "mrpcs"); //会三方
+					//if (result != NULL) iscontainstr = true;
+					
+					
+					result = strstr(path, "anti");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs_");
+					if (result != NULL) iscontainstr = true;
+
+					//上面全部关闭也会三方
+					
+					/*
+					result = strstr(path, "ts");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tcj");
+					if (result != NULL) iscontainstr = true;
+
+					
+					result = strstr(path, "gcloud");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "sc");
+					if (result != NULL) iscontainstr = true;
+
+					
+					result = strstr(path, "dl");
+					if (result != NULL) iscontainstr = true;
+					
+
+					
+					//result = strstr(path, "mrmoni");  //会三方
+					//if (result != NULL) iscontainstr = true;
+					
+
+					
+					result = strstr(path, "sav");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ac");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ios");
+					if (result != NULL) iscontainstr = true;
+					
+					result = strstr(path, "ob");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+
+					
+					result = strstr(path, "filt");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ne");
+					if (result != NULL) iscontainstr = true;
+					
+
+					
+					result = strstr(path, "mt");
+					if (result != NULL) iscontainstr = true;
+
+					
+
+					
+					result = strstr(path, "game");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "Game");
+					if (result != NULL) iscontainstr = true;
+					
+
+					
+					result = strstr(path, "ip");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "ds");
+					if (result != NULL) iscontainstr = true;
+					
+					result = strstr(path, "port");
+					if (result != NULL) iscontainstr = true;
+					*/
+
+					
+
+					if(iscontainstr == true)
+					{
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
+						bp->target = (uint64_t)(hooked_ret0);
+						//thread_state2.__sp -= 0x40;
+						//bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+					else
+					{
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
+						thread_state2.__sp -= 0x40;
+						bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+					// 模拟 SUB SP, SP, #0x40
+					thread_state2.__sp -= 0x40;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+			    }
+			
+				/*
 				//0x2A2B0 _tp2_setuserinfo
 				NSLog(@"小罪ADD: [tersafe 0x2A2B0 hook] _tp2_setuserinfo ter线程 called !");
 
@@ -5891,6 +5891,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        NSLog(@"小罪ADD: [tersafe ter线程 0x2A2B0 hook] ter线程 触发 _tp2_setuserinfo Failed to read open_id at 0x%llx,role_id at 0x%llx,", open_id_ptr,role_id_ptr);
 			    }
+				*/
 			
 				/*
 				//0x33DA4 tp2_setgamestatus
@@ -6280,6 +6281,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x2A2B0 _tp2_setuserinfo
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd41,
@@ -6289,7 +6291,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//0xAA880 检测控制开关
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0x33DA4 tp2_setgamestatus
@@ -6492,20 +6504,6 @@ void initbreakpoint()
     };
 	*/
 
-	
-	
-	/*
-	//0xAA880 检测控制开关
-	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd18,
-        .target = tersafetsadd18ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-	
 
 	/*
 	g_breakpoints[4] = (Breakpoint){
@@ -6632,18 +6630,6 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0x2A2B0 _tp2_setuserinfo
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd41,
-        .target = tersafetsadd41ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-	
 
 	/*
 	//0x254818 VM_DebugDetect_Instance2
@@ -6772,10 +6758,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x2A2B0 _tp2_setuserinfo
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd41,
         .target = tersafetsadd41ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xAA880 检测控制开关
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7635,11 +7633,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		
+		/*
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 
 		loadandinitshare(); //26.3.21屏蔽
 
