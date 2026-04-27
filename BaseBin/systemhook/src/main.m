@@ -4648,11 +4648,11 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "TDM");
+					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "tdm");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
@@ -4667,7 +4667,7 @@ static void* exception_handler_thread(void* arg) {
 					//if (result != NULL) iscontainstr = true;
 
 
-					//上面全部关闭也会三方
+					
 					//result = strstr(path, "mrpcs"); //会三方
 					//if (result != NULL) iscontainstr = true;
 					
@@ -4675,9 +4675,11 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "anti");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs_");
+					result = strstr(path, "cs");
 					if (result != NULL) iscontainstr = true;
-			
+
+					//上面全部关闭也会三方
+					
 					/*
 					result = strstr(path, "ts");
 					if (result != NULL) iscontainstr = true;
@@ -4730,6 +4732,9 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "mt");
 					if (result != NULL) iscontainstr = true;
 
+					
+
+					
 					result = strstr(path, "game");
 					if (result != NULL) iscontainstr = true;
 
@@ -4747,6 +4752,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
 					*/
+
 
 					
 
@@ -5706,11 +5712,11 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "TDM");
+					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "tdm");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
@@ -5733,7 +5739,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "anti");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs_");
+					result = strstr(path, "cs");
 					if (result != NULL) iscontainstr = true;
 
 					//上面全部关闭也会三方
@@ -7357,9 +7363,19 @@ unsigned int hooked_sleep(unsigned int seconds)
 {
 	uint64_t caller_return_address = (uint64_t)__builtin_return_address(0);
 
-	if(caller_return_address == (uint64_t)(tersafeadd + 0x2138f4))
+	//if(caller_return_address == (uint64_t)(tersafeadd + 0x2138f4))
 	{
+		mach_port_t mach_port = mach_thread_self();
+		pthread_t pthread = pthread_from_mach_thread_np(mach_port);
+
+		char name[256] = {0};
+	
 		NSLog(@"小罪ADD: systemhook: ter线程 hooked_sleep called");
+		int result = pthread_getname_np(pthread, name, sizeof(name));
+		if (result == 0 && strlen(name) > 0)
+		{
+			NSLog(@"小罪ADD: systemhook: ter线程 hooked_sleep called: threadname:%s",name);
+		}
 		
 	
 		NSLog(@"小罪ADD: systemhook: hooked_sleep caller_return_address: 0x%llx , ptr: 0x%llx",caller_return_address,caller_return_address-tersafeadd);
@@ -7633,11 +7649,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		/*
+		
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
