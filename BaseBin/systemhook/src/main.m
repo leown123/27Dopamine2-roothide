@@ -3946,6 +3946,62 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     return kr_all;
 }
 
+void bianlixianchenghack()
+{
+	thread_act_array_t thread_list = NULL;
+    mach_msg_type_number_t thread_count = 0;
+    kern_return_t kr = 0;
+
+    
+    
+    kr = task_threads(mach_task_self(), &thread_list, &thread_count);
+    
+
+    for (int i = 0; i < thread_count; i++) {
+        
+        static mach_msg_type_number_t thread_info_count = THREAD_INFO_MAX;
+        
+        struct thread_extended_info thinfo ={};
+        kr = thread_info(thread_list[i], THREAD_EXTENDED_INFO,
+                         (thread_info_t)&thinfo, &thread_info_count);
+        
+        if (kr == KERN_SUCCESS)
+        {
+            if(strstr(thinfo.pth_name,"ace_cs"))
+            {
+                kr = thread_suspend(thread_list[i]);
+                if (kr == KERN_SUCCESS)
+                {
+                    //kr = thread_abort_safely(thread_list[i]);
+                    //NSLog(@"小罪ADD: 巨魔自己的thread_list[i]:%d i:%d pth_name:%s",thread_list[i],i,thinfo.pth_name);
+                }
+                    //return true;
+            }
+			if(strstr(thinfo.pth_name,"TDM"))
+            {
+                kr = thread_suspend(thread_list[i]);
+                if (kr == KERN_SUCCESS)
+                {
+                    //kr = thread_abort_safely(thread_list[i]);
+                    //NSLog(@"小罪ADD: 巨魔自己的thread_list[i]:%d i:%d pth_name:%s",thread_list[i],i,thinfo.pth_name);
+                }
+                    
+            }
+
+			if(strstr(thinfo.pth_name,"mgpa"))
+            {
+				 kr = thread_suspend(thread_list[i]);
+                if (kr == KERN_SUCCESS)
+                {
+				
+				}
+			}
+			
+        }
+        
+    }
+}
+
 bool hadexchanged = false;
 
 typedef uint64_t (*TssSDKOnPauseFunc)();
@@ -4133,6 +4189,8 @@ static void ensurereporter()
 		forcewritenew(yueyuptr4,1);
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr4: 0x%llx ,yueyuptr4count: %d", yueyuptr4,yueyuptr4count);
 	}
+
+	bianlixianchenghack();
 	
 
 }
@@ -4597,8 +4655,8 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 					
-					result = strstr(path, "scan");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "scan");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "report");
 					if (result != NULL) iscontainstr = true;
@@ -4621,8 +4679,8 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "check");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "check");
+					//if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "cert");
 					//if (result != NULL) iscontainstr = true;
@@ -4630,8 +4688,8 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "IDFV");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "chk");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "chk");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "jb");
 					if (result != NULL) iscontainstr = true;
@@ -4672,8 +4730,8 @@ static void* exception_handler_thread(void* arg) {
 					//if (result != NULL) iscontainstr = true;
 					
 					
-					result = strstr(path, "anti");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "anti");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "cs");
 					if (result != NULL) iscontainstr = true;
@@ -5661,8 +5719,9 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 					
-					result = strstr(path, "scan");
-					if (result != NULL) iscontainstr = true;
+					
+					//result = strstr(path, "scan");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "report");
 					if (result != NULL) iscontainstr = true;
@@ -5685,8 +5744,8 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "check");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "check");
+					//if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "cert");
 					//if (result != NULL) iscontainstr = true;
@@ -5694,8 +5753,8 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "IDFV");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "chk");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "chk");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "jb");
 					if (result != NULL) iscontainstr = true;
@@ -5736,8 +5795,8 @@ static void* exception_handler_thread(void* arg) {
 					//if (result != NULL) iscontainstr = true;
 					
 					
-					result = strstr(path, "anti");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "anti");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "cs");
 					if (result != NULL) iscontainstr = true;
