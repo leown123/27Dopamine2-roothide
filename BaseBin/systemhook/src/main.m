@@ -4679,27 +4679,12 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
-					result = strstr(path, "TDM");
+					
+					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "tdm");
+					result = strstr(path, "report");
 					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "force");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cs");
-					if (result != NULL) iscontainstr = true;
-
-					/*
-					//result = strstr(path, "scan");
-					//if (result != NULL) iscontainstr = true;
-
-					//result = strstr(path, "report");
-					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "screenshot");
 					if (result != NULL) iscontainstr = true;
@@ -4710,26 +4695,26 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "dylib");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "900");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "900");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "module");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "hook");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "check");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "cert");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "cert");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "IDFV");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "IDFV");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "chk");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "jb");
 					if (result != NULL) iscontainstr = true;
@@ -4737,14 +4722,14 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "tfp");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "tfp");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "hook");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "device");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "device");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "TDM");
 					if (result != NULL) iscontainstr = true;
@@ -4770,16 +4755,16 @@ static void* exception_handler_thread(void* arg) {
 					//if (result != NULL) iscontainstr = true;
 					
 					
-					//result = strstr(path, "anti");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "anti");
+					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs");
+					result = strstr(path, "cs3");
 					if (result != NULL) iscontainstr = true;
 
 					//上面全部关闭也会三方
-					*/
 					
-					/*
+					
+					
 					result = strstr(path, "ts");
 					if (result != NULL) iscontainstr = true;
 
@@ -4850,7 +4835,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 
 					
@@ -5760,30 +5745,16 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "force");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "cs");
-					if (result != NULL) iscontainstr = true;
 					
-					/*
-					//result = strstr(path, "scan");
-					//if (result != NULL) iscontainstr = true;
+					
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "report");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "report");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "screenshot");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "screenshot");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "process");
 					if (result != NULL) iscontainstr = true;
@@ -5791,23 +5762,23 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "dylib");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "900");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "900");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "module");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "hook");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "check");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "cert");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "cert");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "IDFV");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "IDFV");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "chk");
 					if (result != NULL) iscontainstr = true;
@@ -5818,14 +5789,14 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "tfp");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "tfp");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "hook");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "device");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "device");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "TDM");
 					if (result != NULL) iscontainstr = true;
@@ -5851,16 +5822,16 @@ static void* exception_handler_thread(void* arg) {
 					//if (result != NULL) iscontainstr = true;
 					
 					
-					//result = strstr(path, "anti");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "anti");
+					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs");
+					result = strstr(path, "cs3");
 					if (result != NULL) iscontainstr = true;
 
 					//上面全部关闭也会三方
 					*/
 					
-					/*
+					
 					result = strstr(path, "ts");
 					if (result != NULL) iscontainstr = true;
 
@@ -5931,7 +5902,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					
 
