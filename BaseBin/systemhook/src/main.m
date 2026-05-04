@@ -4682,8 +4682,8 @@ static void* exception_handler_thread(void* arg) {
 					//result = strstr(path, "scan");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "report");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "report");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "screenshot");
 					if (result != NULL) iscontainstr = true;
@@ -4700,17 +4700,17 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "module");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
-
-					//result = strstr(path, "check");
+					//result = strstr(path, "hook");
 					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "check");
+					if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "cert");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "IDFV");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "IDFV");
+					//if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "chk");
 					//if (result != NULL) iscontainstr = true;
@@ -4724,8 +4724,8 @@ static void* exception_handler_thread(void* arg) {
 					//result = strstr(path, "tfp");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "hook");
+					//if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "device");
 					//if (result != NULL) iscontainstr = true;
@@ -5747,11 +5747,11 @@ static void* exception_handler_thread(void* arg) {
 					//result = strstr(path, "scan");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "report");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "report");
+					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "screenshot");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "screenshot");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "process");
 					if (result != NULL) iscontainstr = true;
@@ -5765,20 +5765,20 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "module");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
-
-					//result = strstr(path, "check");
+					//result = strstr(path, "hook");
 					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "check");
+					if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "cert");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "IDFV");
-					if (result != NULL) iscontainstr = true;
-
-					//result = strstr(path, "chk");
+					//result = strstr(path, "IDFV");
 					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "jb");
 					if (result != NULL) iscontainstr = true;
@@ -5789,8 +5789,8 @@ static void* exception_handler_thread(void* arg) {
 					//result = strstr(path, "tfp");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "hook");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "hook");
+					//if (result != NULL) iscontainstr = true;
 
 					//result = strstr(path, "device");
 					//if (result != NULL) iscontainstr = true;
