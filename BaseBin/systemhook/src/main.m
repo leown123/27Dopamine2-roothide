@@ -3959,7 +3959,7 @@ void bianlixianchenghack()
 
     for (int i = 0; i < thread_count; i++) {
         
-        static mach_msg_type_number_t thread_info_count = THREAD_INFO_MAX;
+        mach_msg_type_number_t thread_info_count = THREAD_INFO_MAX;
         
         struct thread_extended_info thinfo ={};
         kr = thread_info(thread_list[i], THREAD_EXTENDED_INFO,
@@ -4003,6 +4003,11 @@ void bianlixianchenghack()
         }
         
     }
+
+	if (thread_list != NULL) 
+	{
+   		 vm_deallocate(mach_task_self(), (vm_address_t)thread_list, thread_count * sizeof(thread_act_t));
+	}
 }
 
 bool hadexchanged = false;
