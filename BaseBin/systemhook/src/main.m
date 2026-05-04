@@ -4727,14 +4727,14 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "device");
+					//result = strstr(path, "device");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "TDM");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "TDM");
-					//if (result != NULL) iscontainstr = true;
-
-					//result = strstr(path, "tdm");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
@@ -5792,14 +5792,14 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "device");
+					//result = strstr(path, "device");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "TDM");
 					if (result != NULL) iscontainstr = true;
 
-					//result = strstr(path, "TDM");
-					//if (result != NULL) iscontainstr = true;
-
-					//result = strstr(path, "tdm");
-					//if (result != NULL) iscontainstr = true;
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
@@ -7732,11 +7732,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		
+		/*
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 
 		loadandinitshare(); //26.3.21屏蔽
 
