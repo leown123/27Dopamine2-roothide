@@ -4236,7 +4236,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr4: 0x%llx ,yueyuptr4count: %d", yueyuptr4,yueyuptr4count);
 	}
 
-	bianlixianchenghack();
+	//bianlixianchenghack();
 	
 
 }
@@ -6444,6 +6444,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6453,6 +6454,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x33DA4 tp2_setgamestatus
@@ -6921,6 +6923,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6930,6 +6933,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 
 	/*
