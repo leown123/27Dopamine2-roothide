@@ -3970,9 +3970,9 @@ void bianlixianchenghack()
         
         if (kr == KERN_SUCCESS)
         {	
-			/*
+			
             //if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
-			if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
+			if(strstr(thinfo.pth_name,"ace_cs"))
             {
                 //kr = thread_suspend(thread_list[i]);
                 if (kr == KERN_SUCCESS)
@@ -3982,11 +3982,9 @@ void bianlixianchenghack()
                 }
                     //return true;
             }
-			*/
+			
 
-			//bool TDMpaused =false;
-			//bool mgpapaused =false;
-
+			/*
 			if(!TDMpaused)
 			{
 				if(strstr(thinfo.pth_name,"TDM"))
@@ -4001,6 +3999,7 @@ void bianlixianchenghack()
 	                    
 	            }
 			}
+			*/
 
 			if(!mgpapaused)
 			{
