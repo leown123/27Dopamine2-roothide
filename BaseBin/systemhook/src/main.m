@@ -4021,6 +4021,7 @@ void bianlixianchenghack()
 			}
 			*/
 
+			/*
 			if(!mgpapaused)
 			{
 				if(strstr(thinfo.pth_name,"mgpa"))
@@ -4034,6 +4035,7 @@ void bianlixianchenghack()
 					}
 				}
 			}
+			*/
 			
 			
         }
@@ -7517,7 +7519,7 @@ unsigned int hooked_sleep(unsigned int seconds)
 {
 	uint64_t caller_return_address = (uint64_t)__builtin_return_address(0);
 
-	//if(caller_return_address == (uint64_t)(tersafeadd + 0x2138f4))
+	if(caller_return_address == (uint64_t)(tersafeadd + 0x2138f4))
 	{
 		mach_port_t mach_port = mach_thread_self();
 		pthread_t pthread = pthread_from_mach_thread_np(mach_port);
@@ -7803,11 +7805,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		/*
+		
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
@@ -7816,21 +7818,9 @@ if (load_executable_path() == 0)
 
 		//pthread_t thread2;
         //pthread_create(&thread2, NULL, crchackthread, NULL);
-
-		
-
-				
+	
 		return;
 
-		
-		
-		
-
-		
-
-		
-
-		
 
 		// stat64 (如果符号存在)
         void *stat64_addr = (void *)dlsym(RTLD_DEFAULT, "stat64");
