@@ -3948,6 +3948,8 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
 
 bool TDMpaused =false;
 bool mgpapaused =false;
+bool cs2paused =false;
+bool cs3paused =false;
 
 void bianlixianchenghack()
 {
@@ -3955,8 +3957,6 @@ void bianlixianchenghack()
     mach_msg_type_number_t thread_count = 0;
     kern_return_t kr = 0;
 
-    
-    
     kr = task_threads(mach_task_self(), &thread_list, &thread_count);
     
 
@@ -3972,16 +3972,36 @@ void bianlixianchenghack()
         {	
 			
             //if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
-			if(strstr(thinfo.pth_name,"ace_cs"))
-            {
-                kr = thread_suspend(thread_list[i]);
-                if (kr == KERN_SUCCESS)
-                {
-                    //kr = thread_abort_safely(thread_list[i]);
-                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
-                }
-                    //return true;
-            }
+
+			if(!cs2paused)
+			{
+				if(strstr(thinfo.pth_name,"ace_cs2"))
+	            {
+	                kr = thread_suspend(thread_list[i]);
+	                if (kr == KERN_SUCCESS)
+	                {
+	                    //kr = thread_abort_safely(thread_list[i]);
+	                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+						cs2paused = true;
+	                }
+	                    //return true;
+	            }
+			}
+
+			if(!cs3paused)
+			{
+				if(strstr(thinfo.pth_name,"ace_cs3"))
+	            {
+	                kr = thread_suspend(thread_list[i]);
+	                if (kr == KERN_SUCCESS)
+	                {
+	                    //kr = thread_abort_safely(thread_list[i]);
+	                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+						cs3paused = true;
+	                }
+	                    //return true;
+	            }
+			}
 			
 
 			/*
