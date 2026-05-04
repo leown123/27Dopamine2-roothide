@@ -4236,7 +4236,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr4: 0x%llx ,yueyuptr4count: %d", yueyuptr4,yueyuptr4count);
 	}
 
-	//bianlixianchenghack();
+	bianlixianchenghack();
 	
 
 }
@@ -5326,8 +5326,13 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				//0x20F42C NetObj_GetInstance
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
+			
+				
+			
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -5348,8 +5353,6 @@ static void* exception_handler_thread(void* arg) {
 			    }
 				*/
 				
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
-			
 				
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 
@@ -6444,7 +6447,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6454,7 +6457,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x33DA4 tp2_setgamestatus
@@ -6669,8 +6672,6 @@ void initbreakpoint()
     };
 	*/
 
-	
-	
 
 	/*
 	g_breakpoints[5] = (Breakpoint){
@@ -6725,18 +6726,6 @@ void initbreakpoint()
     g_breakpoint_count = 6;
 
 	/*
-	//0x20F42C NetObj_GetInstance
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd37,
-        .target = tersafetsadd37ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-	/*
 	//0x2103B8 新写法闪退
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd43,
@@ -6748,11 +6737,25 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
         .target = tersafetsadd44ret,
         .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	
+	
+	//0x20F42C NetObj_GetInstance
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -6923,7 +6926,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -6933,7 +6936,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 
 	/*
@@ -7618,12 +7621,6 @@ if (load_executable_path() == 0)
 	}
 
 
-
-
-
-
-
-
 		
 	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
 	{
@@ -7682,7 +7679,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -7727,7 +7724,7 @@ if (load_executable_path() == 0)
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-
+		*/
 		
 		/*
 		//NSFileManager fileExistsAtPath:isDirectory
@@ -7798,11 +7795,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		
+		/*
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 
 		loadandinitshare(); //26.3.21屏蔽
 
