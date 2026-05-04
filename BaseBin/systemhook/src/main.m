@@ -3985,7 +3985,7 @@ void bianlixianchenghack()
                 if (kr == KERN_SUCCESS)
                 {
                     //kr = thread_abort_safely(thread_list[i]);
-                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+                    //NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
                 }
                     
             }
