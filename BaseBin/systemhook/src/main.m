@@ -3978,13 +3978,14 @@ void bianlixianchenghack()
                 }
                     //return true;
             }
+			
 			if(strstr(thinfo.pth_name,"TDM"))
             {
                 kr = thread_suspend(thread_list[i]);
                 if (kr == KERN_SUCCESS)
                 {
                     //kr = thread_abort_safely(thread_list[i]);
-                    //NSLog(@"小罪ADD: 巨魔自己的thread_list[i]:%d i:%d pth_name:%s",thread_list[i],i,thinfo.pth_name);
+                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
                 }
                     
             }
