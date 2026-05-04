@@ -4679,7 +4679,22 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
-					
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					/*
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -4836,7 +4851,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
 					
-
+					*/
 
 					
 
@@ -5745,8 +5760,22 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
-					
-					
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					/*
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -5902,7 +5931,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					
 
