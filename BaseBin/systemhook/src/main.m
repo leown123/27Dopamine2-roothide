@@ -5829,7 +5829,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					//上面全部关闭也会三方
-					*/
+					
 					
 					
 					result = strstr(path, "ts");
