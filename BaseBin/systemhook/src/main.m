@@ -4701,11 +4701,6 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
@@ -5790,12 +5785,6 @@ static void* exception_handler_thread(void* arg) {
 			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
 
 					const char* result = "";
-
-					result = strstr(path, "TDM");
-					if (result != NULL) iscontainstr = true;
-
-					result = strstr(path, "tdm");
-					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
