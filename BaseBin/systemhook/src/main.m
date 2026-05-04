@@ -3988,6 +3988,7 @@ void bianlixianchenghack()
                     
             }
 
+			/*
 			if(strstr(thinfo.pth_name,"mgpa"))
             {
 				 kr = thread_suspend(thread_list[i]);
@@ -3996,6 +3997,7 @@ void bianlixianchenghack()
 				
 				}
 			}
+			*/
 			
         }
         
