@@ -4685,8 +4685,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
+			
+				/*
 				//0xAA880 检测控制开关
-
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -4720,7 +4722,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "cs3");
 					if (result != NULL) iscontainstr = true;
 
-					/*
+					//////
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -4877,7 +4879,7 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
 					
-					*/
+					
 
 					
 
@@ -4903,6 +4905,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
+				*/
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -5307,7 +5310,7 @@ static void* exception_handler_thread(void* arg) {
 			//if(bptype == 5)
 			{
 				
-				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
+				
 
 				//uint64_t a2 = thread_state2.__x[1];
 				//NSLog(@"小罪ADD: [tersafe 0x2412D0 BufWriter_Init hook] 主线程触发,a2:%d",a2);
@@ -5479,9 +5482,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				
-				
-				
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
+	
+				/*
 				//0x218D58 hook
 				//sub_210330 hook
 				//
@@ -5578,11 +5581,6 @@ static void* exception_handler_thread(void* arg) {
 						}
 					}
 
-					/*
-					int newx8 = Read_Int(thread_state2.__x[0] + 0x10);
-					thread_state2.__x[8] = newx8;
-					bp->target = (uint64_t)(tersafeadd + 0x210340);
-					*/
 					
 					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
 					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
@@ -5601,21 +5599,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 
-					/*
-					//new
-					uint64_t old_sp = thread_state2.__sp;
-				    uint64_t x20 = thread_state2.__x[20];
-				    uint64_t x19 = thread_state2.__x[19];
-					uint64_t new_sp = old_sp - 0x20;
-					mach_vm_address_t dest_addr = new_sp;
-
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
-					dest_addr = new_sp + 8;
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
-					thread_state2.__sp = new_sp;
-
-					bp->target = (uint64_t)(tersafeadd + 0x210334);
-					*/
+			
 
 					
 				}
@@ -5623,29 +5607,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] ter线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
-					/*
-					//new
-					uint64_t old_sp = thread_state2.__sp;
-				    uint64_t x20 = thread_state2.__x[20];
-				    uint64_t x19 = thread_state2.__x[19];
-					uint64_t new_sp = old_sp - 0x20;
-					mach_vm_address_t dest_addr = new_sp;
-
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
-					dest_addr = new_sp + 8;
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
-					thread_state2.__sp = new_sp;
-
-					bp->target = (uint64_t)(tersafeadd + 0x210334);
-					*/
 					
-					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x18, 64);
-					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
-					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
 					
 					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
@@ -5655,6 +5617,7 @@ static void* exception_handler_thread(void* arg) {
 					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
 					
 				}
+				*/
 				
 				
 				//NSLog(@"小罪ADD: [tersafe 0x24B47C hook] tersafe线程触发VM_DebugDetect_Dispatch 越狱检测");
@@ -6096,9 +6059,7 @@ static void* exception_handler_thread(void* arg) {
 				//0x154108 commit_patch_memory
 				//NSLog(@"小罪ADD: [tersafe 0x154108 hook] tersafe线程触发commit_patch_memory"); 
 			
-				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 				
-			
 				//0x193F90
 				//NSLog(@"小罪ADD: [tersafe 0x193F90 hook] tersafe线程 游戏自带hook触发");
 				
@@ -6399,17 +6360,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
-	//0x6CF8 环境
-	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd11ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
 	/*
 	//0x154108 commit_patch_memory
@@ -6447,11 +6397,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x6CF8 环境
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6823,10 +6784,22 @@ void initbreakpoint()
         .hw_index = -1
     };
 
+	/*
 	//0x218D58 RingBuf_Tick
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x6CF8 环境
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6880,17 +6853,7 @@ void initbreakpoint()
         .hw_index = -1
     };
 
-	/*
-	//0x6CF8 环境
-	ter_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd11ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
+
 
 	/*
 	//0x154108 commit_patch_memory
