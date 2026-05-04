@@ -3946,6 +3946,9 @@ static kern_return_t set_hw_breakpoint_at_index_ter(int idx, mach_vm_address_t a
     return kr_all;
 }
 
+bool TDMpaused =false;
+bool mgpapaused =false;
+
 void bianlixianchenghack()
 {
 	thread_act_array_t thread_list = NULL;
@@ -3966,7 +3969,8 @@ void bianlixianchenghack()
                          (thread_info_t)&thinfo, &thread_info_count);
         
         if (kr == KERN_SUCCESS)
-        {
+        {	
+			/*
             //if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
 			if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
             {
@@ -3978,26 +3982,37 @@ void bianlixianchenghack()
                 }
                     //return true;
             }
-			
-			if(strstr(thinfo.pth_name,"TDM"))
-            {
-                //kr = thread_suspend(thread_list[i]);
-                if (kr == KERN_SUCCESS)
-                {
-                    //kr = thread_abort_safely(thread_list[i]);
-                    //NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
-                }
-                    
-            }
+			*/
 
-			
-			if(strstr(thinfo.pth_name,"mgpa"))
-            {
-				
-				 //kr = thread_suspend(thread_list[i]);
-                if (kr == KERN_SUCCESS)
-                {
-				
+			bool TDMpaused =false;
+			bool mgpapaused =false;
+
+			if(!TDMpaused)
+			{
+				if(strstr(thinfo.pth_name,"TDM"))
+	            {
+	                kr = thread_suspend(thread_list[i]);
+	                if (kr == KERN_SUCCESS)
+	                {
+	                    //kr = thread_abort_safely(thread_list[i]);
+	                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+						TDMpaused = true;
+	                }
+	                    
+	            }
+			}
+
+			if(!mgpapaused)
+			{
+				if(strstr(thinfo.pth_name,"mgpa"))
+	            {
+					
+					 kr = thread_suspend(thread_list[i]);
+	                if (kr == KERN_SUCCESS)
+	                {
+						NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+						mgpapaused = true;
+					}
 				}
 			}
 			
