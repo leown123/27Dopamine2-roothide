@@ -3984,8 +3984,8 @@ void bianlixianchenghack()
             }
 			*/
 
-			bool TDMpaused =false;
-			bool mgpapaused =false;
+			//bool TDMpaused =false;
+			//bool mgpapaused =false;
 
 			if(!TDMpaused)
 			{
