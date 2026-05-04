@@ -5282,7 +5282,7 @@ static void* exception_handler_thread(void* arg) {
 				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 			
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
 
 				
@@ -6552,7 +6552,7 @@ void initbreakpoint()
     };
 	*/
 	
-	/*
+	
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6562,8 +6562,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd44,
@@ -6573,6 +6574,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x2B2AC tss_get_report_data2
