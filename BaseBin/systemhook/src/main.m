@@ -3974,11 +3974,11 @@ void bianlixianchenghack()
             //if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
 			if(strstr(thinfo.pth_name,"ace_cs"))
             {
-                //kr = thread_suspend(thread_list[i]);
+                kr = thread_suspend(thread_list[i]);
                 if (kr == KERN_SUCCESS)
                 {
                     //kr = thread_abort_safely(thread_list[i]);
-                    //NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
                 }
                     //return true;
             }
@@ -4692,6 +4692,15 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs3");
 					if (result != NULL) iscontainstr = true;
 
 					/*
@@ -5773,6 +5782,15 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs3");
 					if (result != NULL) iscontainstr = true;
 
 					/*
