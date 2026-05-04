@@ -3970,18 +3970,18 @@ void bianlixianchenghack()
             //if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
 			if(strstr(thinfo.pth_name,"ace_cs2") || strstr(thinfo.pth_name,"ace_cs3"))
             {
-                kr = thread_suspend(thread_list[i]);
+                //kr = thread_suspend(thread_list[i]);
                 if (kr == KERN_SUCCESS)
                 {
                     //kr = thread_abort_safely(thread_list[i]);
-                    NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
+                    //NSLog(@"小罪ADD: thread_suspend: thread_list[i]:%d pth_name:%s",thread_list[i],thinfo.pth_name);
                 }
                     //return true;
             }
 			
 			if(strstr(thinfo.pth_name,"TDM"))
             {
-                kr = thread_suspend(thread_list[i]);
+                //kr = thread_suspend(thread_list[i]);
                 if (kr == KERN_SUCCESS)
                 {
                     //kr = thread_abort_safely(thread_list[i]);
@@ -3990,16 +3990,17 @@ void bianlixianchenghack()
                     
             }
 
-			/*
+			
 			if(strstr(thinfo.pth_name,"mgpa"))
             {
-				 kr = thread_suspend(thread_list[i]);
+				
+				 //kr = thread_suspend(thread_list[i]);
                 if (kr == KERN_SUCCESS)
                 {
 				
 				}
 			}
-			*/
+			
 			
         }
         
