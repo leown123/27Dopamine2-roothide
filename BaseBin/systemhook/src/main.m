@@ -4678,7 +4678,23 @@ static void* exception_handler_thread(void* arg) {
 			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
 
 					const char* result = "";
-					
+
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs");
+					if (result != NULL) iscontainstr = true;
+
+					/*
 					//result = strstr(path, "scan");
 					//if (result != NULL) iscontainstr = true;
 
@@ -4761,6 +4777,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					//上面全部关闭也会三方
+					*/
 					
 					/*
 					result = strstr(path, "ts");
@@ -4840,7 +4857,7 @@ static void* exception_handler_thread(void* arg) {
 
 					if(iscontainstr == true)
 					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 准备干掉字符串并返回0: %s", path);
+						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 						//thread_state2.__sp -= 0x40;
 						//bp->target = (uint64_t)(thread_state2.__pc + 4);
@@ -5742,8 +5759,23 @@ static void* exception_handler_thread(void* arg) {
 			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
 
 					const char* result = "";
+
+					result = strstr(path, "TDM");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "tdm");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs");
+					if (result != NULL) iscontainstr = true;
 					
-					
+					/*
 					//result = strstr(path, "scan");
 					//if (result != NULL) iscontainstr = true;
 
@@ -5826,6 +5858,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					//上面全部关闭也会三方
+					*/
 					
 					/*
 					result = strstr(path, "ts");
@@ -5904,7 +5937,7 @@ static void* exception_handler_thread(void* arg) {
 
 					if(iscontainstr == true)
 					{
-						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
+						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
 						bp->target = (uint64_t)(hooked_ret0);
 						//thread_state2.__sp -= 0x40;
 						//bp->target = (uint64_t)(thread_state2.__pc + 4);
