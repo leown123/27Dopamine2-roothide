@@ -7411,7 +7411,7 @@ void initbreakpoint_smoba()
 	mach_vm_address_t shijujianceaddret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t shijujianceadd2   = Imageaddress + 0xA2337C8;
-	mach_vm_address_t shijujianceaddr2et = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t shijujianceadd2ret = (mach_vm_address_t)hooked_ret0;
 
 	
 
