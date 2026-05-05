@@ -4643,7 +4643,8 @@ static void* exception_handler_thread_smoba(void* arg)
 
 			if(bptype == 1)
 			{
-				NSLog(@"小罪ADD: [sub_9AE9EF8 hook] 主线程触发 视距检测 返回0");
+				//NSLog(@"小罪ADD: [sub_9AE9EF8 hook] 主线程触发 视距检测 返回0");
+				NSLog(@"小罪ADD: [sub_A2337C8 hook] 主线程触发 视距检测 返回0");
 			}
 
 			if(bptype == 2)
@@ -7409,6 +7410,11 @@ void initbreakpoint_smoba()
 	mach_vm_address_t shijujianceadd   = Imageaddress + 0x9AE9EF8;
 	mach_vm_address_t shijujianceaddret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t shijujianceadd2   = Imageaddress + 0xA2337C8;
+	mach_vm_address_t shijujianceaddr2et = (mach_vm_address_t)hooked_ret0;
+
+	
+
 	mach_vm_address_t tersafetsadd1 = tersafeadd + 0xAA880;// 控制检测开关
 	mach_vm_address_t tersafetsadd1ret = tersafeadd + 0xAA884;//
 
@@ -7436,9 +7442,20 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	/*
 	g_breakpoints[1] = (Breakpoint){
         .source = shijujianceadd,
         .target = shijujianceaddret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	g_breakpoints[1] = (Breakpoint){
+        .source = shijujianceadd2,
+        .target = shijujianceadd2ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
