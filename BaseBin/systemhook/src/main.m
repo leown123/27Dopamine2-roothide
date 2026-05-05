@@ -4506,6 +4506,334 @@ static uint8_t cached_struct400[400];
 
 static uint8_t cached_struct1000[1000];
 
+static void* exception_handler_thread_smoba(void* arg) 
+{
+	kern_return_t kr;
+    mach_port_t task = mach_task_self();
+
+    // 创建异常端口
+    kr = mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &g_exception_port);
+    while (kr != KERN_SUCCESS) {
+        NSLog(@"小罪ADD: exception_handler_thread: Failed to allocate exception port");
+		kr = mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &g_exception_port);
+        return NULL;
+    }
+
+    kr = mach_port_insert_right(task, g_exception_port, g_exception_port,
+                                MACH_MSG_TYPE_MAKE_SEND);
+    while (kr != KERN_SUCCESS) {
+		NSLog(@"小罪ADD: exception_handler_thread: Failed to mach_port_insert_right");
+		kr = mach_port_insert_right(task, g_exception_port, g_exception_port,
+                                MACH_MSG_TYPE_MAKE_SEND);
+        //mach_port_destroy(task, g_exception_port);
+        return NULL;
+    }
+
+    // 设置任务异常端口，只捕获 EXC_BREAKPOINT
+    kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
+                                  EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
+                                  ARM_DEBUG_STATE64);
+    while (kr != KERN_SUCCESS) {
+		NSLog(@"小罪ADD: exception_handler_thread: Failed to task_set_exception_ports");
+		kr = task_set_exception_ports(task, EXC_MASK_BREAKPOINT, g_exception_port,
+                                  EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES,
+                                  ARM_DEBUG_STATE64);
+        //mach_port_destroy(task, g_exception_port);
+        return NULL;
+    }
+
+	//NSLog(@"小罪ADD: exception_handler_thread: 执行了mach_port_allocate \ mach_port_insert_right \task_set_exception_ports");
+
+    NSLog(@"小罪ADD: exception_handler_thread: Mach exception handler started,g_breakpoint_count:%d,ter_breakpoint_count:%d",g_breakpoint_count,ter_breakpoint_count);
+
+	
+	//return NULL;
+
+	
+    while (1) {
+        struct {
+            mach_msg_header_t head;
+            mach_msg_body_t msgh_body;
+            mach_msg_port_descriptor_t thread_port;
+            mach_msg_port_descriptor_t task_port;
+            NDR_record_t ndr;
+            exception_type_t exception;
+            mach_msg_type_number_t code_count;
+            mach_exception_data_t code;
+            char pad[512];
+        } msg;
+
+        kr = mach_msg(&msg.head, MACH_RCV_MSG, 0, sizeof(msg), g_exception_port,
+                      MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+        if (kr != KERN_SUCCESS) {
+            continue;
+        }
+
+        mach_port_t thread_port = msg.thread_port.name;
+        exception_type_t exception = msg.exception;
+
+        if (exception != EXC_BREAKPOINT) {
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+		
+        // 获取线程通用寄存器
+        //arm_thread_state64_t thread_state;
+		struct myARM_THREAD_STATE64 thread_state2;
+        mach_msg_type_number_t thread_state_cnt = ARM_THREAD_STATE64_COUNT;
+        //kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state, &thread_state_cnt);
+		kr = thread_get_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, &thread_state_cnt);
+        if (kr != KERN_SUCCESS) {
+            mach_msg_destroy(&msg.head);
+            continue;
+        }
+
+        //uint64_t pc = arm_thread_state64_get_pc(thread_state);
+		uint64_t pc = thread_state2.__pc; 
+
+		bool istersafebp = false;
+
+        // 查找匹配的断点
+        Breakpoint *bp = NULL;
+        //for (int i = 0; i < g_breakpoint_count; i++) 
+		for (int i = 0; i < 16; i++) 
+		{
+            if (g_breakpoints[i].used && g_breakpoints[i].source == pc) 
+			{
+                bp = &g_breakpoints[i];
+				bptype = i;
+                break;
+            }
+
+			if (ter_breakpoints[i].used && ter_breakpoints[i].source == pc) 
+			{
+                bp = &ter_breakpoints[i];
+				terbptype = i;
+				istersafebp = true;
+                break;
+            }
+			
+        }
+
+        if (!bp) {
+            // 不是我们设置的断点，让线程继续
+            goto send_reply;
+        }
+
+		if(istersafebp == false )
+		{
+			if(bptype == 0)
+			{
+				NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，准备修改为0");
+
+				
+			}
+
+			if(bptype == 1)
+			{
+				NSLog(@"小罪ADD: [sub_9AE9EF8 hook] 主线程触发 视距检测 返回0");
+			}
+
+			if(bptype == 2)
+			{
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
+			}
+
+			if(bptype == 3)
+			{
+				//sub_210EAC ReportQueue_Enqueue
+	
+					uint64_t myptr = thread_state2.__x[1];
+					int opcode = Read_Int(myptr);
+					//const char* result = "";
+					NSString *result = @"0";
+	
+					if(opcode < 0x100) result = @"小于0x100未的知异常";
+					if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
+					if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
+					if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
+					if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
+					if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
+					if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
+					if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
+					if(opcode >= 0x800) result = @"超过0x800的未知异常";
+	
+					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue 主线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+					
+			}
+
+			if(bptype == 4)
+			{
+				NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] 主线程调用 VM_DispatchPendingCallbacks");
+			}
+
+			if(bptype == 5)
+			{
+				NSLog(@"小罪ADD: [tersafe 0x93C10 hook] 主线程调用");
+			}
+			
+
+		}
+
+		if(istersafebp == true)
+		{	
+			if(terbptype == 0)
+			{
+				bool iscontainstr = false;
+				//全局检测开关hook sub_AA880
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
+
+					const char* result = "";
+
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs3");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+
+					if(iscontainstr == true)
+					{
+						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 准备干掉字符串并返回0: %s", path);
+						bp->target = (uint64_t)(hooked_ret0);
+						//thread_state2.__sp -= 0x40;
+						//bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+					else
+					{
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 暂时不干掉的检测类型: %s", path);
+						thread_state2.__sp -= 0x40;
+						bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] tersafe线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+					// 模拟 SUB SP, SP, #0x40
+					thread_state2.__sp -= 0x40;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+			    }
+				
+			}
+
+			if(terbptype == 1)
+			{
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] ter线程触发"); //sub_6CF8 环境检测hook
+			}
+
+			if(terbptype == 2)
+			{
+				//0x210EAC ReportQueue_Enqueue
+	
+					uint64_t myptr = thread_state2.__x[1];
+					int opcode = Read_Int(myptr);
+					//const char* result = "";
+					NSString *result = @"0";
+	
+					if(opcode < 0x100) result = @"小于0x100未的知异常";
+					if(opcode >= 0x100 && opcode < 0x200) result = @"VM执行引擎异常、调试检测";
+					if(opcode >= 0x200 && opcode < 0x300) result = @"Inline Hook / 代码完整性 / Session管理";
+					if(opcode >= 0x300 && opcode < 0x400) result = @"VM opcode参数非法";
+					if(opcode >= 0x400 && opcode < 0x500) result = @"VM opcode未知分支";
+					if(opcode >= 0x500 && opcode < 0x600) result = @"定时器/调度系统异常";
+					if(opcode >= 0x600 && opcode < 0x700) result = @"dladdr/内存映射异常";
+					if(opcode >= 0x700 && opcode < 0x800) result = @"文件系统异常";
+					if(opcode >= 0x800) result = @"超过0x800的未知异常";
+	
+					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue ter线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
+				
+			}
+
+			if(terbptype == 3)
+			{
+				//0x582A4 下发
+				//sub_582A4 下发文件hook				
+				uint64_t path_ptr = thread_state2.__x[0];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) {
+			        path[bytes_read] = '\0';
+			        NSLog(@"小罪ADD: [tersafe 王者 sub_582A4 hook] tersafe线程 下发Path: %s", path);
+			    } else 
+				{
+			        //NSLog(@"小罪ADD: [tersafe 王者 sub_582A4 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
+			    }
+			}
+
+			if(terbptype == 4)
+			{
+				//0x2132C8 VM_DispatchPendingCallbacks
+				NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter调用 VM_DispatchPendingCallbacks");
+			}
+
+			if(terbptype == 5)
+			{
+				 //0x93C10 闪退
+				 NSLog(@"小罪ADD: [tersafe 0x93C10 hook] ter线程调用");
+			}
+
+		}
+
+		// 修改 PC 为目标地址（断点持续有效）
+        //arm_thread_state64_set_pc(thread_state, bp->target);
+		thread_state2.__pc = (uint64_t)bp->target;
+        thread_set_state(thread_port, ARM_THREAD_STATE64,(thread_state_t)&thread_state2, ARM_THREAD_STATE64_COUNT);
+
+    	send_reply:
+        // 回复异常已处理
+		{
+	        struct {
+	            mach_msg_header_t head;
+	            NDR_record_t ndr;
+	            kern_return_t ret;
+	        } reply;
+	        reply.head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(msg.head.msgh_bits), 0);
+	        reply.head.msgh_size = sizeof(reply);
+	        reply.head.msgh_remote_port = msg.head.msgh_remote_port;
+	        reply.head.msgh_local_port = MACH_PORT_NULL;
+	        reply.head.msgh_id = msg.head.msgh_id + 100;
+	        reply.ndr = NDR_record;
+	        reply.ret = KERN_SUCCESS;
+	
+	        mach_msg(&reply.head, MACH_SEND_MSG, reply.head.msgh_size, 0,
+	                 MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+	
+	        mach_msg_destroy(&msg.head);
+		}
+
+	}
+
+
+
+}
+
 
 static void* exception_handler_thread(void* arg) {
     kern_return_t kr;
@@ -7064,19 +7392,91 @@ void initbreakpoint_smoba()
 
 	NSLog(@"小罪ADD: initbreinitbreakpoint_smobaakpoint: jump_hook dylib loaded");
 
-	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x57B58;
-	mach_vm_address_t tersafetsadd1ret = (mach_vm_address_t)hooked_sub_585D0;
+	mach_vm_address_t kaijuxieruadd   = Imageaddress + 0xA4E0FE0;
+	mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE4;
 
-	mach_vm_address_t tersafetsadd2 = tersafeadd + 0xD9424;
-	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_sub_D9424;
+	mach_vm_address_t shijujianceadd   = Imageaddress + 0x9AE9EF8;
+	mach_vm_address_t shijujianceaddret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x857C0;
-	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)(tersafeadd + 0x857C8);
+	mach_vm_address_t tersafetsadd1 = tersafeadd + 0xAA880;// 控制检测开关
+	mach_vm_address_t tersafetsadd1ret = tersafeadd + 0xAA884;//
 
-	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x116FC;
-	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)(tersafeadd + 0x11758);
-	
+	mach_vm_address_t tersafetsadd2 = tersafeadd + 0x6CF8;// 环境检测
+	mach_vm_address_t tersafetsadd2ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t tersafetsadd3 = tersafeadd + 0x210EAC;// ReportQueue_Enqueue
+	mach_vm_address_t tersafetsadd3ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd4 = tersafeadd + 0x582A4;//下发
+	mach_vm_address_t tersafetsadd4ret = (mach_vm_address_t)hooked_sub_585D0;
+
+	mach_vm_address_t tersafetsadd5 = tersafeadd + 0x2132C8;//VM_DispatchPendingCallbacks
+	mach_vm_address_t tersafetsadd5ret = (mach_vm_address_t)hooked_ret0;
+
+	mach_vm_address_t tersafetsadd6 = tersafeadd + 0x93C10;//闪退
+	mach_vm_address_t tersafetsadd6ret = tersafeadd + 0x93C30;
+
+	g_breakpoints[0] = (Breakpoint){
+        .source = kaijuxieruadd,
+        .target = kaijuxieruaddret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	g_breakpoints[1] = (Breakpoint){
+        .source = shijujianceadd,
+        .target = shijujianceaddret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x6CF8 环境检测
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd2,
+        .target = tersafetsadd2ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x210EAC ReportQueue_Enqueue
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd3,
+        .target = tersafetsadd3ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x2132C8 VM_DispatchPendingCallbacks
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd5,
+        .target = tersafetsadd5ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x93C10 闪退
+	g_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd6,
+        .target = tersafetsadd6ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+    g_breakpoint_count = 6;
+
+	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
@@ -7086,6 +7486,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	//0x6CF8 环境检测
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd2,
         .target = tersafetsadd2ret,
@@ -7095,6 +7496,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	//0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd3,
         .target = tersafetsadd3ret,
@@ -7105,6 +7507,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	//0x582A4 下发
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd4,
         .target = tersafetsadd4ret,
@@ -7113,18 +7516,39 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+
+	//0x2132C8 VM_DispatchPendingCallbacks
+	ter_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd5,
+        .target = tersafetsadd5ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	//0x93C10 闪退
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd6,
+        .target = tersafetsadd6ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
-	ter_breakpoint_count = 4;
+	ter_breakpoint_count = 6;
 
 	
 	// 启动异常处理线程
     pthread_t thread;
-    pthread_create(&thread, NULL, exception_handler_thread, NULL);
+    pthread_create(&thread, NULL, exception_handler_thread_smoba, NULL);
     pthread_detach(thread);
 	
     // 设置硬件断点
 
-	while(!isover100)
+	//while(!isover100)
+	while(true)
 	{
     	setup_all_breakpoints();
 	}
@@ -7569,15 +7993,66 @@ if (load_executable_path() == 0)
 			NSLog(@"小罪ADD: systemhook: unsetenv DISABLE_TWEAKSstr success");
 		}
 
+		// Hook task_get_exception_ports
+   		int ret = DobbyHook((void *)task_get_exception_ports,(void *)replaced_task_get_exception_ports, (void **)&original_task_get_exception_ports);
+		NSLog(@"小罪ADD: [Dobby] hook task_get_exception_ports: %s", ret == 0 ? "success" : "failed");
+		
+    	// Hook task_get_special_port
+    	//ret = DobbyHook((void *)task_get_special_port, (void *)replaced_task_get_special_port, (void **)&original_task_get_special_port);
+		//NSLog(@"小罪ADD: [Dobby] hook task_get_special_port: %s", ret == 0 ? "success" : "failed");
+
+		// Hook thread_get_state
+    	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
+		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
+        NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)access, (void *)hooked_access, (void **)&orig_access);
+        NSLog(@"小罪ADD: [Dobby] hook access: %s", ret == 0 ? "success" : "failed");
+
+		// rename
+        ret = DobbyHook((void *)rename, (void *)hooked_rename, (void **)&orig_rename);
+        NSLog(@"小罪ADD: [Dobby] hook rename: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)open, (void *)hooked_open, (void **)&orig_open);
+        NSLog(@"小罪ADD: [Dobby] hook open: %s", ret == 0 ? "success" : "failed");
+
+		// 环境变量
+        ret = DobbyHook((void *)getenv, (void *)hooked_getenv, (void **)&orig_getenv);
+        NSLog(@"小罪ADD: [Dobby] hook getenv: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)lstat, (void *)hooked_lstat, (void **)&orig_lstat);
+        NSLog(@"小罪ADD: [Dobby] hook lstat: %s", ret == 0 ? "success" : "failed");
+
+		ret = DobbyHook((void *)fopen, (void *)hooked_fopen, (void **)&orig_fopen);
+        NSLog(@"小罪ADD: [Dobby] hook fopen: %s", ret == 0 ? "success" : "failed");
+
+		// mkdir
+        ret = DobbyHook((void *)mkdir, (void *)hooked_mkdir, (void **)&orig_mkdir);
+        NSLog(@"小罪ADD: [Dobby] hook mkdir: %s", ret == 0 ? "success" : "failed");
+
+		// rmdir
+        ret = DobbyHook((void *)rmdir, (void *)hooked_rmdir, (void **)&orig_rmdir);
+        NSLog(@"小罪ADD: [Dobby] hook rmdir: %s", ret == 0 ? "success" : "failed");
+
+		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
+		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		
+
+		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
+		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
+		
+		
+		// ---------- 使用 runtime Hook Objective-C 方法 ----------
+		// NSFileManager fileExistsAtPath
+        Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
+        orig_fileExistsAtPath = method_getImplementation(m1);
+        method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
+
 		//smobainit();
 		pthread_t thread3;
     	pthread_create(&thread3, NULL, smobainit, NULL);
-
-		//loadandinitshare();
-		//initbreakpoint();
-
-		//pthread_t thread2;
-        //pthread_create(&thread2, NULL, crchackthread, NULL);
 
 				
 		return;
