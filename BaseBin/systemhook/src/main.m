@@ -7410,10 +7410,8 @@ void initbreakpoint_smoba()
 	mach_vm_address_t shijujianceadd   = Imageaddress + 0x9AE9EF8;
 	mach_vm_address_t shijujianceaddret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t shijujianceadd2   = Imageaddress + 0xA2337C8;
-	mach_vm_address_t shijujianceadd2ret = (mach_vm_address_t)hooked_ret0;
-
-	
+	mach_vm_address_t shijujianceadd2   = Imageaddress + 0x9AE9F98;
+	mach_vm_address_t shijujianceadd2ret = Imageaddress + 0x9AE9FA8;
 
 	mach_vm_address_t tersafetsadd1 = tersafeadd + 0xAA880;// 控制检测开关
 	mach_vm_address_t tersafetsadd1ret = tersafeadd + 0xAA884;//
