@@ -4021,7 +4021,7 @@ void bianlixianchenghack()
 			}
 			*/
 
-			/*
+			
 			if(!mgpapaused)
 			{
 				if(strstr(thinfo.pth_name,"mgpa"))
@@ -4035,7 +4035,7 @@ void bianlixianchenghack()
 					}
 				}
 			}
-			*/
+			
 			
 			
         }
@@ -5451,7 +5451,8 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
+							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 64);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 576出现，已替换");
 						}
 					}
@@ -5625,7 +5626,7 @@ static void* exception_handler_thread(void* arg) {
 				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 			
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
 
 				
@@ -5669,13 +5670,16 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				//0xF6260 down 
+				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
+
 				//0x20F42C NetObj_GetInstance
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
 			
 				
 			
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				、、NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -5822,7 +5826,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
+				//0xA4DE4 nj
+				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 	
 				/*
 				//0x218D58 hook
@@ -6108,6 +6115,9 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "cs3");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "port_80");
 					if (result != NULL) iscontainstr = true;
 
 					/*
@@ -6682,10 +6692,13 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd47 = tersafeadd + 0x33DA4;//sub_33DA4 tp2_setgamestatus
 	mach_vm_address_t tersafetsadd47ret = tersafeadd + 0x33DA8;
 
-	
+	mach_vm_address_t tersafetsadd48 = tersafeadd + 0xF6260;//sub_F6260 down 
+	mach_vm_address_t tersafetsadd48ret = (mach_vm_address_t)hooked_ret1;
 
-	
-	
+	mach_vm_address_t tersafetsadd49 = tersafeadd + 0xA4DE4;//sub_A4DE4 nj 
+	mach_vm_address_t tersafetsadd49ret = (mach_vm_address_t)hooked_ret0;
+
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -6694,8 +6707,8 @@ void initbreakpoint()
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
-        .s0_val = -0.01f,             // 要写入 s0 的值
-        .s1_val = -0.01f,             // 要写入 s1 的值
+        .s0_val = -0.02f,             // 要写入 s0 的值
+        .s1_val = -0.02f,             // 要写入 s1 的值
         .used = 1,
         .hw_index = -1
     };
@@ -6853,7 +6866,7 @@ void initbreakpoint()
     };
 	*/
 	
-	
+	/*
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -6863,9 +6876,10 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd44,
@@ -6875,7 +6889,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x2B2AC tss_get_report_data2
@@ -7052,8 +7066,18 @@ void initbreakpoint()
     };
 	*/
 
-	
-	
+	//0xF6260 down
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd48,
+        .target = tersafetsadd48ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+
+	/*
 	//0x20F42C NetObj_GetInstance
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd37,
@@ -7063,6 +7087,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7136,6 +7161,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x6CF8 环境
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd11,
@@ -7145,6 +7171,19 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
+
+	//0xA4DE4 nj
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd49,
+        .target = tersafetsadd49ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
 	
 
 	/*
@@ -8147,7 +8186,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -8192,7 +8231,7 @@ if (load_executable_path() == 0)
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-		*/
+		
 		
 		/*
 		//NSFileManager fileExistsAtPath:isDirectory
@@ -8221,18 +8260,15 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
-		
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
-		
-
-		/*
+	
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		
-
+		/*
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
@@ -8251,8 +8287,6 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(TssSDKGetReportData_ptr, (void *)hooked_TssSDKGetReportData, (void **)&original_TssSDKGetReportData);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr: %s", ret == 0 ? "success" : "failed");
 
-		
-
 		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook TssSDKGetReportData_ptr3: %s", ret == 0 ? "success" : "failed");
 		*/
@@ -8263,11 +8297,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		/*
+		
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		loadandinitshare(); //26.3.21屏蔽
 
