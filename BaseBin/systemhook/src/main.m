@@ -5025,7 +5025,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
-				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
+				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
 				/*
 				//0xAA880 检测控制开关
@@ -5622,8 +5623,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				//0xA4DE4 nj
+				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 			
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
@@ -6762,10 +6766,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x6CF8 环境
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
         .target = tersafetsadd11ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xF6260 down
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd48,
+        .target = tersafetsadd48ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6879,12 +6895,23 @@ void initbreakpoint()
 	*/
 	
 
-	
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd44,
         .target = tersafetsadd44ret,
         .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xA4DE4 nj
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd49,
+        .target = tersafetsadd49ret,
+        .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
