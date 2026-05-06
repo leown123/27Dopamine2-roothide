@@ -5679,7 +5679,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			
 				//0x20FD6C 查询容器容量
-				、、NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
