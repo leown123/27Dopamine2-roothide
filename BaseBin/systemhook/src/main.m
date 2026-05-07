@@ -5626,8 +5626,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
-				//0x6838AE8 DataFromTGPAadd2
-				NSLog(@"小罪ADD: [sub_106838AE8 hook] 主线程触发 DataFromTGPAadd2 检测");
+				//0xC4086C4 DataFromTGPAadd2
+				NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
 				
 				//0xA4DE4 nj
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
@@ -6713,8 +6713,8 @@ void initbreakpoint()
 	mach_vm_address_t DataFromTGPAadd1 = Imageaddress + 0x134B8FC;
 	mach_vm_address_t DataFromTGPAadd1ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t DataFromTGPAadd2 = Imageaddress + 0x6838AE8;
-	mach_vm_address_t DataFromTGPAadd2ret = (mach_vm_address_t)hooked_ret1;
+	mach_vm_address_t DataFromTGPAadd2 = Imageaddress + 0xC4086C4;
+	mach_vm_address_t DataFromTGPAadd2ret = (mach_vm_address_t)hooked_ret0;
 
 
 
