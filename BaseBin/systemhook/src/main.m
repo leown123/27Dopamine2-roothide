@@ -5025,8 +5025,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
-				//sub_10134B8FC DataFromTGPAcalladd
-				NSLog(@"小罪ADD: [sub_10134B8FC hook] 主线程调用 DataFromTGPAcalladd检测 called!");
+				//sub_1081B241C DataFromTGPAcalladd
+				NSLog(@"小罪ADD: [sub_1081B241C hook] 主线程调用 DataFromTGPAcalladd检测 called!");
 			
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
@@ -6710,7 +6710,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd49 = tersafeadd + 0xA4DE4;//sub_A4DE4 nj 
 	mach_vm_address_t tersafetsadd49ret = (mach_vm_address_t)hooked_ret0;
 
-	mach_vm_address_t DataFromTGPAadd1 = Imageaddress + 0x134B8FC;
+	mach_vm_address_t DataFromTGPAadd1 = Imageaddress + 0x81B241C;
 	mach_vm_address_t DataFromTGPAadd1ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t DataFromTGPAadd2 = Imageaddress + 0xC4086C4;
@@ -6805,7 +6805,7 @@ void initbreakpoint()
     };
 	*/
 
-	//sub_10134B8FC DataFromTGPAcalladd
+	//sub_1081B241C DataFromTGPAcalladd
 	g_breakpoints[1] = (Breakpoint){
         .source = DataFromTGPAadd1,
         .target = DataFromTGPAadd1ret,
