@@ -7911,8 +7911,10 @@ uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2)
 	    vm_size_t size = 0x1024;//0x2000;
 	    int flags  = VM_FLAGS_ANYWHERE;
 	    kern_return_t kr  = vm_allocate(mach_task_self (),&address,size,flags);
-		if(kr != KERN_SUCCESS)
+		if(kr == KERN_SUCCESS)
 	    {
+			vm_protect(mach_task_self (), address, 0x1024, false, VM_PROT_READ|VM_PROT_WRITE);
+			memset((void*)address, 0, 0x1024);
 			NSLog(@"小罪ADD:  hooked_GetDataFromTGPA申请myGetDataFromTGPAdata内存：%p", address);
 		}
 		myGetDataFromTGPAdata = (uint64_t)address;
