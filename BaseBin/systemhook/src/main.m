@@ -5626,8 +5626,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				//0x7F93918 DataFromTGPAadd2
+				NSLog(@"小罪ADD: [sub_107F93918 hook] 主线程触发 DataFromTGPAadd2 检测");
+				
 				//0xA4DE4 nj
-				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5833,8 +5836,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
+				
+				
 				//0xA4DE4 nj
-				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 	
@@ -6708,6 +6713,10 @@ void initbreakpoint()
 	mach_vm_address_t DataFromTGPAadd1 = Imageaddress + 0x134B8FC;
 	mach_vm_address_t DataFromTGPAadd1ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t DataFromTGPAadd2 = Imageaddress + 0x7F93918;
+	mach_vm_address_t DataFromTGPAadd2ret = (mach_vm_address_t)hooked_ret1;
+
+
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6924,10 +6933,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xA4DE4 nj
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd49,
         .target = tersafetsadd49ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x7F93918 DataFromTGPAadd2
+	g_breakpoints[4] = (Breakpoint){
+        .source = DataFromTGPAadd2,
+        .target = DataFromTGPAadd2ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
