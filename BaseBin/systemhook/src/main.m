@@ -7892,7 +7892,7 @@ typedef uint64_t (*GetDataFromTGPAFunc)(uint64_t,uint64_t);
 // 保存原始函数指针
 static GetDataFromTGPAFunc original_GetDataFromTGPA = NULL;
 
-static uint64_t myGetDataFromTGPAdata  = NULL;
+static uint64_t myGetDataFromTGPAdata;
 
 // 替换函数实现
 uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2) 
@@ -7910,7 +7910,7 @@ uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2)
 		vm_address_t address = 0;
 	    vm_size_t size = 0x1024;//0x2000;
 	    int flags  = VM_FLAGS_ANYWHERE;
-	    kern_return_t kr  = vm_allocate(target_task,&address,size,flags);
+	    kern_return_t kr  = vm_allocate(mach_task_self (),&address,size,flags);
 		if(kr != KERN_SUCCESS)
 	    {
 			NSLog(@"小罪ADD:  hooked_GetDataFromTGPA申请myGetDataFromTGPAdata内存：%p", address);
