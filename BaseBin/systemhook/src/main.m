@@ -5026,9 +5026,9 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{	
 				//sub_1081B241C DataFromTGPAcalladd
-				NSLog(@"小罪ADD: [sub_1081B241C hook] 主线程调用 DataFromTGPAcalladd检测 called!");
+				//NSLog(@"小罪ADD: [sub_1081B241C hook] 主线程调用 DataFromTGPAcalladd检测 called!");
 			
-				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
+				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
 				/*
@@ -5627,10 +5627,10 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//0xC4086C4 DataFromTGPAadd2
-				NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
+				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
 				
 				//0xA4DE4 nj
-				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5839,7 +5839,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				
 				//0xA4DE4 nj
-				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 	
@@ -6793,7 +6793,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xF6260 down
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd48,
@@ -6803,8 +6803,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//sub_1081B241C DataFromTGPAcalladd
 	g_breakpoints[1] = (Breakpoint){
         .source = DataFromTGPAadd1,
@@ -6814,6 +6815,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x33DA4 tp2_setgamestatus
@@ -6933,7 +6935,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xA4DE4 nj
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd49,
@@ -6943,17 +6945,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
-	//0x7F93918 DataFromTGPAadd2
-	g_breakpoints[4] = (Breakpoint){
-        .source = DataFromTGPAadd2,
-        .target = DataFromTGPAadd2ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 	
 
 	/*
@@ -7899,6 +7892,8 @@ typedef uint64_t (*GetDataFromTGPAFunc)(uint64_t,uint64_t);
 // 保存原始函数指针
 static GetDataFromTGPAFunc original_GetDataFromTGPA = NULL;
 
+static uint64_t myGetDataFromTGPAdata  = NULL;
+
 // 替换函数实现
 uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2) 
 {
@@ -7910,7 +7905,21 @@ uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2)
 
 	NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
-	return 0;
+	if(!myGetDataFromTGPAdata)
+	{
+		vm_address_t address = 0;
+	    vm_size_t size = 0x1024;//0x2000;
+	    int flags  = VM_FLAGS_ANYWHERE;
+	    kern_return_t kr  = vm_allocate(target_task,&address,size,flags);
+		if(kr != KERN_SUCCESS)
+	    {
+			NSLog(@"小罪ADD:  hooked_GetDataFromTGPA申请myGetDataFromTGPAdata内存：%p", address);
+		}
+		myGetDataFromTGPAdata = (uint64_t)address;
+	}
+	return myGetDataFromTGPAdata;
+	
+	//return 0;
     //printf("[HOOK] _GetDataFromTGPA called\n");
     
     // 可选：添加自定义逻辑
