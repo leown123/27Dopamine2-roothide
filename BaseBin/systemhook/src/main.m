@@ -7905,6 +7905,21 @@ uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2)
 
 	NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
+	myGetDataFromTGPAdata = (uint64_t)original_GetDataFromTGPA(a1,a2);
+
+	if(myGetDataFromTGPAdata)
+	{
+		size_t DataFromTGPAsize = strlen((const char*)DataFromTGPA);
+		NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA DataFromTGPAsize:%d,myGetDataFromTGPAdata =%llx",myGetDataFromTGPAdata);
+		if(DataFromTGPAsize >= 0x81)//129
+		{
+			memset((void*)(myGetDataFromTGPAdata + 0x50), 0, 0x31);
+			NSLog(@"小罪ADD: systemhook: 主线程hooked_GetDataFromTGPA DataFromTGPAsize >= 0x81,memset called!");
+		}
+	}
+	
+
+	/*
 	if(!myGetDataFromTGPAdata)
 	{
 		vm_address_t address = 0;
@@ -7919,6 +7934,9 @@ uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2)
 		}
 		myGetDataFromTGPAdata = (uint64_t)address;
 	}
+	*/
+
+	
 	return myGetDataFromTGPAdata;
 	
 	//return 0;
