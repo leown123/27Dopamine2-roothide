@@ -7910,7 +7910,7 @@ uint64_t hooked_GetDataFromTGPA(uint64_t a1,uint64_t a2)
 	if(myGetDataFromTGPAdata)
 	{
 		size_t DataFromTGPAsize = strlen((const char*)myGetDataFromTGPAdata);
-		NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA DataFromTGPAsize:%d,myGetDataFromTGPAdata =%llx",myGetDataFromTGPAdata);
+		NSLog(@"小罪ADD: [+] Hooked hooked_GetDataFromTGPA DataFromTGPAsize:%d,myGetDataFromTGPAdata =%llx",DataFromTGPAsize,myGetDataFromTGPAdata);
 		if(DataFromTGPAsize >= 0x81)//129
 		{
 			memset((void*)(myGetDataFromTGPAdata + 0x50), 0, 0x31);
