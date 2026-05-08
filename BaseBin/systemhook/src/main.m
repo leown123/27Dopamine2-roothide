@@ -1837,6 +1837,24 @@ static long Get_tersafe_base() {
     return 0;
 }
 
+static long Get_kgvmp_dy_base() {
+    uint32_t count = _dyld_image_count();
+    for (int i = 0; i < count; i++) {
+        const char * path = (const char *)_dyld_get_image_name(i);
+        
+        NSString *res = [NSString stringWithUTF8String:path];
+        
+        long linshiptr = (long)_dyld_get_image_vmaddr_slide(i);
+        
+        if([res hasSuffix:@"kgvmp_dy"])// && linshiptr < 0x100000000
+        {
+            //continue;
+            return linshiptr;
+        }
+    }
+    return 0;
+}
+
 const char* Get_tersafe_path() {
     uint32_t count = _dyld_image_count();
     for (int i = 0; i < count; i++) {
@@ -7820,6 +7838,15 @@ typedef void (*dispatch_once_func_t)(dispatch_once_t *predicate, dispatch_block_
 // 保存原始函数指针
 static dispatch_once_func_t original_dispatch_once = NULL;
 
+static dispatch_once_func_t original_dispatch_once_kgvmp_dy = NULL;
+
+void hooked_dispatch_once_kgvmp_dy(dispatch_once_t *predicate, dispatch_block_t block) 
+{
+	long predicatelong = (long)predicate;
+	NSLog(@"小罪ADD: systemhook: 主线程 hooked_dispatch_once_kgvmp_dy called, passed predicateptr: 0x%p\n", (long)predicate);
+	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
+}
+
 // 替换函数实现
 void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block) 
 {
@@ -8349,6 +8376,13 @@ if (load_executable_path() == 0)
 			tersafeadd = Get_tersafe_base();
 		}
 
+		long kgvmp_dyadd = 0;
+		while(!kgvmp_dyadd)
+		{
+			kgvmp_dyadd = Get_kgvmp_dy_base();
+		}
+		
+
 		
 		void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
@@ -8357,16 +8391,22 @@ if (load_executable_path() == 0)
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
 		NSLog(@"小罪ADD: [Dobby] hook startInitMainFlow_reprovideDelegate_ptr: %s", ret == 0 ? "success" : "failed");
-	
+
+		/*
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 		
-		/*
+		
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
+
+		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
+		ret = DobbyHook(kgvmp_dy_dispatch_once_ptr, (void *)hooked_dispatch_once_kgvmp_dy, (void **)&original_dispatch_once_kgvmp_dy);
+		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		
 		/*
