@@ -5459,7 +5459,8 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct128, 128);
+							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct128, 128);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct128, 64);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 128出现，已替换");
 						}
 					}
@@ -5492,7 +5493,8 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 160);
+							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 160);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct160, 64);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 160 出现，已替换");
 						}
 					}
@@ -5508,7 +5510,8 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 400);
+							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 400);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct400, 64);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 400 出现，已替换");
 						}
 					}
@@ -5524,8 +5527,9 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
+							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 1000);
 							//vm_copy(mach_task_self(), (vm_address_t)cached_struct1000, 1000, (vm_address_t)thread_state2.__x[0]);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct1000, 64);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
 						}
 					}
