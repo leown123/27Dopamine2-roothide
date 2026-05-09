@@ -5044,12 +5044,12 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{	
 				//0x170278 全局游戏hook
-				NSLog(@"小罪ADD: [tersafe 0x170278 hook] 主线程调用 全局游戏hook");
+				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] 主线程调用 全局游戏hook");
 				
 				//sub_1081B241C DataFromTGPAcalladd
 				//NSLog(@"小罪ADD: [sub_1081B241C hook] 主线程调用 DataFromTGPAcalladd检测 called!");
 			
-				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
+				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
 				/*
@@ -5404,7 +5404,7 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 2) 
 			{	
 				//0x210330 范围上报检测
-				NSLog(@"小罪ADD: [tersafe 0x210330 hook] 主线程触发 范围上报检测");
+				//NSLog(@"小罪ADD: [tersafe 0x210330 hook] 主线程触发 范围上报检测");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 				
@@ -5431,7 +5431,7 @@ static void* exception_handler_thread(void* arg) {
 
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				/*
+				
 				//0x218D58 hook
 					//sub_210330 hook 
 					//0x21033C hook
@@ -5545,7 +5545,7 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 				
 				}
-				*/
+				
 
 			}
 
@@ -5579,13 +5579,13 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//0x1AEB30 自瞄hook
-				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
+				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
 				//0xC4086C4 DataFromTGPAadd2
 				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
 				
 				//0xA4DE4 nj
-				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5636,10 +5636,10 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 0) 
 			{	
 				//0x170278 全局游戏hook
-				NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
+				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
 				
 				//0xF6260 down 
-				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
+				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20F42C NetObj_GetInstance
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
@@ -6762,7 +6762,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xF6260 down
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd48,
@@ -6772,8 +6772,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x170278 全局游戏hook
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd50,
@@ -6783,6 +6784,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -6832,7 +6834,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -6842,8 +6844,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-
+	
+	/*
 	//0x210330 范围上报检测
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd52,
@@ -6853,6 +6855,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//RingBuf_Ticknew
@@ -6927,7 +6930,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xA4DE4 nj
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd49,
@@ -6937,8 +6940,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x1AEB30 自瞄hook
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd51,
@@ -6948,6 +6952,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	
 
@@ -7126,7 +7131,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xF6260 down
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd48,
@@ -7136,8 +7141,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x170278 全局游戏hook
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd50,
@@ -7147,6 +7153,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 
 	/*
@@ -7245,7 +7252,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xA4DE4 nj
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd49,
@@ -7255,8 +7262,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7266,6 +7274,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	
 	
