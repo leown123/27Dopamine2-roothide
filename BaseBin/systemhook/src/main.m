@@ -5043,10 +5043,13 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				//0x170278 全局游戏hook
+				NSLog(@"小罪ADD: [tersafe 0x170278 hook] 主线程调用 全局游戏hook");
+				
 				//sub_1081B241C DataFromTGPAcalladd
 				//NSLog(@"小罪ADD: [sub_1081B241C hook] 主线程调用 DataFromTGPAcalladd检测 called!");
 			
-				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
+				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
 				/*
@@ -5400,6 +5403,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
+				//0x210330 范围上报检测
+				NSLog(@"小罪ADD: [tersafe 0x210330 hook] 主线程触发 范围上报检测");
+			
 				//NSLog(@"小罪ADD: [tersafe 0x939A4 hook] ter线程触发 ScanEngine_GetInstance");
 				
 				/*
@@ -5423,13 +5429,9 @@ static void* exception_handler_thread(void* arg) {
 				*/
 
 
-
-
-
-				
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				
+				/*
 				//0x218D58 hook
 					//sub_210330 hook 
 					//0x21033C hook
@@ -5527,91 +5529,23 @@ static void* exception_handler_thread(void* arg) {
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 1000 出现，已替换");
 						}
 					}
-					
-					/*
-					int newx8 = Read_Int(thread_state2.__x[0] + 0x10);
-					thread_state2.__x[8] = newx8;
-					bp->target = (uint64_t)(tersafeadd + 0x210340);
-					*/
-					
-					
-					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
-					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
-					
-
-					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
-					
-					//thread_state2.__x[0] = 1;
-
-					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
-					
 
 					//old
 					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 
-					/*
-					//new
-					uint64_t old_sp = thread_state2.__sp;
-				    uint64_t x20 = thread_state2.__x[20];
-				    uint64_t x19 = thread_state2.__x[19];
-					uint64_t new_sp = old_sp - 0x20;
-					mach_vm_address_t dest_addr = new_sp;
-
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
-					dest_addr = new_sp + 8;
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
-					thread_state2.__sp = new_sp;
-
-					bp->target = (uint64_t)(tersafeadd + 0x210334);
-					*/
+					
 					
 				}
 				else
 				{
 					NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发放行(非576或128)（sub_210330 RingBuf_Tick),a2 = %d,v2 = %d,biaoshi = %d,shujusize = %d",a2,v2,biaoshi,shujusize);
 
-					/*
-					int newx8 = Read_Int(thread_state2.__x[0] + 0x10);
-					thread_state2.__x[8] = newx8;
-					bp->target = (uint64_t)(tersafeadd + 0x210340);
-					*/
-	
-					/*
-					//new
-					uint64_t old_sp = thread_state2.__sp;
-				    uint64_t x20 = thread_state2.__x[20];
-				    uint64_t x19 = thread_state2.__x[19];
-					uint64_t new_sp = old_sp - 0x20;
-					mach_vm_address_t dest_addr = new_sp;
-
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x20, sizeof(x20));
-					dest_addr = new_sp + 8;
-					mach_vm_write(mach_task_self(), dest_addr, (mach_vm_address_t)&x19, sizeof(x19));
-					thread_state2.__sp = new_sp;
-
-					bp->target = (uint64_t)(tersafeadd + 0x210334);
-					*/
-					
-					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x18, 64);
-					//forcewritenew(thread_state2.__x[0] + 0x10, 1);
-					//forcewritenew(thread_state2.__x[0] + 0x1C, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x14, 0 );
-					//forcewritenew(thread_state2.__x[0] + 0x18, 0);
-					
 					thread_state2.__lr = (uint64_t)(tersafeadd + 0x218D5C);
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
-					
-					//memset((void*)thread_state2.__x[0], thread_state2.__x[0], shujusize);
-					//thread_state2.__x[0] = 1;
-					//bp->target = (uint64_t)(tersafeadd + 0x218D5C);
-					
-				}
 				
+				}
+				*/
 
 			}
 
@@ -5644,11 +5578,14 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				//0x1AEB30 自瞄hook
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
+				
 				//0xC4086C4 DataFromTGPAadd2
 				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
 				
 				//0xA4DE4 nj
-				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5698,8 +5635,11 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				//0x170278 全局游戏hook
+				NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
+				
 				//0xF6260 down 
-				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
+				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20F42C NetObj_GetInstance
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
@@ -5854,10 +5794,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				
+				//0x1AEB30 自瞄hook
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
 				
 				//0xA4DE4 nj
-				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 	
@@ -6734,7 +6675,17 @@ void initbreakpoint()
 	mach_vm_address_t DataFromTGPAadd2 = Imageaddress + 0xC4086C4;
 	mach_vm_address_t DataFromTGPAadd2ret = (mach_vm_address_t)hooked_ret0;
 
+	//禁止hook
+	mach_vm_address_t tersafetsadd50 = tersafeadd + 0x170278;//sub_170278 全局游戏hook
+	mach_vm_address_t tersafetsadd50ret = tersafeadd + 0x170388;
 
+	mach_vm_address_t tersafetsadd51 = tersafeadd + 0x1AEB30;//sub_1AEB30 自瞄hook
+	mach_vm_address_t tersafetsadd51ret = (mach_vm_address_t)hooked_ret1;
+
+	//范围检测
+	mach_vm_address_t tersafetsadd52 = tersafeadd + 0x210330;//sub_210330 范围上报检测
+	mach_vm_address_t tersafetsadd52ret = (mach_vm_address_t)hooked_ret1;
+	
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6811,11 +6762,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xF6260 down
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd48,
         .target = tersafetsadd48ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x170278 全局游戏hook
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd50,
+        .target = tersafetsadd50ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6870,10 +6832,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x210330 范围上报检测
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd52,
+        .target = tersafetsadd52ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -6953,7 +6927,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xA4DE4 nj
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd49,
@@ -6963,7 +6937,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//0x1AEB30 自瞄hook
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd51,
+        .target = tersafetsadd51ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	
 
@@ -7142,10 +7126,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xF6260 down
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd48,
         .target = tersafetsadd48ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x170278 全局游戏hook
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd50,
+        .target = tersafetsadd50ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7249,10 +7245,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xA4DE4 nj
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd49,
         .target = tersafetsadd49ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x1AEB30 自瞄hook
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd51,
+        .target = tersafetsadd51ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7842,9 +7850,9 @@ static dispatch_once_func_t original_dispatch_once_kgvmp_dy = NULL;
 
 void hooked_dispatch_once_kgvmp_dy(dispatch_once_t *predicate, dispatch_block_t block) 
 {
-	long predicatelong = (long)predicate;
-	NSLog(@"小罪ADD: systemhook: 主线程 hooked_dispatch_once_kgvmp_dy called, passed predicateptr: 0x%p\n", (long)predicate);
-	NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	//long predicatelong = (long)predicate;
+	//NSLog(@"小罪ADD: systemhook: 主线程 hooked_dispatch_once_kgvmp_dy called, passed predicateptr: 0x%p\n", (long)predicate);
+	//NSLog(@"小罪ADD: [+] Hooked hooked_dispatch_once called. Stack trace:\n%@", [NSThread callStackSymbols]);
 }
 
 // 替换函数实现
