@@ -569,6 +569,7 @@ int hooked_stat(const char *path, struct stat *buf) {
 		return orig_stat(path, buf);
 	}
 
+	/*
 	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
     pthread_mutex_lock(&stat_blacklist_mutex);
     int is_blacklisted = isStatThreadBlacklisted(pthread_self());
@@ -582,6 +583,7 @@ int hooked_stat(const char *path, struct stat *buf) {
         errno = ENOENT;
         return -1;
     }
+	*/
     
     
     if (isJailbreakPath(path)) 
