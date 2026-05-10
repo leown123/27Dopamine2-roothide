@@ -482,6 +482,10 @@ static void addCurrentStatThreadToBlacklist(void) {
     pthread_mutex_unlock(&stat_blacklist_mutex);
 }
 
+
+bool issjz = false;
+
+
 // ---------- 1. 文件操作类 ----------
 int hooked_access(const char *path, int amode) {
 
@@ -500,26 +504,30 @@ int hooked_access(const char *path, int amode) {
 		(strcmp(path,"/Applications") == 0 )||
 		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
 		(strstr(path, "Containers/Data/Application") != NULL) ||
-		(strstr(path, "/PrivateFrameworks/") != NULL) 
+		(strstr(path, "/PrivateFrameworks/") != NULL) ||
+		(strstr(path, "/Frameworks/") != NULL) 
 		
 	)
 	{
 		return orig_access(path, amode);
 	}
 
-	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
-    pthread_mutex_lock(&stat_blacklist_mutex);
-    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
-    pthread_mutex_unlock(&stat_blacklist_mutex);
-
-	if (is_blacklisted) 
+	if(issjz)
 	{
-		NSLog(@"小罪ADD: hooked_access 命中 is_blacklisted黑名单线程 ! path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
-      
-        errno = ENOENT;
-        return -1;
-    }
+		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+	    pthread_mutex_lock(&stat_blacklist_mutex);
+	    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+	    pthread_mutex_unlock(&stat_blacklist_mutex);
+	
+		if (is_blacklisted) 
+		{
+			NSLog(@"小罪ADD: hooked_access 命中 is_blacklisted黑名单线程 ! path:%s",path);
+			NSLog(@"小罪ADD: [+] Hooked hooked_access called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	      
+	        errno = ENOENT;
+	        return -1;
+	    }
+	}
 	
     if (isJailbreakPath(path)) {
 
@@ -540,9 +548,6 @@ int hooked_access(const char *path, int amode) {
 	
     return orig_access(path, amode);
 }
-
-bool issjz = false;
-
 
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
@@ -934,23 +939,25 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 		{
 			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 		}
-	
-		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
-	    pthread_mutex_lock(&stat_blacklist_mutex);
-	    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
-	    pthread_mutex_unlock(&stat_blacklist_mutex);
-	
-		if (is_blacklisted) 
+
+		if(issjz)
 		{
-			@autoreleasepool 
+			// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+		    pthread_mutex_lock(&stat_blacklist_mutex);
+		    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+		    pthread_mutex_unlock(&stat_blacklist_mutex);
+		
+			if (is_blacklisted) 
 			{
-				NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%@",path);
-				NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
-			}
-
-	        return NO;
-	    }
-
+				@autoreleasepool 
+				{
+					NSLog(@"小罪ADD: hooked_fileExistsAtPath 命中 is_blacklisted黑名单线程 ! path:%@",path);
+					NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath called. Stack trace:\n%@", [NSThread callStackSymbols]);
+				}
+	
+		        return NO;
+		    }
+		}
 	
 
 
@@ -1020,19 +1027,21 @@ BOOL hooked_fileExistsAtPath_isDirectory(id self, SEL _cmd, NSString *path, BOOL
 	}
 	*/
 
-	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
-    pthread_mutex_lock(&stat_blacklist_mutex);
-    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
-    pthread_mutex_unlock(&stat_blacklist_mutex);
-
-	if (is_blacklisted) 
+	if(issjz)
 	{
-		NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 is_blacklisted黑名单线程 ! path:%s",pathstr);
-		NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath_isDirectory called. Stack trace:\n%@", [NSThread callStackSymbols]);
-      
-        return NO;
-    }
-
+		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+	    pthread_mutex_lock(&stat_blacklist_mutex);
+	    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+	    pthread_mutex_unlock(&stat_blacklist_mutex);
+	
+		if (is_blacklisted) 
+		{
+			NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory 命中 is_blacklisted黑名单线程 ! path:%s",pathstr);
+			NSLog(@"小罪ADD: [+] Hooked hooked_fileExistsAtPath_isDirectory called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	      
+	        return NO;
+	    }
+	}
 
 	//NSLog(@"小罪ADD: hooked_fileExistsAtPath_isDirectory called ! path:%@",path);
     for (NSString *black in jailbreakPaths) {
