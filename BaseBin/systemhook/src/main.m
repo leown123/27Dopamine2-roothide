@@ -541,6 +541,8 @@ int hooked_access(const char *path, int amode) {
     return orig_access(path, amode);
 }
 
+bool issjz = false;
+
 
 // ---------- 钩子函数：stat ----------
 int hooked_stat(const char *path, struct stat *buf) {
@@ -569,21 +571,22 @@ int hooked_stat(const char *path, struct stat *buf) {
 		return orig_stat(path, buf);
 	}
 
-	/*
-	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
-    pthread_mutex_lock(&stat_blacklist_mutex);
-    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
-    pthread_mutex_unlock(&stat_blacklist_mutex);
-
-	if (is_blacklisted) 
+	if(issjz)
 	{
-		NSLog(@"小罪ADD: hooked_stat 命中 is_blacklisted黑名单线程 ! path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
-      
-        errno = ENOENT;
-        return -1;
-    }
-	*/
+		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+	    pthread_mutex_lock(&stat_blacklist_mutex);
+	    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+	    pthread_mutex_unlock(&stat_blacklist_mutex);
+	
+		if (is_blacklisted) 
+		{
+			NSLog(@"小罪ADD: hooked_stat 命中 is_blacklisted黑名单线程 ! path:%s",path);
+			NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	      
+	        errno = ENOENT;
+	        return -1;
+	    }
+	}
     
     
     if (isJailbreakPath(path)) 
@@ -627,26 +630,30 @@ int hooked_lstat(const char *path, struct stat *buf) {
 		(strcmp(path,"/Applications") == 0 )||
 		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
 		(strstr(path, "Containers/Data/Application") != NULL) ||
-		(strstr(path, "/PrivateFrameworks/") != NULL) 
+		(strstr(path, "/PrivateFrameworks/") != NULL) ||
+		(strstr(path, "/Frameworks/") != NULL) 
 		
 	)
 	{
 		return orig_lstat(path, buf);
 	}
 
-	// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
-    pthread_mutex_lock(&stat_blacklist_mutex);
-    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
-    pthread_mutex_unlock(&stat_blacklist_mutex);
-
-	if (is_blacklisted) 
+	if(issjz)
 	{
-		NSLog(@"小罪ADD: hooked_stat 命中 is_blacklisted黑名单线程 ! path:%s",path);
-		NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
-      
-        errno = ENOENT;
-        return -1;
-    }
+		// 检查当前线程是否在黑名单中（刚加入的线程肯定在）
+	    pthread_mutex_lock(&stat_blacklist_mutex);
+	    int is_blacklisted = isStatThreadBlacklisted(pthread_self());
+	    pthread_mutex_unlock(&stat_blacklist_mutex);
+	
+		if (is_blacklisted) 
+		{
+			NSLog(@"小罪ADD: hooked_lstat 命中 is_blacklisted黑名单线程 ! path:%s",path);
+			NSLog(@"小罪ADD: [+] Hooked hooked_stat called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	      
+	        errno = ENOENT;
+	        return -1;
+	    }
+	}
     
     
     if (isJailbreakPath(path)) {
@@ -8303,6 +8310,8 @@ if (load_executable_path() == 0)
 	if (string_has_suffix(gExecutablePath, "/DeltaForceClient")) 
 	{
 		NSLog(@"小罪ADD: systemhook: DeltaForceClient 启动！：%s", gExecutablePath);
+
+		issjz = true;
 
 		//return;
 		
