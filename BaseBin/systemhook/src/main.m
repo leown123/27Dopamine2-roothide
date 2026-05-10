@@ -5605,13 +5605,13 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//0x1AEB30 自瞄hook
-				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
 				//0xC4086C4 DataFromTGPAadd2
 				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
 				
 				//0xA4DE4 nj
-				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5821,10 +5821,10 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 2) 
 			{
 				////0x1AEB30 自瞄hook
-				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
 				
 				//0xA4DE4 nj
-				NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
+				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 				
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] tersafe触发"); //sub_6CF8 环境检测hook
 	
@@ -6788,7 +6788,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xF6260 down
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd48,
@@ -6798,6 +6798,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -6956,7 +6957,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xA4DE4 nj
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd49,
@@ -6966,9 +6967,10 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
-	/*
+	
 	//0x1AEB30 自瞄hook
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd51,
@@ -6978,7 +6980,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	
 
@@ -7157,7 +7159,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xF6260 down
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd48,
@@ -7167,6 +7169,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7278,7 +7281,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xA4DE4 nj
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd49,
@@ -7288,9 +7291,10 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
-	/*
+	
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7300,7 +7304,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	
 	
@@ -8439,11 +8443,11 @@ if (load_executable_path() == 0)
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
 		
 
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
