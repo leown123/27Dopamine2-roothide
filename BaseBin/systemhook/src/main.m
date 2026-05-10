@@ -8439,12 +8439,11 @@ if (load_executable_path() == 0)
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
-		
-		
+
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 		
 
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
