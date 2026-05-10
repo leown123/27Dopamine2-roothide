@@ -490,6 +490,11 @@ int hooked_access(const char *path, int amode) {
         return orig_access(path, amode);
     }
 
+	if (strstr(path, "/smoba.app") != NULL) 
+	{
+	    return orig_access(path, amode);
+	}
+
 	if(
 		(strcmp(path,"/private/var/containers/Bundle/Application") == 0 )||
 		(strcmp(path,"/Applications") == 0 )||
@@ -542,6 +547,11 @@ int hooked_stat(const char *path, struct stat *buf) {
 	int rt =  -1;
 
 	if (strstr(path, "/DeltaForceClient.app") != NULL) 
+	{
+        return orig_stat(path, buf);
+    }
+
+	if (strstr(path, "/smoba.app") != NULL) 
 	{
         return orig_stat(path, buf);
     }
@@ -600,6 +610,11 @@ int hooked_lstat(const char *path, struct stat *buf) {
 	int rt = -1;
 
 	if (strstr(path, "/DeltaForceClient.app") != NULL) 
+	{
+        return orig_lstat(path, buf);
+    }
+
+	if (strstr(path, "/smoba.app") != NULL) 
 	{
         return orig_lstat(path, buf);
     }
@@ -885,11 +900,18 @@ BOOL hooked_fileExistsAtPath(id self, SEL _cmd, NSString *path) {
 			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
 		}
 
+		if([path hasPrefix:@"/smoba.app"])
+		{
+			return ((BOOL(*)(id, SEL, NSString *))orig_fileExistsAtPath)(self, _cmd, path);
+		}
+
+
 		if(
 			[path isEqualToString:@"/private/var/containers/Bundle/Application"] ||
 			[path isEqualToString:@"/Applications"] ||
 			[path isEqualToString:@"/private/var/mobile/Containers/Data/Application"] ||
 			[path hasPrefix:@"/DeltaForceClient.app"] ||
+			[path hasPrefix:@"/smoba.app"] ||
 			[path hasPrefix:@"Containers/Data/Application"] ||
 			[path hasPrefix:@"/PrivateFrameworks/"] 
 
