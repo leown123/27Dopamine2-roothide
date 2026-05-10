@@ -5084,13 +5084,17 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+					
+				//0x20FD6C 查询容器容量
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+
 				//0x170278 全局游戏hook
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] 主线程调用 全局游戏hook");
 				
 				//sub_1081B241C DataFromTGPAcalladd
 				//NSLog(@"小罪ADD: [sub_1081B241C hook] 主线程调用 DataFromTGPAcalladd检测 called!");
 			
-				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
+				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
 				/*
@@ -5631,10 +5635,7 @@ static void* exception_handler_thread(void* arg) {
 				
 				//0xA4DE4 nj
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
-				
-				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
-
+			
 			
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
@@ -5684,7 +5685,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
 				
 				//0xF6260 down 
-				NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
+				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20F42C NetObj_GetInstance
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
@@ -5692,7 +5693,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -6807,6 +6808,16 @@ void initbreakpoint()
     };
 	*/
 
+	//0x20FD6C 查询容器容量
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	/*
 	//0xF6260 down
 	g_breakpoints[1] = (Breakpoint){
@@ -6956,19 +6967,6 @@ void initbreakpoint()
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
         .target = tersafetsadd37ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-	
-
-	/*
-	//0x20FD6C 查询容器容量
-	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd44,
-        .target = tersafetsadd44ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7166,7 +7164,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
@@ -7176,7 +7174,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0xF6260 down
