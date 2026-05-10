@@ -561,7 +561,8 @@ int hooked_stat(const char *path, struct stat *buf) {
 		(strcmp(path,"/Applications") == 0 )||
 		(strcmp(path,"/private/var/mobile/Containers/Data/Application") == 0 )||
 		(strstr(path, "Containers/Data/Application") != NULL) ||
-		(strstr(path, "/PrivateFrameworks/") != NULL) 
+		(strstr(path, "/PrivateFrameworks/") != NULL) ||
+		(strstr(path, "/Frameworks/") != NULL) 
 		
 	)
 	{
