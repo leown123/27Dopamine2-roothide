@@ -4135,10 +4135,22 @@ static void ensurereporter()
 	
 	//uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B81E0);
-	uint64_t retadd = (uint64_t)(tersafeadd + 0x55B0);
+	uint64_t retadd = (uint64_t)(tersafeadd + 0x88CC);//mov x0,#0
 
 	for(int i = 0;i < 26;i++)
-	{
+	{	
+		if((0x2B81E0 + i*8) == (0x2B8200))
+		{
+			uint64_t rd1 = (uint64_t)Read_Long(tersafereporter + i*8);
+			uint64_t rd2 = (uint64_t)Read_Long(rd1+0x10);
+			if( rd2 != retadd)
+			{
+				forcewritenewlong(rd1+0x10,(uint64_t)retadd);
+				NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x88CC: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter + i*8, retadd,rd2);
+			}
+			continue;
+		}
+	
 		uint64_t rd = (uint64_t)Read_Long(tersafereporter + i*8);
 		if( rd != retadd)
 		{
