@@ -4063,10 +4063,10 @@ void bianlixianchenghack()
 			}
 			
 
-			/*
+			
 			if(!TDMpaused)
 			{
-				if(strstr(thinfo.pth_name,"TDM"))
+				if(strstr(thinfo.pth_name,"TDM-report-1"))
 	            {
 	                kr = thread_suspend(thread_list[i]);
 	                if (kr == KERN_SUCCESS)
@@ -4078,7 +4078,7 @@ void bianlixianchenghack()
 	                    
 	            }
 			}
-			*/
+			
 
 			
 			if(!mgpapaused)
@@ -4131,7 +4131,7 @@ static void ensurereporter()
 	}
 
 	
-	/*
+	
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x55B0);
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
@@ -4140,7 +4140,7 @@ static void ensurereporter()
 		forcewritenewlong(tersafereporter,(uint64_t)retadd);
 		NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x55B0: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 	}
-	*/
+	
 	
 	/*
 	uint64_t huanjingjilu =  (uint64_t)(tersafeadd + 0x2E1D18);
@@ -4176,7 +4176,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4210,7 +4210,7 @@ static void ensurereporter()
 		
 		
 	}
-	
+	*/
 	
 
 	/*
