@@ -4063,7 +4063,7 @@ void bianlixianchenghack()
 			}
 			
 
-			
+			/*
 			if(!TDMpaused)
 			{
 				if(strstr(thinfo.pth_name,"TDM-report-1"))
@@ -4078,6 +4078,7 @@ void bianlixianchenghack()
 	                    
 	            }
 			}
+			*/
 			
 
 			
