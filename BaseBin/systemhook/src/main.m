@@ -8237,6 +8237,22 @@ unsigned int hooked_sleep(unsigned int seconds)
     return ret;
 }
 
+// 1. 声明原函数类型和用于保存原函数地址的指针
+typedef void (*abort_func_t)(void);
+abort_func_t orig_abort = NULL;
+
+// 2. 自定义的替换函数
+void hooked_abort(void) {
+    // 在这里做你想做的事，比如记录日志
+    
+	NSLog(@"小罪ADD: hooked_abort called!取消");
+
+    // 关键：不要调用 orig_abort()，这样程序就不会真正终止
+
+    // 你可以在这里添加其他处理逻辑，例如调用 exit(0) 来正常退出
+    // exit(0);
+}
+
 //入口
 __attribute__((constructor)) static void initializer(void)
 {	
@@ -8543,6 +8559,13 @@ if (load_executable_path() == 0)
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
+
+		void *abort_addr = dlsym(RTLD_DEFAULT, "abort");
+    	if (abort_addr) 
+		{
+			ret = DobbyHook(abort_addr, (void *)hooked_abort, (void **)&orig_abort);
+			NSLog(@"小罪ADD: hook abort_addr: %s", ret == 0 ? "success" : "failed");
+		}
 		
 
 		loadandinitshare(); //26.3.21屏蔽
