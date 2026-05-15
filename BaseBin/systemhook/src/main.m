@@ -8246,6 +8246,7 @@ void hooked_abort(void) {
     // 在这里做你想做的事，比如记录日志
     
 	NSLog(@"小罪ADD: hooked_abort called!取消");
+	NSLog(@"小罪ADD: [+] Hooked hooked_abort called. Stack trace:\n%@", [NSThread callStackSymbols]);
 
     // 关键：不要调用 orig_abort()，这样程序就不会真正终止
 
