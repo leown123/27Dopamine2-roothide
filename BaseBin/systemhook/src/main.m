@@ -4132,35 +4132,38 @@ static void ensurereporter()
 	}
 
 	
-	
+	/*
 	//uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B81E0);
 	uint64_t retadd = (uint64_t)(tersafeadd + 0x88CC);//mov x0,#0
-
-	for(int i = 0;i < 26;i++)
-	{	
-		if((0x2B81E0 + i*8) == (0x2B8200))
-		{
-			uint64_t rd1 = (uint64_t)Read_Long(tersafereporter + i*8);
-			uint64_t rd2 = (uint64_t)Read_Long(rd1+0x10);
-			if( rd2 != retadd)
+	if(retadd >0)
+	{
+		for(int i = 0;i < 26;i++)
+		{	
+			if((0x2B81E0 + i*8) == (0x2B8200))
 			{
-				forcewritenewlong(rd1+0x10,(uint64_t)retadd);
-				NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x88CC: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter + i*8, retadd,rd2);
+				uint64_t rd1 = (uint64_t)Read_Long(tersafereporter + i*8);
+				uint64_t rd2 = (uint64_t)Read_Long(rd1+0x10);
+				if( rd2 != retadd)
+				{
+					forcewritenewlong(rd1+0x10,(uint64_t)retadd);
+					NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x88CC: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter + i*8, retadd,rd2);
+				}
+				continue;
 			}
-			continue;
+	
+			
+			uint64_t rd = (uint64_t)Read_Long(tersafereporter + i*8);
+			if( rd != retadd)
+			{
+				forcewritenewlong(tersafereporter + i*8,(uint64_t)retadd);
+				NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x55B0: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
+			}
+			
+			
 		}
-
-		/*
-		uint64_t rd = (uint64_t)Read_Long(tersafereporter + i*8);
-		if( rd != retadd)
-		{
-			forcewritenewlong(tersafereporter + i*8,(uint64_t)retadd);
-			NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x55B0: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
-		}
-		*/
-		
 	}
+	*/
 
 	/*
 	uint64_t rd = (uint64_t)Read_Long(tersafereporter);
@@ -5662,7 +5665,10 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//0x1AEB30 自瞄hook
-				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
+				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
+				
+				//0x821F948 shantuiadd2
+				NSLog(@"小罪ADD: [主程序 0x821F948 hook] 主线程触发 shantuiadd2"); 
 				
 				//0xC4086C4 DataFromTGPAadd2
 				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
@@ -5674,9 +5680,6 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
 
-				
-
-				
 				
 				//thread_state2.__x[0] = tersafeadd + 0x2B8E32;
 				
@@ -5721,9 +5724,7 @@ static void* exception_handler_thread(void* arg) {
 				//0xF6260 down 
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
-				//0x20F42C NetObj_GetInstance
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
-			
+				
 				
 			
 				//0x20FD6C 查询容器容量
@@ -5874,8 +5875,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 2) 
 			{
-				////0x1AEB30 自瞄hook
-				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
+				//0x20F42C NetObj_GetInstance
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
+	
+				//0x1AEB30 自瞄hook
+				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
 				
 				//0xA4DE4 nj
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
@@ -6765,7 +6769,9 @@ void initbreakpoint()
 	//范围检测
 	mach_vm_address_t tersafetsadd52 = tersafeadd + 0x210330;//sub_210330 范围上报检测
 	mach_vm_address_t tersafetsadd52ret = (mach_vm_address_t)hooked_ret1;
-	
+
+	mach_vm_address_t shantuiadd2 = Imageaddress + 0x821F948;
+	mach_vm_address_t shantuiadd2ret = (mach_vm_address_t)hooked_ret1;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -7019,9 +7025,8 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-	
 
-	
+	/*
 	//0x1AEB30 自瞄hook
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7031,7 +7036,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//0x821F948 shantuiadd2
+	g_breakpoints[4] = (Breakpoint){
+        .source = shantuiadd2,
+        .target = shantuiadd2ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	
 
@@ -7237,19 +7252,6 @@ void initbreakpoint()
 
 
 	/*
-	//0x20F42C NetObj_GetInstance
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd37,
-        .target = tersafetsadd37ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-	
-
-	/*
 	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7345,7 +7347,7 @@ void initbreakpoint()
 	*/
 	
 
-	
+	/*
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7355,8 +7357,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
+	//0x20F42C NetObj_GetInstance
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd37,
+        .target = tersafetsadd37ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 	
 
@@ -8481,9 +8492,7 @@ if (load_executable_path() == 0)
 		{
 			kgvmp_dyadd = Get_kgvmp_dy_base();
 		}
-		
 
-		
 		void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
 		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
 		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
@@ -8496,11 +8505,11 @@ if (load_executable_path() == 0)
 		void *GetDataFromTGPA_ptr = (void *)(Imageaddress+0xE3B4F40);
 		ret = DobbyHook(GetDataFromTGPA_ptr, (void *)hooked_GetDataFromTGPA, (void **)&original_GetDataFromTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
 
 		void *InitTGPA_ptr = (void *)(Imageaddress+0xE3B4F4C);
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 		
 
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
