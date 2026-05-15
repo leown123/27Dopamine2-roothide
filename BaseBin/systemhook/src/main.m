@@ -5117,7 +5117,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
-					
+				//0xCDE67D4 shantuiadd3
+				NSLog(@"小罪ADD: [主线程 0xCDE67D4 hook] 主线程 shantuiadd3 返回0");
+				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
@@ -5718,6 +5720,9 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				//0xCDE67D4 shantuiadd3
+				NSLog(@"小罪ADD: [ter线程 0xCDE67D4 hook] 主线程 shantuiadd3 返回0");
+				
 				//0x170278 全局游戏hook
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
 				
@@ -5728,7 +5733,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -6773,6 +6778,9 @@ void initbreakpoint()
 	mach_vm_address_t shantuiadd2 = Imageaddress + 0x821F948;
 	mach_vm_address_t shantuiadd2ret = (mach_vm_address_t)hooked_ret1;
 
+	mach_vm_address_t shantuiadd3 = Imageaddress + 0xCDE67D4;
+	mach_vm_address_t shantuiadd3ret = (mach_vm_address_t)hooked_ret0;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -6848,10 +6856,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd44,
         .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xCDE67D4 shantuiadd3
+	g_breakpoints[1] = (Breakpoint){
+        .source = shantuiadd3,
+        .target = shantuiadd3ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7213,11 +7233,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
         .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xCDE67D4 shantuiadd3
+	ter_breakpoints[0] = = (Breakpoint){
+        .source = shantuiadd3,
+        .target = shantuiadd3ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7368,8 +7399,6 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
-	
 
 	/*
 	//RingBuf_Ticknew
