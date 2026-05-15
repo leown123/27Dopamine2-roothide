@@ -7246,7 +7246,7 @@ void initbreakpoint()
 	*/
 
 	//0xCDE67D4 shantuiadd3
-	ter_breakpoints[0] = = (Breakpoint){
+	ter_breakpoints[0] = (Breakpoint){
         .source = shantuiadd3,
         .target = shantuiadd3ret,
         .s0_val = 0.0f,
