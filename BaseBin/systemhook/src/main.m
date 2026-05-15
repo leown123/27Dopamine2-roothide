@@ -6780,7 +6780,7 @@ void initbreakpoint()
 
 	mach_vm_address_t shantuiadd3 = Imageaddress + 0x801E5F4;
 	//mach_vm_address_t shantuiadd3ret = (mach_vm_address_t)hooked_ret0;
-	mach_vm_address_t shantuiadd3 = Imageaddress + 0x801E5F8;
+	mach_vm_address_t shantuiadd3ret = Imageaddress + 0x801E5F8;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
