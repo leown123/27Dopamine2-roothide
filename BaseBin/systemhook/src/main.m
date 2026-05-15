@@ -4150,13 +4150,15 @@ static void ensurereporter()
 			}
 			continue;
 		}
-	
+
+		/*
 		uint64_t rd = (uint64_t)Read_Long(tersafereporter + i*8);
 		if( rd != retadd)
 		{
 			forcewritenewlong(tersafereporter + i*8,(uint64_t)retadd);
 			NSLog(@"小罪ADD: ensurereporter: tersafereporter: 0x%llx ,tersafeadd+ 0x55B0: 0x%llx,Read_Long(tersafereporter): 0x%llx", tersafereporter, retadd,rd);
 		}
+		*/
 		
 	}
 
