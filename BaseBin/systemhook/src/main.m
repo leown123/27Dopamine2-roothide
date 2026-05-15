@@ -5117,7 +5117,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
-				//0xCDE67D4 shantuiadd3
+				//0x801E5D8 shantuiadd3
 				NSLog(@"小罪ADD: [主线程 0xCDE67D4 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x20FD6C 查询容器容量
@@ -5720,7 +5720,7 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				//0xCDE67D4 shantuiadd3
+				//0x801E5D8 shantuiadd3
 				NSLog(@"小罪ADD: [ter线程 0xCDE67D4 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x170278 全局游戏hook
@@ -6778,7 +6778,7 @@ void initbreakpoint()
 	mach_vm_address_t shantuiadd2 = Imageaddress + 0x821F948;
 	mach_vm_address_t shantuiadd2ret = (mach_vm_address_t)hooked_ret1;
 
-	mach_vm_address_t shantuiadd3 = Imageaddress + 0xCDE67D4;
+	mach_vm_address_t shantuiadd3 = Imageaddress + 0x801E5D8;
 	mach_vm_address_t shantuiadd3ret = (mach_vm_address_t)hooked_ret0;
 
 	g_source_addr = wuhouadd;
@@ -6868,7 +6868,7 @@ void initbreakpoint()
     };
 	*/
 
-	//0xCDE67D4 shantuiadd3
+	//0x801E5D8 shantuiadd3
 	g_breakpoints[1] = (Breakpoint){
         .source = shantuiadd3,
         .target = shantuiadd3ret,
@@ -7245,7 +7245,7 @@ void initbreakpoint()
     };
 	*/
 
-	//0xCDE67D4 shantuiadd3
+	//0x801E5D8 shantuiadd3
 	ter_breakpoints[0] = (Breakpoint){
         .source = shantuiadd3,
         .target = shantuiadd3ret,
