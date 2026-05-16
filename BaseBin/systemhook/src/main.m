@@ -8342,11 +8342,6 @@ void hooked__dispatch_sync(dispatch_queue_t queue, dispatch_block_t block) {
     }
 }
 
-// 原函数类型定义
-typedef void (*_dispatch_sync_t)(dispatch_queue_t queue, dispatch_block_t block);
-static _dispatch_sync_t orig__dispatch_sync = NULL;
-
-
 
 
 //入口
