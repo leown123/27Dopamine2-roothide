@@ -5670,7 +5670,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
 				//0x821F948 shantuiadd2
-				NSLog(@"小罪ADD: [主程序 0x821F948 hook] 主线程触发 shantuiadd2"); 
+				//NSLog(@"小罪ADD: [主程序 0x821F948 hook] 主线程触发 shantuiadd2"); 
 				
 				//0xC4086C4 DataFromTGPAadd2
 				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
@@ -8006,7 +8006,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 		predicatelong == (Imageaddress+0x13D641E0) ||
 		predicatelong == (Imageaddress+0x13D55018) ||
-		predicatelong == (Imageaddress+0x13D4D9F0) ||
+		//predicatelong == (Imageaddress+0x13D4D9F0) ||
 		predicatelong == (Imageaddress+0x13D4D9B8) ||
 		predicatelong == (Imageaddress+0x13D4D730) ||
 		predicatelong == (Imageaddress+0x13D4D920) ||
