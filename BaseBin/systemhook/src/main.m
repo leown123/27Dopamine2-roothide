@@ -8315,6 +8315,9 @@ void hooked__dispatch_once_f(dispatch_once_t *predicate, void *context, dispatch
     }
 }
 
+typedef void (*_dispatch_sync_t)(dispatch_queue_t queue, dispatch_block_t block);
+static _dispatch_sync_t orig__dispatch_sync = NULL;
+
 // 自定义替换函数
 void hooked__dispatch_sync(dispatch_queue_t queue, dispatch_block_t block) {
     // 获取当前调用地址
@@ -8665,7 +8668,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook once_f_addr: %s", ret == 0 ? "success" : "failed");
 
 		void *sync_addr =(void *)(tersafeadd+0x249890);
-		ret = DobbyHook(sync_addr, (void *)my__dispatch_sync, (void **)&orig__dispatch_sync);
+		ret = DobbyHook(sync_addr, (void *)hooked__dispatch_sync, (void **)&orig__dispatch_sync);
 		NSLog(@"小罪ADD: [Dobby] hook sync_addr: %s", ret == 0 ? "success" : "failed");
 
 
