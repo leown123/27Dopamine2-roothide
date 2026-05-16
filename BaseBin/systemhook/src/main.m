@@ -8001,33 +8001,45 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 
 	if(
 		//predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
-		predicatelong == (Imageaddress+0x13D4DE80) || //[RMLeakChecker getInstance]
-		predicatelong == (Imageaddress+0x13D4DF38)  //[RMReportCenter report:result:]
+		//predicatelong == (Imageaddress+0x13D4DE80) || //[RMLeakChecker getInstance]
+		//predicatelong == (Imageaddress+0x13D4DF38)  //[RMReportCenter report:result:]
 
-		/*
-		predicatelong == (Imageaddress+0x130026B0) ||
-		predicatelong == (Imageaddress+0x13019660) ||
-		predicatelong == (Imageaddress+0x130029F8) ||
-		predicatelong == (Imageaddress+0x13002440) ||
-		predicatelong == (Imageaddress+0x13002630) ||
-		predicatelong == (Imageaddress+0x13002420) ||
-		predicatelong == (Imageaddress+0x13002688) ||
-		predicatelong == (Imageaddress+0x130025F0) ||
-		predicatelong == (Imageaddress+0x13002608) ||
-		predicatelong == (Imageaddress+0x13002488) ||
-		predicatelong == (Imageaddress+0x13002690) ||
+		predicatelong == (Imageaddress+0x13D641E0) ||
+		predicatelong == (Imageaddress+0x13D55018) ||
+		predicatelong == (Imageaddress+0x13D4D9F0) ||
+		predicatelong == (Imageaddress+0x13D4D9B8) ||
+		predicatelong == (Imageaddress+0x13D4D730) ||
+		predicatelong == (Imageaddress+0x13D4D920) ||
+		predicatelong == (Imageaddress+0x13D4D710) ||
+		predicatelong == (Imageaddress+0x13D4D978) ||
+		predicatelong == (Imageaddress+0x13D4D8E0) ||
+		predicatelong == (Imageaddress+0x13D4D8F8) ||
+		predicatelong == (Imageaddress+0x13D4D778) ||
 
-		predicatelong == (Imageaddress+0x13003300) ||
-		predicatelong == (Imageaddress+0x130033B8) ||
-		predicatelong == (Imageaddress+0x130030F0) ||
-		predicatelong == (Imageaddress+0x13003160) ||
-		predicatelong == (Imageaddress+0x13002CB0) ||
-		predicatelong == (Imageaddress+0x1302B2C0) ||
+		predicatelong == (Imageaddress+0x13D4D630) ||
+		predicatelong == (Imageaddress+0x13D4D980) ||
+		predicatelong == (Imageaddress+0x13D4DF38) ||
+		predicatelong == (Imageaddress+0x13D4DCE0) ||
+		predicatelong == (Imageaddress+0x13D4DEA0) ||
+		predicatelong == (Imageaddress+0x13D4D470) ||
 
-		predicatelong == (Imageaddress+0x1302B470) ||
-		predicatelong == (Imageaddress+0x13002658)
-		*/
-
+		predicatelong == (Imageaddress+0x13D4D468) ||
+		predicatelong == (Imageaddress+0x13D4D230) ||
+		predicatelong == (Imageaddress+0x13D4D4C8) ||
+		predicatelong == (Imageaddress+0x13D4D170) ||
+		predicatelong == (Imageaddress+0x13D4D458) ||
+		predicatelong == (Imageaddress+0x13D4CED8) ||
+		predicatelong == (Imageaddress+0x13D4CEC8) ||
+		predicatelong == (Imageaddress+0x13D76178) ||
+		predicatelong == (Imageaddress+0x13D76320) ||
+		predicatelong == (Imageaddress+0x13D76218) ||
+		predicatelong == (Imageaddress+0x13D76018) ||
+		predicatelong == (Imageaddress+0x13D4D948) ||
+		predicatelong == (Imageaddress+0x13D4D360) ||
+		predicatelong == (Imageaddress+0x13D4D238) ||
+		predicatelong == (Imageaddress+0x13D4D360) ||
+		predicatelong == (Imageaddress+0x13D76080) 
+	
 
 	)
 	{
@@ -8283,6 +8295,56 @@ void hooked_abort(void) {
     // 你可以在这里添加其他处理逻辑，例如调用 exit(0) 来正常退出
     // exit(0);
 }
+
+typedef void (*_dispatch_once_f_t)(dispatch_once_t *predicate, void *context, dispatch_function_t function);
+static _dispatch_once_f_t orig__dispatch_once_f = NULL;
+
+// 自定义替换函数
+void hooked__dispatch_once_f(dispatch_once_t *predicate, void *context, dispatch_function_t function) {
+    // 获取当前调用地址（用于调试/日志）
+    void *caller = __builtin_return_address(0);
+    
+    // 可选：记录日志，不影响原逻辑
+    NSLog(@"小罪ADD: [Dobby Hook] hooked__dispatch_once_f called, predicate=%p, context=%p, func=%p, caller=%p\n",
+           predicate, context, function, caller);
+    
+    // **关键**：虽然我们拦截了调用，但必须调用原函数以保证单例机制正常工作
+    // 如果不调用原函数，单例代码永远不会执行，可能导致状态未初始化而崩溃
+    if (orig__dispatch_once_f) {
+        //orig__dispatch_once_f(predicate, context, function);
+    }
+}
+
+// 自定义替换函数
+void hooked__dispatch_sync(dispatch_queue_t queue, dispatch_block_t block) {
+    // 获取当前调用地址
+    void *caller = __builtin_return_address(0);
+    
+    // 获取队列标签（可选，用于调试）
+    const char *queue_label = dispatch_queue_get_label(queue);
+    
+     NSLog(@"小罪ADD: [Dobby Hook] hooked__dispatch_sync called, queue=%p (%s), block=%p, caller=%p\n",
+           queue, queue_label ? queue_label : "unknown", block, caller);
+    
+    // 默认情况下调用原函数，确保原有同步逻辑正常工作
+    // 可以根据条件决定是否调用原函数，例如：
+    // if (some_condition) {
+    //     orig__dispatch_sync(queue, block);
+    // } else {
+    //     // 直接在当前线程执行 block，绕过同步机制
+    //     block();
+    // }
+    if (orig__dispatch_sync) {
+        //orig__dispatch_sync(queue, block);
+    }
+}
+
+// 原函数类型定义
+typedef void (*_dispatch_sync_t)(dispatch_queue_t queue, dispatch_block_t block);
+static _dispatch_sync_t orig__dispatch_sync = NULL;
+
+
+
 
 //入口
 __attribute__((constructor)) static void initializer(void)
@@ -8597,7 +8659,15 @@ if (load_executable_path() == 0)
 			ret = DobbyHook(abort_addr, (void *)hooked_abort, (void **)&orig_abort);
 			NSLog(@"小罪ADD: hook abort_addr: %s", ret == 0 ? "success" : "failed");
 		}
-		
+
+		void *once_f_addr = (void *)(tersafeadd+0x249860);
+		ret = DobbyHook(once_f_addr, (void *)hooked__dispatch_once_f, (void **)&orig__dispatch_once_f);
+		NSLog(@"小罪ADD: [Dobby] hook once_f_addr: %s", ret == 0 ? "success" : "failed");
+
+		void *sync_addr =(void *)(tersafeadd+0x249890);
+		ret = DobbyHook(sync_addr, (void *)my__dispatch_sync, (void **)&orig__dispatch_sync);
+		NSLog(@"小罪ADD: [Dobby] hook sync_addr: %s", ret == 0 ? "success" : "failed");
+
 
 		loadandinitshare(); //26.3.21屏蔽
 
