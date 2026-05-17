@@ -4243,6 +4243,34 @@ static void ensurereporter()
 		
 		
 	}
+
+	//新写法
+	uint64_t mainyouxizhuangtai1 =  (uint64_t)(Imageaddress + 0x146F112F);
+	int mainyouxizhuangtai1count = Read_Int(mainyouxizhuangtai1);
+	if( mainyouxizhuangtai1count != 1)
+	{
+		forcewritenew(mainyouxizhuangtai1,1);
+		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai1: 0x%llx ,mainyouxizhuangtai1count: %d", mainyouxizhuangtai1,mainyouxizhuangtai1count);
+	}
+
+	//新写法
+	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
+	int mainyouxizhuangtai2count = Read_Int(mainyouxizhuangtai2);
+	if( mainyouxizhuangtai2count != 0)
+	{
+		forcewritenew(mainyouxizhuangtai2,0);
+		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
+	}
+
+	//新写法
+	uint64_t mainyouxizhuangtai3 =  (uint64_t)(Imageaddress + 0x146F1130);
+	int mainyouxizhuangtai3count = Read_Int(mainyouxizhuangtai3);
+	if( mainyouxizhuangtai3count != 0)
+	{
+		forcewritenew(mainyouxizhuangtai3,0);
+		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
+	}
+
 	
 	
 
@@ -4328,7 +4356,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr4: 0x%llx ,yueyuptr4count: %d", yueyuptr4,yueyuptr4count);
 	}
 
-	bianlixianchenghack();
+	//bianlixianchenghack();
 	
 
 }
@@ -6180,6 +6208,9 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "port_80");
 					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+
 					/*
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
@@ -8004,6 +8035,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 		//predicatelong == (Imageaddress+0x13D4DE80) || //[RMLeakChecker getInstance]
 		//predicatelong == (Imageaddress+0x13D4DF38)  //[RMReportCenter report:result:]
 
+		
 		predicatelong == (Imageaddress+0x13D641E0) ||
 		predicatelong == (Imageaddress+0x13D55018) ||
 		//predicatelong == (Imageaddress+0x13D4D9F0) ||
@@ -8342,6 +8374,27 @@ void hooked__dispatch_sync(dispatch_queue_t queue, dispatch_block_t block) {
     }
 }
 
+typedef void (*_dispatch_async_t)(dispatch_queue_t queue, dispatch_block_t block);
+static _dispatch_async_t orig__dispatch_async = NULL;
+
+void hooked__dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
+    // 获取调用者的返回地址，用于调试或日志分析
+    void *caller = __builtin_return_address(0);
+    const char *queue_label = dispatch_queue_get_label(queue);
+    
+    NSLog(@"小罪ADD: [Dobby Hook] hooked__dispatch_async called, queue=%p (%s), block=%p, caller=%p\n",
+           queue, queue_label ? queue_label : "unknown", block, caller);
+    
+    // 3. 调用原始的 _dispatch_async 函数，以维持 GCD 的正常工作机制
+    if (orig__dispatch_async) {
+        //orig__dispatch_async(queue, block);
+    } else {
+        // 如果原函数指针无效，可以选择直接执行 block，以避免逻辑丢失
+        if (block) {
+            block();
+        }
+    }
+}
 
 
 //入口
@@ -8600,9 +8653,9 @@ if (load_executable_path() == 0)
 			kgvmp_dyadd = Get_kgvmp_dy_base();
 		}
 
-		void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
-		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
-		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
+		//void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
+		//ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
+		//NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
@@ -8622,6 +8675,11 @@ if (load_executable_path() == 0)
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
 		ret = DobbyHook(kgvmp_dy_dispatch_once_ptr, (void *)hooked_dispatch_once_kgvmp_dy, (void **)&original_dispatch_once_kgvmp_dy);
 		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
+
+		void * kgvmp_dy_dispatch_async_ptr = (void *)(kgvmp_dyadd+0xCFCC8);
+		ret = DobbyHook(async_addr, (void *)hooked__dispatch_async, (void **)&orig__dispatch_async);
+		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_async_ptr: %s", ret == 0 ? "success" : "failed");
+
 
 		
 		/*
@@ -8651,12 +8709,14 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
 
+		/*
 		void *abort_addr = dlsym(RTLD_DEFAULT, "abort");
     	if (abort_addr) 
 		{
 			ret = DobbyHook(abort_addr, (void *)hooked_abort, (void **)&orig_abort);
 			NSLog(@"小罪ADD: hook abort_addr: %s", ret == 0 ? "success" : "failed");
 		}
+		*/
 
 		void *once_f_addr = (void *)(tersafeadd+0x249860);
 		ret = DobbyHook(once_f_addr, (void *)hooked__dispatch_once_f, (void **)&orig__dispatch_once_f);
