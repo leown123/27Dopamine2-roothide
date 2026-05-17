@@ -8677,7 +8677,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		void * kgvmp_dy_dispatch_async_ptr = (void *)(kgvmp_dyadd+0xCFCC8);
-		ret = DobbyHook(async_addr, (void *)hooked__dispatch_async, (void **)&orig__dispatch_async);
+		ret = DobbyHook(kgvmp_dy_dispatch_async_ptr, (void *)hooked__dispatch_async, (void **)&orig__dispatch_async);
 		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_async_ptr: %s", ret == 0 ? "success" : "failed");
 
 
