@@ -5145,8 +5145,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
-				//0x801E5D8 shantuiadd3
-				NSLog(@"小罪ADD: [主线程 0x801E5D8 hook] 主线程 shantuiadd3 返回0");
+				//0xCDE6778 shantuiadd3
+				NSLog(@"小罪ADD: [主线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5748,8 +5748,8 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				//0x801E5F4 shantuiadd3
-				//NSLog(@"小罪ADD: [ter线程 0x801E5F4 hook] 主线程 shantuiadd3 返回0");
+				//0xCDE6778 shantuiadd3
+				//NSLog(@"小罪ADD: [ter线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x170278 全局游戏hook
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
@@ -6809,9 +6809,8 @@ void initbreakpoint()
 	mach_vm_address_t shantuiadd2 = Imageaddress + 0x821F948;
 	mach_vm_address_t shantuiadd2ret = (mach_vm_address_t)hooked_ret1;
 
-	mach_vm_address_t shantuiadd3 = Imageaddress + 0x801E5F4;
-	//mach_vm_address_t shantuiadd3ret = (mach_vm_address_t)hooked_ret0;
-	mach_vm_address_t shantuiadd3ret = Imageaddress + 0x801E5F8;
+	mach_vm_address_t shantuiadd3 = Imageaddress + 0xCDE6778;
+	mach_vm_address_t shantuiadd3ret = (mach_vm_address_t)hooked_ret0;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6888,7 +6887,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd44,
@@ -6898,10 +6897,11 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
-	/*
-	//0x801E5F4 shantuiadd3
+	
+	//0xCDE6778 shantuiadd3
 	g_breakpoints[1] = (Breakpoint){
         .source = shantuiadd3,
         .target = shantuiadd3ret,
@@ -6910,7 +6910,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0xF6260 down
@@ -7282,7 +7282,7 @@ void initbreakpoint()
 	
 
 	/*
-	//0x801E5F4 shantuiadd3
+	//0xCDE6778  shantuiadd3
 	ter_breakpoints[0] = (Breakpoint){
         .source = shantuiadd3,
         .target = shantuiadd3ret,
