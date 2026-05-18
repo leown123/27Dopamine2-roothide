@@ -4250,7 +4250,7 @@ static void ensurereporter()
 	char mainyouxizhuangtai1count = Read_Char(mainyouxizhuangtai1);
 	if( mainyouxizhuangtai1count != (char)1)
 	{
-		forcewritenewchar(mainyouxizhuangtai2,(char)1);
+		forcewritenewchar(mainyouxizhuangtai1,(char)1);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai1: 0x%llx ,mainyouxizhuangtai1count: %d", mainyouxizhuangtai1,mainyouxizhuangtai1count);
 	}
 
