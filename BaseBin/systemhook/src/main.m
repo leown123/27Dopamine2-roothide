@@ -5707,7 +5707,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 			
 			
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 			
 
 				
@@ -7056,7 +7056,7 @@ void initbreakpoint()
     };
 	*/
 	
-	/*
+	
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -7066,7 +7066,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0xA4DE4 nj
@@ -7092,6 +7092,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x821F948 shantuiadd2
 	g_breakpoints[4] = (Breakpoint){
         .source = shantuiadd2,
@@ -7101,6 +7102,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	
 
