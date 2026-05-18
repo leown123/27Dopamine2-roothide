@@ -5697,8 +5697,8 @@ static void* exception_handler_thread(void* arg) {
 				//0x1AEB30 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
-				//0x821F948 shantuiadd2
-				//NSLog(@"小罪ADD: [主程序 0x821F948 hook] 主线程触发 shantuiadd2"); 
+				//0x822E0B8 shantuiadd2
+				//NSLog(@"小罪ADD: [主程序 0x822E0B8 hook] 主线程触发 shantuiadd2"); 
 				
 				//0xC4086C4 DataFromTGPAadd2
 				//NSLog(@"小罪ADD: [0xC4086C4 hook] 主线程触发 DataFromTGPAadd2 检测");
@@ -6806,7 +6806,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd52 = tersafeadd + 0x210330;//sub_210330 范围上报检测
 	mach_vm_address_t tersafetsadd52ret = (mach_vm_address_t)hooked_ret1;
 
-	mach_vm_address_t shantuiadd2 = Imageaddress + 0x821F948;
+	mach_vm_address_t shantuiadd2 = Imageaddress + 0x822E0B8;
 	mach_vm_address_t shantuiadd2ret = (mach_vm_address_t)hooked_ret1;
 
 	mach_vm_address_t shantuiadd3 = Imageaddress + 0xCDE6778;
@@ -7056,7 +7056,7 @@ void initbreakpoint()
     };
 	*/
 	
-	
+	/*
 	//NetObj_GetInstance
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd37,
@@ -7066,6 +7066,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7092,8 +7093,8 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0x821F948 shantuiadd2
+	
+	//0x822E0B8 shantuiadd2
 	g_breakpoints[4] = (Breakpoint){
         .source = shantuiadd2,
         .target = shantuiadd2ret,
@@ -7102,7 +7103,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	
 
