@@ -5749,7 +5749,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 0) 
 			{	
 				//0x801E5F4 shantuiadd3
-				NSLog(@"小罪ADD: [ter线程 0x801E5F4 hook] 主线程 shantuiadd3 返回0");
+				//NSLog(@"小罪ADD: [ter线程 0x801E5F4 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x170278 全局游戏hook
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] ter线程调用 全局游戏hook");
@@ -5761,7 +5761,7 @@ static void* exception_handler_thread(void* arg) {
 				
 			
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -6888,7 +6888,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd44,
@@ -6898,8 +6898,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x801E5F4 shantuiadd3
 	g_breakpoints[1] = (Breakpoint){
         .source = shantuiadd3,
@@ -6909,6 +6910,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0xF6260 down
@@ -7265,7 +7267,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
@@ -7275,8 +7277,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x801E5F4 shantuiadd3
 	ter_breakpoints[0] = (Breakpoint){
         .source = shantuiadd3,
@@ -7286,6 +7289,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
