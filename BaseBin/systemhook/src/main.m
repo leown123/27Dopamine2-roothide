@@ -6900,7 +6900,7 @@ void initbreakpoint()
 	*/
 	
 
-	
+	/*
 	//0xCDE6778 shantuiadd3
 	g_breakpoints[1] = (Breakpoint){
         .source = shantuiadd3,
@@ -6910,6 +6910,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7093,7 +7094,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x822E0B8 shantuiadd2
 	g_breakpoints[4] = (Breakpoint){
         .source = shantuiadd2,
@@ -7103,7 +7104,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	
 
@@ -8038,11 +8039,11 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 	//if(predicatelong >= zuidi && predicatelong<= zuigao)
 
 	if(
-		//predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
-		//predicatelong == (Imageaddress+0x13D4DE80) || //[RMLeakChecker getInstance]
-		//predicatelong == (Imageaddress+0x13D4DF38)  //[RMReportCenter report:result:]
+		predicatelong == (Imageaddress+0x13002658) || //[_MidasIAPSecUtility sharedUtil]
+		predicatelong == (Imageaddress+0x13D4DE80) || //[RMLeakChecker getInstance]
+		predicatelong == (Imageaddress+0x13D4DF38)  //[RMReportCenter report:result:]
 
-		
+		/*
 		predicatelong == (Imageaddress+0x13D641E0) ||
 		predicatelong == (Imageaddress+0x13D55018) ||
 		//predicatelong == (Imageaddress+0x13D4D9F0) ||
@@ -8078,7 +8079,7 @@ void hooked_dispatch_once(dispatch_once_t *predicate, dispatch_block_t block)
 		predicatelong == (Imageaddress+0x13D4D238) ||
 		predicatelong == (Imageaddress+0x13D4D360) ||
 		predicatelong == (Imageaddress+0x13D76080) 
-	
+		*/
 
 	)
 	{
@@ -8660,9 +8661,9 @@ if (load_executable_path() == 0)
 			kgvmp_dyadd = Get_kgvmp_dy_base();
 		}
 
-		//void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
-		//ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
-		//NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
+		void *dispatch_once_ptr = (void *)(Imageaddress+0xE3B6338);
+		ret = DobbyHook(dispatch_once_ptr, (void *)hooked_dispatch_once, (void **)&original_dispatch_once);
+		NSLog(@"小罪ADD: [Dobby] hook dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
 		void *startInitMainFlow_reprovideDelegate_ptr = (void *)(Imageaddress+0xE3BCCC0);
 		ret = DobbyHook(startInitMainFlow_reprovideDelegate_ptr, (void *)hooked_startInitMainFlow_reprovideDelegate, (void **)&original_startInitMainFlow_reprovideDelegate);
@@ -8687,8 +8688,6 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(kgvmp_dy_dispatch_async_ptr, (void *)hooked__dispatch_async, (void **)&orig__dispatch_async);
 		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_async_ptr: %s", ret == 0 ? "success" : "failed");
 
-
-		
 		/*
 		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
 		ret = DobbyHook(TssSDKGetReportData2_ptr, (void *)hooked_TssSDKGetReportData2, (void **)&original_TssSDKGetReportData2);
