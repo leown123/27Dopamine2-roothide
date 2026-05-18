@@ -4244,34 +4244,34 @@ static void ensurereporter()
 		
 	}
 
-	/*
+	
 	//新写法
 	uint64_t mainyouxizhuangtai1 =  (uint64_t)(Imageaddress + 0x146F112F);
-	int mainyouxizhuangtai1count = Read_Int(mainyouxizhuangtai1);
-	if( mainyouxizhuangtai1count != 1)
+	char mainyouxizhuangtai1count = Read_Char(mainyouxizhuangtai1);
+	if( mainyouxizhuangtai1count != (char)1)
 	{
-		forcewritenew(mainyouxizhuangtai1,1);
+		forcewritenewchar(mainyouxizhuangtai2,(char)1);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai1: 0x%llx ,mainyouxizhuangtai1count: %d", mainyouxizhuangtai1,mainyouxizhuangtai1count);
 	}
 
 	//新写法
 	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
-	int mainyouxizhuangtai2count = Read_Int(mainyouxizhuangtai2);
-	if( mainyouxizhuangtai2count != 0)
+	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
+	if( mainyouxizhuangtai2count != (char)0)
 	{
-		forcewritenew(mainyouxizhuangtai2,0);
+		forcewritenewchar(mainyouxizhuangtai2,(char)0);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
 	}
 
 	//新写法
 	uint64_t mainyouxizhuangtai3 =  (uint64_t)(Imageaddress + 0x146F1130);
-	int mainyouxizhuangtai3count = Read_Int(mainyouxizhuangtai3);
-	if( mainyouxizhuangtai3count != 0)
+	char mainyouxizhuangtai3count = Read_Char(mainyouxizhuangtai3);
+	if( mainyouxizhuangtai3count != (char)0)
 	{
-		forcewritenew(mainyouxizhuangtai3,0);
+		forcewritenewchar(mainyouxizhuangtai3,(char)0);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
 	}
-	*/
+	
 	
 	
 
