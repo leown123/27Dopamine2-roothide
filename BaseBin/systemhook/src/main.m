@@ -4244,6 +4244,7 @@ static void ensurereporter()
 		
 	}
 
+	/*
 	//新写法
 	uint64_t mainyouxizhuangtai1 =  (uint64_t)(Imageaddress + 0x146F112F);
 	int mainyouxizhuangtai1count = Read_Int(mainyouxizhuangtai1);
@@ -4270,7 +4271,7 @@ static void ensurereporter()
 		forcewritenew(mainyouxizhuangtai3,0);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
 	}
-
+	*/
 	
 	
 
