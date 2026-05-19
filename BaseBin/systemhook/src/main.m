@@ -4279,15 +4279,6 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
 	}
 
-	//新写法
-	uint64_t mainyouxizhuangtai4 =  (uint64_t)(Imageaddress + 0x1462AB86);
-	char mainyouxizhuangtai4count = Read_Char(mainyouxizhuangtai4);
-	if( mainyouxizhuangtai4count != (char)2)
-	{
-		forcewritenewchar(mainyouxizhuangtai4,(char)2);
-		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai4: 0x%llx ,mainyouxizhuangtai4count: %d", mainyouxizhuangtai4,mainyouxizhuangtai4count);
-	}
-	
 	
 
 	/*
