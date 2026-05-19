@@ -4278,7 +4278,15 @@ static void ensurereporter()
 		forcewritenewchar(mainyouxizhuangtai3,(char)0);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
 	}
-	
+
+	//新写法
+	uint64_t mainyouxizhuangtai4 =  (uint64_t)(Imageaddress + 0x1462AB86);
+	char mainyouxizhuangtai4count = Read_Char(mainyouxizhuangtai4);
+	if( mainyouxizhuangtai4count != (char)2)
+	{
+		forcewritenewchar(mainyouxizhuangtai4,(char)2);
+		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai4: 0x%llx ,mainyouxizhuangtai4count: %d", mainyouxizhuangtai4,mainyouxizhuangtai4count);
+	}
 	
 	
 
@@ -5154,13 +5162,13 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{	
 				//0xF2D45C tssinit
-				NSLog(@"小罪ADD: [主线程 0xF2D45C hook] 主线程 tssinit 返回123456");
+				//NSLog(@"小罪ADD: [主线程 0xF2D45C hook] 主线程 tssinit 返回123456");
 			
 				//0xCDE6778 shantuiadd3
 				//NSLog(@"小罪ADD: [主线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 				//0x170278 全局游戏hook
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] 主线程调用 全局游戏hook");
@@ -6901,7 +6909,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd44,
@@ -6911,8 +6919,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0xF2D45C tssinit
 	g_breakpoints[1] = (Breakpoint){
         .source = shantuiadd4,
@@ -6922,6 +6931,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
