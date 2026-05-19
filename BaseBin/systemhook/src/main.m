@@ -2174,6 +2174,13 @@ uint64_t hooked_ret0(uint64_t a1)//
 	return 0;
 }
 
+uint64_t hooked_ret12345678(uint64_t a1)//
+{
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return 12345678;
+}
+
 uint64_t hooked_ret1()
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret1 called. Stack trace:\n%@", [NSThread callStackSymbols]);
@@ -5146,8 +5153,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				//0xF2D45C tssinit
+				NSLog(@"小罪ADD: [主线程 0xF2D45C hook] 主线程 tssinit 返回123456");
+			
 				//0xCDE6778 shantuiadd3
-				NSLog(@"小罪ADD: [主线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
+				//NSLog(@"小罪ADD: [主线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
 				
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -6813,6 +6823,9 @@ void initbreakpoint()
 	mach_vm_address_t shantuiadd3 = Imageaddress + 0xCDE6778;
 	mach_vm_address_t shantuiadd3ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t shantuiadd4 = Imageaddress + 0xF2D45C;
+	mach_vm_address_t shantuiadd4ret = (mach_vm_address_t)hooked_ret12345678;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -6888,7 +6901,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd44,
@@ -6898,7 +6911,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//0xF2D45C tssinit
+	g_breakpoints[1] = (Breakpoint){
+        .source = shantuiadd4,
+        .target = shantuiadd4ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 	
 
 	/*
