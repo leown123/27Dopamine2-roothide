@@ -5605,6 +5605,7 @@ static void* exception_handler_thread(void* arg) {
 							    fprintf(stderr, "%02x ", (unsigned char)linshibuffer[i]);
 							}
 							fprintf(stderr, "\n");   // 换行，方便查看
+							fflush(stderr);  // 强制刷新缓冲区，立即输出到控制台
 
 							
 							
