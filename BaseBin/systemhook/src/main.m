@@ -5603,7 +5603,7 @@ static void* exception_handler_thread(void* arg) {
 							FILE *fp = fopen(filePathC, "a");
 							if (fp == NULL) {
 							    NSLog(@"无法打开文件：%s", filePathC);
-							    return;
+							    //return;
 							}
 
 						
