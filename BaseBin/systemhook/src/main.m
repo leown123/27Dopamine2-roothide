@@ -5594,6 +5594,20 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
+							char linshibuffer[576];
+							char *prefix = "小罪ADD: 主线程范围检测字节集： ";
+							fprintf(stderr, "%s", prefix);// 输出前缀
+
+							memcpy((void *)linshibuffer, (void *)thread_state2.__x[0], 576);
+							
+							// 输出每个字节的十六进制表示
+							for (int i = 0; i < sizeof(linshibuffer); i++) {
+							    fprintf(stderr, "%02x ", (unsigned char)linshibuffer[i]);
+							}
+							fprintf(stderr, "\n");   // 换行，方便查看
+
+							
+							
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
 							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 64);
 							//memcpy((void *)(thread_state2.__x[0]+288), (void *)cached_struct576, 288);
