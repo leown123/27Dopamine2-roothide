@@ -5594,9 +5594,26 @@ static void* exception_handler_thread(void* arg) {
 						}
 						else
 						{
+							// 获取沙盒 Documents 目录下的文件路径（例如 "hexdump.txt"）
+							NSString *docPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+							NSString *filePath = [docPath stringByAppendingPathComponent:@"hexdump.txt"];
+							const char *filePathC = [filePath UTF8String];
+							
+							// 以追加模式打开文件（如果不存在则创建）
+							FILE *fp = fopen(filePathC, "a");
+							if (fp == NULL) {
+							    NSLog(@"无法打开文件：%s", filePathC);
+							    return;
+							}
+
+						
 							char linshibuffer[576];
-							char *prefix = "小罪ADD: 主线程范围检测字节集： ";
-							fprintf(stderr, "%s", prefix);// 输出前缀
+							//char *prefix = "小罪ADD: 主线程范围检测字节集： ";
+							//fprintf(stderr, "%s", prefix);// 输出前缀
+
+							// 写入前缀（不换行）
+							fprintf(fp, "小罪ADD: 主线程范围检测字节集： ");
+
 
 							memcpy((void *)linshibuffer, (void *)thread_state2.__x[0], 576);
 							
@@ -5604,8 +5621,15 @@ static void* exception_handler_thread(void* arg) {
 							for (int i = 0; i < sizeof(linshibuffer); i++) {
 							    fprintf(stderr, "%02x ", (unsigned char)linshibuffer[i]);
 							}
-							fprintf(stderr, "\n");   // 换行，方便查看
-							fflush(stderr);  // 强制刷新缓冲区，立即输出到控制台
+							//fprintf(stderr, "\n");   // 换行，方便查看
+							//fflush(stderr);  // 强制刷新缓冲区，立即输出到控制台
+
+							// 换行，使得下一次追加从新行开始
+							fprintf(fp, "\n");
+							// 关闭文件
+							fclose(fp);
+
+							NSLog(@"小罪ADD: 主线程范围检测字节集已追加数据到文件：%@", filePath);
 
 							
 							
