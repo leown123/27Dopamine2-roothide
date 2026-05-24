@@ -8787,6 +8787,7 @@ if (load_executable_path() == 0)
 		}
 		*/
 
+		/*
 		void *once_f_addr = (void *)(tersafeadd+0x249860);
 		ret = DobbyHook(once_f_addr, (void *)hooked__dispatch_once_f, (void **)&orig__dispatch_once_f);
 		NSLog(@"小罪ADD: [Dobby] hook once_f_addr: %s", ret == 0 ? "success" : "failed");
@@ -8794,6 +8795,7 @@ if (load_executable_path() == 0)
 		void *sync_addr =(void *)(tersafeadd+0x249890);
 		ret = DobbyHook(sync_addr, (void *)hooked__dispatch_sync, (void **)&orig__dispatch_sync);
 		NSLog(@"小罪ADD: [Dobby] hook sync_addr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 
 		loadandinitshare(); //26.3.21屏蔽
