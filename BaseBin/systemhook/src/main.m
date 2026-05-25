@@ -7567,7 +7567,7 @@ void initbreakpoint()
 	*/
 
 	//tersafetsadd53 0x8EE1C
-	ter_breakpoints[2] (Breakpoint){
+	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd53,
         .target = tersafetsadd53ret,
         .s0_val = 0.0f,
