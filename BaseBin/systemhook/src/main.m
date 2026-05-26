@@ -5601,10 +5601,12 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
 				            cached_flag576 = true;
+							memset((void*)(cached_struct576 + 0x64), 1, 100);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 576首次出现，已记录");
 						}
 						else
 						{
+							/*
 							// 获取沙盒 Documents 目录下的文件路径（例如 "hexdump.txt"）
 							NSString *docPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
 							NSString *filePath = [docPath stringByAppendingPathComponent:@"hexdump.txt"];
@@ -5641,7 +5643,7 @@ static void* exception_handler_thread(void* arg) {
 							fclose(fp);
 
 							NSLog(@"小罪ADD: 主线程范围检测字节集已追加数据到文件：%@", filePath);
-
+							*/
 							
 							
 							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
