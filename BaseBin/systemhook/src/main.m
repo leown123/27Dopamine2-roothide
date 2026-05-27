@@ -4184,14 +4184,14 @@ static void ensurereporter()
 	char ownreporterrd = (char)Read_Char(ownreporter);
 	if(ownreporterrd != 0)
 	{
-		forcewritenewchar(ownadd,(char)0);
+		forcewritenewchar(ownreporter,(char)0);
 	}
 
 	uint64_t ownreporter2 =  (uint64_t)(tersafeadd + 0x24AED0);
 	char ownreporterrd2 = (char)Read_Char(ownreporter2);
 	if(ownreporterrd2 != 0)
 	{
-		forcewritenewchar(ownadd2,(char)0);
+		forcewritenewchar(ownreporter2,(char)0);
 	}
 	
 
