@@ -2226,10 +2226,10 @@ uint64_t hooked_20F42C()//
 {
 	if(!orig_20F42C)
 	{
-		orig_20F42C = (Sub20F42C_t)(tersafeadd + 0x20F430)
+		orig_20F42C = (Sub20F42C_t)(tersafeadd + 0x20F430);
 	}
 
-	void *obj = (void *obj)orig_20F42C();   // 调用原函数
+	void *obj = (void*)orig_20F42C();   // 调用原函数
     if (obj) 
 	{
 		// 读取虚表指针
