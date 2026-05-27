@@ -4152,7 +4152,7 @@ static void ensurereporter()
 		for(int i = 0;i < 0x1F;i++)
 		{
 			uint64_t ownadd = (uint64_t)(ownreporter + i);
-			forcewritenewchar(ownadd,(char)0);
+			forcewritenewchar(ownadd,(char)1);
 		}
 	}
 	
