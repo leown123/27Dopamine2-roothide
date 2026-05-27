@@ -7269,8 +7269,8 @@ void initbreakpoint()
 		
 	//0x20F42C
 	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd54,
-        .target = tersafetsadd54ret,
+        .source = tersafetsadd55,
+        .target = tersafetsadd55ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7571,8 +7571,8 @@ void initbreakpoint()
 
 	//0x20F42C
 	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd54,
-        .target = tersafetsadd54ret,
+        .source = tersafetsadd55,
+        .target = tersafetsadd55ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
