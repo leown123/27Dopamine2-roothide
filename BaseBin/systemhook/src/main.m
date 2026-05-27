@@ -5646,7 +5646,7 @@ static void* exception_handler_thread(void* arg) {
 							*/
 							
 							
-							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 576);
+							memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 575);
 							//memcpy((void *)thread_state2.__x[0], (void *)cached_struct576, 64);
 							//memcpy((void *)(thread_state2.__x[0]+288), (void *)cached_struct576, 288);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 576出现，已替换");
