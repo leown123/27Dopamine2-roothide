@@ -2250,7 +2250,7 @@ uint64_t hooked_20F42C()//
 	
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
-	return 0;
+	return (uint64_t)obj;
 }
 
 typedef double (*subD9424_t)();
