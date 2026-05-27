@@ -4145,6 +4145,16 @@ static void ensurereporter()
 		Imageaddress = Get_Imageaddress_base();
 	}
 
+	uint64_t ownreporter =  (uint64_t)(tersafeadd + 0x24AEC0);
+	char ownreporterrd = (char)Read_Char(ownreporter);
+	if(ownreporterrd != 0)
+	{
+		for(int i = 0;i < 0x1F;i++)
+		{
+			uint64_t ownadd = (uint64_t)(ownreporter + i);
+			forcewritenewchar(ownadd,(char)0);
+		}
+	}
 	
 	/*
 	//uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
@@ -5161,7 +5171,10 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{	
 				//0x8A400
-				NSLog(@"小罪ADD: [tersafe 0x8A400 hook] 主线程 调用0x8A400 返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x8A400 hook] 主线程 调用0x8A400 返回0");
+
+				//0x20F42C
+				NSLog(@"小罪ADD: [ter线程 0x20F42C hook] 主线程 0x20F42C 返回0");
 				
 				//0xF2D45C tssinit
 				//NSLog(@"小罪ADD: [主线程 0xF2D45C hook] 主线程 tssinit 返回123456");
@@ -5814,7 +5827,10 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 0) 
 			{	
 				//0x8A400
-				NSLog(@"小罪ADD: [ter线程 0x8A400 hook] ter线程 0x8A400 返回0");
+				//NSLog(@"小罪ADD: [ter线程 0x8A400 hook] ter线程 0x8A400 返回0");
+
+				//0x20F42C
+				NSLog(@"小罪ADD: [ter线程 0x20F42C hook] ter线程 0x20F42C 返回0");
 				
 				//0xCDE6778 shantuiadd3
 				//NSLog(@"小罪ADD: [ter线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
@@ -6889,6 +6905,8 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd54 = tersafeadd + 0x8A400;//sub_F6260 down 
 	mach_vm_address_t tersafetsadd54ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t tersafetsadd55 = tersafeadd + 0x20F42C;//sub_F6260 down 
+	mach_vm_address_t tersafetsadd55ret = (mach_vm_address_t)hooked_ret0;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -6977,6 +6995,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x8A400;
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd54,
@@ -6986,7 +7005,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//0x20F42C
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd54,
+        .target = tersafetsadd54ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0xF2D45C tssinit
@@ -7460,8 +7489,20 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x8A400;
 	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd54,
+        .target = tersafetsadd54ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x20F42C
+	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd54,
         .target = tersafetsadd54ret,
         .s0_val = 0.0f,
