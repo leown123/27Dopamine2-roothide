@@ -4912,6 +4912,9 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
 
 					if(iscontainstr == true)
 					{
@@ -5273,6 +5276,11 @@ static void* exception_handler_thread(void* arg) {
 
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+
 
 					/*
 					result = strstr(path, "force");
@@ -6358,6 +6366,11 @@ static void* exception_handler_thread(void* arg) {
 
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+
 
 					/*
 					result = strstr(path, "scan");
