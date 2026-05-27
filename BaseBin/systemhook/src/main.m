@@ -5174,7 +5174,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0x8A400 hook] 主线程 调用0x8A400 返回0");
 
 				//0x20F42C
-				NSLog(@"小罪ADD: [ter线程 0x20F42C hook] 主线程 0x20F42C 返回0");
+				//NSLog(@"小罪ADD: [ter线程 0x20F42C hook] 主线程 0x20F42C 返回0");
 				
 				//0xF2D45C tssinit
 				//NSLog(@"小罪ADD: [主线程 0xF2D45C hook] 主线程 tssinit 返回123456");
@@ -5194,7 +5194,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
-				/*
+				
 				//0xAA880 检测控制开关
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
@@ -5210,7 +5210,31 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cs3");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "port_80");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+
+					/*
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5385,7 +5409,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 					
 
 					
@@ -5412,7 +5436,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -5782,10 +5806,10 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
 			
 			
-				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
+				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 
 				//tersafetsadd53 0x8EE1C
-				NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
+				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
 			
 
 				
@@ -6960,18 +6984,6 @@ void initbreakpoint()
 	*/
 
 	/*
-	//0xAA880 检测控制开关
-	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd18,
-        .target = tersafetsadd18ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-	/*
 	//0x6CF8 环境
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd11,
@@ -7007,15 +7019,17 @@ void initbreakpoint()
     };
 	*/
 
-	//0x20F42C
+
+	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd54,
-        .target = tersafetsadd54ret,
+        .source = tersafetsadd18,
+        .target = tersafetsadd18ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
+	
 
 	/*
 	//0xF2D45C tssinit
@@ -7200,6 +7214,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//tersafetsadd53 0x8EE1C
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd53,
@@ -7209,6 +7224,19 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
+
+		
+	//0x20F42C
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd54,
+        .target = tersafetsadd54ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	
 
 	/*
