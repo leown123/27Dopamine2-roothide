@@ -2219,6 +2219,40 @@ uint64_t hooked_210EAC(uint64_t a1,unsigned int *a2)//
 	return 0;
 }
 
+typedef uint64_t (*Sub20F42C_t)();
+static Sub20F42C_t orig_20F42C = NULL;
+
+uint64_t hooked_20F42C()//
+{
+	if(!orig_20F42C)
+	{
+		orig_20F42C = (Sub20F42C_t)(tersafeadd + 0x20F430)
+	}
+
+	void *obj = (void *obj)orig_20F42C();   // 调用原函数
+    if (obj) 
+	{
+		// 读取虚表指针
+        void **vtable = *(void ***)obj;
+        // 修改 vtable[0x30 / 8] 位置（ARM64 指针大小 8 字节）
+        void **func_ptr = (void **)((uint8_t *)vtable + 0x30);
+		void **func_ptr1 = (void **)((uint8_t *)vtable + 0x38);
+        void *target = (void *)(tersafeadd + 0x88CC);
+        if (*func_ptr != target) {
+            *func_ptr = target;
+            NSLog(@"小罪add： [hooked_20F42C] Patched vtable+0x30 to %p", target);
+        }
+		 if (*func_ptr1 != target) {
+            *func_ptr1 = target;
+            NSLog(@"小罪add： [hooked_20F42C] Patched vtable+0x38 to %p", target);
+        }
+	}
+	
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return 0;
+}
+
 typedef double (*subD9424_t)();
 static subD9424_t orig_subD9424 = NULL;
 
@@ -4145,18 +4179,22 @@ static void ensurereporter()
 		Imageaddress = Get_Imageaddress_base();
 	}
 
-	/*
+	
 	uint64_t ownreporter =  (uint64_t)(tersafeadd + 0x24AEC0);
 	char ownreporterrd = (char)Read_Char(ownreporter);
 	if(ownreporterrd != 0)
 	{
-		for(int i = 0;i < 0x1F;i++)
-		{
-			uint64_t ownadd = (uint64_t)(ownreporter + i);
-			forcewritenewchar(ownadd,(char)1);
-		}
+		forcewritenewchar(ownadd,(char)0);
 	}
-	*/
+
+	uint64_t ownreporter2 =  (uint64_t)(tersafeadd + 0x24AED0);
+	char ownreporterrd2 = (char)Read_Char(ownreporter2);
+	if(ownreporterrd2 != 0)
+	{
+		forcewritenewchar(ownadd2,(char)0);
+	}
+	
+
 	
 	/*
 	//uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
@@ -6932,7 +6970,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd54ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t tersafetsadd55 = tersafeadd + 0x20F42C;//sub_F6260 down 
-	mach_vm_address_t tersafetsadd55ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd55ret = (mach_vm_address_t)hooked_20F42C;
 
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
@@ -7532,7 +7570,7 @@ void initbreakpoint()
 	*/
 
 	//0x20F42C
-	g_breakpoints[1] = (Breakpoint){
+	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd54,
         .target = tersafetsadd54ret,
         .s0_val = 0.0f,
