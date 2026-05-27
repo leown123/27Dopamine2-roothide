@@ -4145,6 +4145,7 @@ static void ensurereporter()
 		Imageaddress = Get_Imageaddress_base();
 	}
 
+	/*
 	uint64_t ownreporter =  (uint64_t)(tersafeadd + 0x24AEC0);
 	char ownreporterrd = (char)Read_Char(ownreporter);
 	if(ownreporterrd != 0)
@@ -4155,6 +4156,7 @@ static void ensurereporter()
 			forcewritenewchar(ownadd,(char)1);
 		}
 	}
+	*/
 	
 	/*
 	//uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
