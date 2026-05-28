@@ -2242,10 +2242,12 @@ uint64_t hooked_20F42C()//
             *func_ptr = target;
             NSLog(@"小罪add： [hooked_20F42C] Patched vtable+0x30 to %p", target);
         }
-		 if (*func_ptr1 != target) {
+		/*
+		if (*func_ptr1 != target) {
             *func_ptr1 = target;
             NSLog(@"小罪add： [hooked_20F42C] Patched vtable+0x38 to %p", target);
         }
+		*/
 	}
 	
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
@@ -4187,15 +4189,15 @@ static void ensurereporter()
 		forcewritenewchar(ownreporter,(char)0);
 	}
 
+	/*
 	uint64_t ownreporter2 =  (uint64_t)(tersafeadd + 0x24AED0);
 	char ownreporterrd2 = (char)Read_Char(ownreporter2);
 	if(ownreporterrd2 != 0)
 	{
 		forcewritenewchar(ownreporter2,(char)0);
 	}
-	
+	*/
 
-	
 	/*
 	//uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B8210);
 	uint64_t tersafereporter =  (uint64_t)(tersafeadd + 0x2B81E0);
@@ -5617,6 +5619,9 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
+				//tersafetsadd53 0x8EE1C
+				NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
+
 				//0x210330 范围上报检测
 				//NSLog(@"小罪ADD: [tersafe 0x210330 hook] 主线程触发 范围上报检测");
 			
@@ -5645,7 +5650,7 @@ static void* exception_handler_thread(void* arg) {
 
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				
+				/*
 				//0x218D58 hook
 					//sub_210330 hook 
 					//0x21033C hook
@@ -5808,6 +5813,7 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 				
 				}
+				*/
 				
 
 			}
@@ -5856,9 +5862,7 @@ static void* exception_handler_thread(void* arg) {
 			
 				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] 主线程调用 NetObj_GetInstance");
 
-				//tersafetsadd53 0x8EE1C
-				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
-			
+				
 
 				
 				//thread_state2.__x[0] = tersafeadd + 0x2B8E32;
@@ -7183,11 +7187,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//tersafetsadd53 0x8EE1C
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd53,
+        .target = tersafetsadd53ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7267,17 +7282,6 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//tersafetsadd53 0x8EE1C
-	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd53,
-        .target = tersafetsadd53ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
 		
 	//0x20F42C
