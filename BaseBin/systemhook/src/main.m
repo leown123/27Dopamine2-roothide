@@ -4311,7 +4311,7 @@ static void ensurereporter()
 	}
 	*/
 
-	uint64_t TssSDKInitptr = Imageaddress + 0x1487BF10;
+	uint64_t TssSDKInitptr = Imageaddress + 0x103DE628;
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 
 	uint64_t TssSDKInitlong = (uint64_t)Read_Long(TssSDKInitptr);
