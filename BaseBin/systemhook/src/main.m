@@ -4275,7 +4275,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4309,8 +4309,25 @@ static void ensurereporter()
 		
 		
 	}
+	*/
 
-	/*
+	uint64_t TssSDKInitptr = Imageaddress + 0x1487BF10;
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
+
+	uint64_t TssSDKInitlong = (uint64_t)Read_Long(TssSDKInitptr);
+	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
+
+	if(TssSDKInitlong != 0 && TssSDKInitlong != TssSDKOnPauselong)
+	{
+		forcewritenewlong(TssSDKInitptr,(uint64_t)TssSDKOnPauselong);
+		if(Read_Long(TssSDKInitptr) == TssSDKOnPauselong)
+		{
+			NSLog(@"小罪ADD: ensurereporter: TssSDKInitlong: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKInitptr): 0x%llx", TssSDKInitptr, TssSDKOnPauselong,Read_Long(TssSDKInitptr));
+		}
+		
+	}
+
+	
 	//新写法
 	uint64_t mainyouxizhuangtai1 =  (uint64_t)(Imageaddress + 0x146F112F);
 	char mainyouxizhuangtai1count = Read_Char(mainyouxizhuangtai1);
@@ -4323,9 +4340,9 @@ static void ensurereporter()
 	//新写法
 	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
 	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
-	if( mainyouxizhuangtai2count != (char)0)
+	if( mainyouxizhuangtai2count != (char)10)
 	{
-		forcewritenewchar(mainyouxizhuangtai2,(char)0);
+		forcewritenewchar(mainyouxizhuangtai2,(char)10);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
 	}
 
@@ -4337,7 +4354,7 @@ static void ensurereporter()
 		forcewritenewchar(mainyouxizhuangtai3,(char)0);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
 	}
-	*/
+	
 
 	
 
