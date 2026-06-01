@@ -4311,21 +4311,7 @@ static void ensurereporter()
 	}
 	*/
 
-	uint64_t TssSDKInitptr = Imageaddress + 0x103DE628;
-	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
-
-	uint64_t TssSDKInitlong = (uint64_t)Read_Long(TssSDKInitptr);
-	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
-
-	if(TssSDKInitlong != 0 && TssSDKInitlong != TssSDKOnPauselong)
-	{
-		forcewritenewlong(TssSDKInitptr,(uint64_t)TssSDKOnPauselong);
-		if(Read_Long(TssSDKInitptr) == TssSDKOnPauselong)
-		{
-			NSLog(@"小罪ADD: ensurereporter: TssSDKInitlong: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKInitptr): 0x%llx", TssSDKInitptr, TssSDKOnPauselong,Read_Long(TssSDKInitptr));
-		}
-		
-	}
+	
 
 	
 	//新写法
