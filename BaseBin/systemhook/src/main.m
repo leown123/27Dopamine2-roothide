@@ -4275,7 +4275,7 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4309,7 +4309,7 @@ static void ensurereporter()
 		
 		
 	}
-	*/
+	
 
 	
 
@@ -5230,9 +5230,7 @@ static void* exception_handler_thread(void* arg) {
 				//0xCDE6778 shantuiadd3
 				//NSLog(@"小罪ADD: [主线程 0xCDE6778 hook] 主线程 shantuiadd3 返回0");
 				
-				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
-
+				
 				//0x170278 全局游戏hook
 				//NSLog(@"小罪ADD: [tersafe 0x170278 hook] 主线程调用 全局游戏hook");
 				
@@ -5622,8 +5620,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
+				//0x20FD6C 查询容器容量
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+
 				//tersafetsadd53 0x8EE1C
-				NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
+				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
 
 				//0x210330 范围上报检测
 				//NSLog(@"小罪ADD: [tersafe 0x210330 hook] 主线程触发 范围上报检测");
@@ -7027,17 +7028,6 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0x20FD6C 查询容器容量
-	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd44,
-        .target = tersafetsadd44ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
 	/*
 	//0x8A400;
@@ -7174,10 +7164,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//tersafetsadd53 0x8EE1C
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd53,
         .target = tersafetsadd53ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x20FD6C 查询容器容量
+	g_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7667,7 +7669,7 @@ void initbreakpoint()
 	*/
 	
 
-	/*
+	
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7677,7 +7679,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x20F42C NetObj_GetInstance
@@ -7691,6 +7693,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//tersafetsadd53 0x8EE1C
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd53,
@@ -7700,6 +7703,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//RingBuf_Ticknew
@@ -8985,7 +8989,7 @@ if (load_executable_path() == 0)
 		}
 		*/
 
-		
+		/*
 		void *once_f_addr = (void *)(tersafeadd+0x249860);
 		ret = DobbyHook(once_f_addr, (void *)hooked__dispatch_once_f, (void **)&orig__dispatch_once_f);
 		NSLog(@"小罪ADD: [Dobby] hook once_f_addr: %s", ret == 0 ? "success" : "failed");
@@ -8993,7 +8997,7 @@ if (load_executable_path() == 0)
 		void *sync_addr =(void *)(tersafeadd+0x249890);
 		ret = DobbyHook(sync_addr, (void *)hooked__dispatch_sync, (void **)&orig__dispatch_sync);
 		NSLog(@"小罪ADD: [Dobby] hook sync_addr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 
 
 		loadandinitshare(); //26.3.21屏蔽
