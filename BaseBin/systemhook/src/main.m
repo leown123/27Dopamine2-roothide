@@ -4375,12 +4375,12 @@ static void ensurereporter()
 		
 		original_Tssheart1 = (TssheartFunc)(Tssheartdiaoyongptr1);
 		original_Tssheart2 = (TssheartFunc)(Tssheartdiaoyongptr2);
-		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx", original_Tssheart1);
-		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx", original_Tssheart2);
+		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx", original_Tssheart1);
+		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx", original_Tssheart2);
 		uint64_t retadd1 = original_Tssheart1();
 		uint64_t retadd2 = original_Tssheart2();
-		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart1,retadd1);
-		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart2,retadd2);
+		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart1,retadd1);
+		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart2,retadd2);
 	}
 
 
@@ -5642,9 +5642,7 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
-				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
-
+				
 				//tersafetsadd53 0x8EE1C
 				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
 
@@ -5676,7 +5674,7 @@ static void* exception_handler_thread(void* arg) {
 
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				/*
+				
 				//0x218D58 hook
 					//sub_210330 hook 
 					//0x21033C hook
@@ -5717,7 +5715,7 @@ static void* exception_handler_thread(void* arg) {
 							// 首次出现128字节，缓存
 				            memcpy((void *)cached_struct576, (void *)thread_state2.__x[0], 576);
 				            cached_flag576 = true;
-							memset((void*)(cached_struct576 + 0x64), 1, 100);
+							//memset((void*)(cached_struct576 + 0x64), 1, 100);
 							NSLog(@"小罪ADD: [tersafe 0x218D58 hook] 主线程范围检测触发 576首次出现，已记录");
 						}
 						else
@@ -5802,7 +5800,7 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 				
 				}
-				*/
+				
 				
 
 			}
@@ -5836,10 +5834,13 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				//0x20FD6C 查询容器容量
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+
 				//0x1FFDA4
 				//NSLog(@"小罪ADD: [ter线程 0x1FFDA4 hook] 主线程 0x1FFDA4 返回0");
 
-				NSLog(@"小罪ADD: [ter线程 0x3F674 hook] 主线程 0x3F674 跳转到0x3F6BC");
+				//NSLog(@"小罪ADD: [ter线程 0x3F674 hook] 主线程 0x3F674 跳转到0x3F6BC");
 				
 				//0x1AEB30 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
@@ -7179,7 +7180,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -7189,7 +7190,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//tersafetsadd53 0x8EE1C
@@ -7203,15 +7204,7 @@ void initbreakpoint()
     };
 	*/
 
-	//0x20FD6C 查询容器容量
-	g_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd44,
-        .target = tersafetsadd44ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
+
 	
 	
 	/*
@@ -7311,6 +7304,16 @@ void initbreakpoint()
     };
 	*/
 
+	//0x20FD6C 查询容器容量
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	/*
 	//0xA4DE4 nj
 	g_breakpoints[4] = (Breakpoint){
@@ -7362,7 +7365,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -7371,7 +7374,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
