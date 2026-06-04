@@ -4313,7 +4313,7 @@ static void ensurereporter()
 
 	
 
-	
+	/*
 	//新写法
 	uint64_t mainyouxizhuangtai1 =  (uint64_t)(Imageaddress + 0x146F112F);
 	char mainyouxizhuangtai1count = Read_Char(mainyouxizhuangtai1);
@@ -4323,7 +4323,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai1: 0x%llx ,mainyouxizhuangtai1count: %d", mainyouxizhuangtai1,mainyouxizhuangtai1count);
 	}
 
-	/*
+	
 	//新写法
 	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
 	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
@@ -4332,7 +4332,7 @@ static void ensurereporter()
 		forcewritenewchar(mainyouxizhuangtai2,(char)10);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
 	}
-	*/
+	
 
 	//新写法
 	uint64_t mainyouxizhuangtai3 =  (uint64_t)(Imageaddress + 0x146F1130);
@@ -4342,7 +4342,7 @@ static void ensurereporter()
 		forcewritenewchar(mainyouxizhuangtai3,(char)0);
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai3: 0x%llx ,mainyouxizhuangtai3count: %d", mainyouxizhuangtai3,mainyouxizhuangtai3count);
 	}
-	
+	*/
 
 	
 
@@ -5817,7 +5817,9 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//0x1FFDA4
-				NSLog(@"小罪ADD: [ter线程 0x1FFDA4 hook] 主线程 0x1FFDA4 返回0");
+				//NSLog(@"小罪ADD: [ter线程 0x1FFDA4 hook] 主线程 0x1FFDA4 返回0");
+
+				NSLog(@"小罪ADD: [ter线程 0x3F674 hook] 主线程 0x3F674 跳转到0x3F6BC");
 				
 				//0x1AEB30 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
@@ -5874,8 +5876,8 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
-				//0x1FFDA4
-				NSLog(@"小罪ADD: [ter线程 0x1FFDA4 hook] ter线程 0x1FFDA4 返回0");
+				//0x3F674
+				NSLog(@"小罪ADD: [ter线程 0x3F674 hook] ter线程 0x3F674 跳转到0x3F6BC");
 				
 				//0x8A400
 				//NSLog(@"小罪ADD: [ter线程 0x8A400 hook] ter线程 0x8A400 返回0");
@@ -6967,6 +6969,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd56 = tersafeadd + 0x1FFDA4;//
 	mach_vm_address_t tersafetsadd56ret = (mach_vm_address_t)hooked_ret1;
 
+	mach_vm_address_t tersafetsadd57 = tersafeadd + 0x3F674;//
+	mach_vm_address_t tersafetsadd57ret = tersafeadd + 0x3F6BC;//
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -7274,10 +7279,10 @@ void initbreakpoint()
     };
 	*/
 
-	//0x1FFDA4 
+	//0x3F674
 	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd56,
-        .target = tersafetsadd56ret,
+        .source = tersafetsadd57,
+        .target = tersafetsadd57ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7336,7 +7341,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -7345,7 +7350,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -7587,10 +7592,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x1FFDA4 
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd56,
         .target = tersafetsadd56ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x3F674
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd57,
+        .target = tersafetsadd57ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
