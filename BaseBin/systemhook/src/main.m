@@ -4372,10 +4372,11 @@ static void ensurereporter()
 	uint64_t Tssheartdiaoyongptr2 = tersafeadd+0x50C50;
 	if(Read_Long(Tssheartdiaoyongptr1)!= 0 && Read_Long(Tssheartdiaoyongptr2)!= 0)
 	{
-		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx", original_Tssheart1);
-		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx", original_Tssheart2);
+		
 		original_Tssheart1 = (TssheartFunc)(Tssheartdiaoyongptr1);
 		original_Tssheart2 = (TssheartFunc)(Tssheartdiaoyongptr2);
+		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx", original_Tssheart1);
+		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx", original_Tssheart2);
 		uint64_t retadd1 = original_Tssheart1();
 		uint64_t retadd2 = original_Tssheart2();
 		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart1,retadd1);
@@ -7298,6 +7299,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x3F674
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd57,
@@ -7307,7 +7309,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	//0xA4DE4 nj
@@ -7623,6 +7625,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x3F674
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd57,
@@ -7632,7 +7635,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 
