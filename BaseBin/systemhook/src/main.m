@@ -4375,12 +4375,12 @@ static void ensurereporter()
 		
 		original_Tssheart1 = (TssheartFunc)(Tssheartdiaoyongptr1);
 		original_Tssheart2 = (TssheartFunc)(Tssheartdiaoyongptr2);
-		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx", original_Tssheart1);
-		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx", original_Tssheart2);
+		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx", original_Tssheart1);
+		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx", original_Tssheart2);
 		uint64_t retadd1 = original_Tssheart1();
 		uint64_t retadd2 = original_Tssheart2();
-		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart1,retadd1);
-		//NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart2,retadd2);
+		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart1,retadd1);
+		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart2,retadd2);
 	}
 
 
@@ -5835,7 +5835,7 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 				//0x1FFDA4
 				//NSLog(@"小罪ADD: [ter线程 0x1FFDA4 hook] 主线程 0x1FFDA4 返回0");
@@ -5898,7 +5898,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 0) 
 			{	
 				//0x3F674
-				NSLog(@"小罪ADD: [ter线程 0x3F674 hook] ter线程 0x3F674 跳转到0x3F6BC");
+				//NSLog(@"小罪ADD: [ter线程 0x3F674 hook] ter线程 0x3F674 跳转到0x3F6BC");
 				
 				//0x8A400
 				//NSLog(@"小罪ADD: [ter线程 0x8A400 hook] ter线程 0x8A400 返回0");
@@ -5916,7 +5916,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -7516,7 +7516,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
@@ -7526,7 +7526,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
