@@ -1742,6 +1742,81 @@ void forcewritenewlong(mach_vm_address_t addres,uint64_t data)
     //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
 }
 
+void forcewritenewfloat(mach_vm_address_t addres,float data)
+{
+ 
+    int size = 1;
+    
+    
+    mach_port_t object_name;
+    mach_vm_size_t region_size=0;
+    mach_vm_address_t region_base = (uint64_t)addres;
+    
+    vm_region_basic_info_data_64_t info = {0};
+    mach_msg_type_number_t info_cnt = VM_REGION_BASIC_INFO_COUNT_64;
+    kern_return_t kr = mach_vm_region(mach_task_self(), &region_base, &region_size,
+                                      VM_REGION_BASIC_INFO_64, (vm_region_info_t)&info, &info_cnt, &object_name);
+    if(kr != KERN_SUCCESS) {
+        NSLog(@"mach_vm_region failed! %p", region_base);
+        return ;
+    }
+    
+    
+    vm_address_t base = 0;
+    if(!(info.protection & VM_PROT_WRITE)) {
+        //NSLog(@"unwritable region %p %x : %x", region_base, region_size, info.protection);
+        base = (uint64_t)addres & ~PAGE_MASK;
+        //c1越狱这里可能失败, 不能同时rwx??? c1这里返回成功但是实际上并没有成功!!!!
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection|VM_PROT_WRITE|VM_PROT_COPY);
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+            
+            //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+            if(kr != KERN_SUCCESS) {
+                //NSLog(@"vm_protect failed2! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+                
+                //NSLog(@"mprotect=%d, %d, %s", mprotect((void*)base, PAGE_SIZE, info.protection|VM_PROT_WRITE), errno, strerror(errno));
+                
+                return ;
+            }
+        }
+    }
+    
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    kern_return_t error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+    if(error != KERN_SUCCESS && base)
+    {
+        //kr = mynewmach_vm_protect(task, base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        kr = mach_vm_protect(mach_task_self(), base, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+        
+        if(kr != KERN_SUCCESS) {
+            //NSLog(@"vm_protect again failed! kr=%d [%p %x] : %x", kr, base, PAGE_SIZE, info.protection);
+        } else {
+            //error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+            error = mach_vm_write(mach_task_self(), addres, (vm_address_t)&data, size);
+        }
+        
+    }
+    
+    if(error == KERN_SUCCESS && base)
+    {
+        vm_protect(mach_task_self(), base, PAGE_SIZE, false, info.protection);
+    }
+    
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ | VM_PROT_WRITE|VM_PROT_COPY);
+    //vm_write(mach_task_self(),addres,(vm_address_t)&data,size);
+    //vm_protect(mach_task_self(), addres, size, NO, VM_PROT_READ |VM_PROT_EXECUTE);
+    
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ|VM_PROT_WRITE|VM_PROT_COPY);
+    //kern_return_t error = mach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kern_return_t error = mynewmach_vm_write(task, addres, (vm_address_t)&data, size);
+    //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+    //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
+}
+
 void forcewritenewchar(mach_vm_address_t addres,char data)
 {
  
@@ -1816,6 +1891,7 @@ void forcewritenewchar(mach_vm_address_t addres,char data)
     //kr = mynewmach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
     //kr = mach_vm_protect(task, addres, PAGE_SIZE, false, VM_PROT_READ |VM_PROT_EXECUTE);
 }
+
 
 
 long Imageaddress = 0;
@@ -5642,6 +5718,28 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
+				//0x336AEFC judianaddnew
+				uint64_t judian_ptr = thread_state2.__x[19];
+				forcewritenewfloat(judian_ptr + 0x714 ,0.01f);
+				forcewritenewfloat(judian_ptr + 0x718,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3B0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3B4,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3B8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3D4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3BC,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3C0,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3D8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3DC,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3CC,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
+				
+				
 				
 				//tersafetsadd53 0x8EE1C
 				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
@@ -5674,7 +5772,7 @@ static void* exception_handler_thread(void* arg) {
 
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				
+				/*
 				//0x218D58 hook
 					//sub_210330 hook 
 					//0x21033C hook
@@ -5800,7 +5898,7 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 				
 				}
-				
+				*/
 				
 
 			}
@@ -6993,6 +7091,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd57 = tersafeadd + 0x3F674;//
 	mach_vm_address_t tersafetsadd57ret = tersafeadd + 0x3F6BC;//
 
+	mach_vm_address_t judianaddnew = Imageaddress + 0x336AF00;
+	mach_vm_address_t judianaddnewret = Imageaddress + 0x336AF04;
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -7180,7 +7281,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -7190,7 +7291,18 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
+
 	
+	//0x336AEFC judianaddnew
+	g_breakpoints[2] = (Breakpoint){
+        .source = judianaddnew,
+        .target = judianaddnewret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//tersafetsadd53 0x8EE1C
@@ -7365,7 +7477,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -7374,7 +7486,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
