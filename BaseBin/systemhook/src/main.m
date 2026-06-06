@@ -4524,7 +4524,7 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: yueyuptr4: 0x%llx ,yueyuptr4count: %d", yueyuptr4,yueyuptr4count);
 	}
 
-	bianlixianchenghack();
+	//bianlixianchenghack();
 	
 
 }
@@ -7170,7 +7170,7 @@ void initbreakpoint()
     };
 	*/
 
-
+	/*
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7180,6 +7180,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7945,7 +7946,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7955,7 +7956,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 
 	/*
@@ -9131,10 +9132,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		
+		/*
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
+		*/
 
 		/*
 		void *abort_addr = dlsym(RTLD_DEFAULT, "abort");
