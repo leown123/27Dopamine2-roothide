@@ -5299,7 +5299,7 @@ static void* exception_handler_thread(void* arg) {
 		//if(istersafebp == false && bptype >= 0 //范围
 		if(istersafebp == false )
 		{
-			if(bptype == 0 || bptype == 5)
+			if(bptype == 0 )//|| bptype == 5
 			{	
 				//NSLog(@"小罪ADD: 无后断点 触发");
 		        // 修改浮点寄存器 s0/s1
@@ -5718,27 +5718,6 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 2) 
 			{	
-				//0x336AEFC judianaddnew
-				uint64_t judian_ptr = thread_state2.__x[19];
-				forcewritenewfloat(judian_ptr + 0x714 ,0.01f);
-				forcewritenewfloat(judian_ptr + 0x718,0.01f);
-
-				forcewritenewfloat(judian_ptr + 0x3B0,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3B4,0.01f);
-
-				forcewritenewfloat(judian_ptr + 0x3B8,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3D4,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3BC,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3C0,0.01f);
-
-				forcewritenewfloat(judian_ptr + 0x3D8,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3DC,0.01f);
-
-				forcewritenewfloat(judian_ptr + 0x3CC,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
-				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
-				
 				
 				
 				//tersafetsadd53 0x8EE1C
@@ -5772,7 +5751,7 @@ static void* exception_handler_thread(void* arg) {
 
 				//NSLog(@"小罪ADD: [主程序 sub_10124DA40 hook] 主线程触发");
 				
-				/*
+				
 				//0x218D58 hook
 					//sub_210330 hook 
 					//0x21033C hook
@@ -5898,7 +5877,7 @@ static void* exception_handler_thread(void* arg) {
 					bp->target = (uint64_t)(tersafeadd + 0x210330);
 				
 				}
-				*/
+				
 				
 
 			}
@@ -5932,16 +5911,36 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{
+				//0x336AEFC judianaddnew
+				uint64_t judian_ptr = thread_state2.__x[19];
+				forcewritenewfloat(judian_ptr + 0x714 ,0.01f);
+				forcewritenewfloat(judian_ptr + 0x718,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3B0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3B4,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3B8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3D4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3BC,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3C0,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3D8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3DC,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3CC,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
+				
+				
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 				//0x1FFDA4
 				//NSLog(@"小罪ADD: [ter线程 0x1FFDA4 hook] 主线程 0x1FFDA4 返回0");
 
 				//NSLog(@"小罪ADD: [ter线程 0x3F674 hook] 主线程 0x3F674 跳转到0x3F6BC");
 				
-				//0x1AEB30 自瞄hook
-				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
 				//0x822E0B8 shantuiadd2
 				//NSLog(@"小罪ADD: [主程序 0x822E0B8 hook] 主线程触发 shantuiadd2"); 
@@ -5975,6 +5974,8 @@ static void* exception_handler_thread(void* arg) {
 
 			//if(bptype == 5)
 			{
+				//0x1AEB30 自瞄hook
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
 				
 
@@ -7145,18 +7146,6 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0x6CF8 环境
-	g_breakpoints[1] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd11ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
 
 	/*
 	//0x8A400;
@@ -7170,7 +7159,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7180,7 +7169,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
@@ -7282,7 +7271,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -7292,18 +7281,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-
 	
-	//0x336AEFC judianaddnew
-	g_breakpoints[2] = (Breakpoint){
-        .source = judianaddnew,
-        .target = judianaddnewret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 
 	/*
 	//tersafetsadd53 0x8EE1C
@@ -7417,6 +7395,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd44,
@@ -7426,6 +7405,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0xA4DE4 nj
@@ -7439,17 +7419,16 @@ void initbreakpoint()
     };
 	*/
 
-	/*
-	//0x1AEB30 自瞄hook
+	
+	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
-        .source = tersafetsadd51,
-        .target = tersafetsadd51ret,
-        .s0_val = 29.0f,
+        .source = judianaddnew,
+        .target = judianaddnewret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
-	*/
 	
 
 	/*
@@ -7488,7 +7467,16 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-	
+
+	//0x1AEB30 自瞄hook
+	g_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd51,
+        .target = tersafetsadd51ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0x582A4 下发
@@ -7681,17 +7669,6 @@ void initbreakpoint()
 	*/
 
 
-	/*
-	//0xAA880 控制检测开关
-	ter_breakpoints[0] = (Breakpoint){
-        .source = tersafetsadd18,
-        .target = tersafetsadd18ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
 	/*
 	//0x582A4 下发
@@ -7801,7 +7778,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x6CF8 环境
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd11,
@@ -7811,7 +7788,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0xA4DE4 nj
@@ -7826,7 +7803,7 @@ void initbreakpoint()
 	*/
 	
 
-	
+	/*
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7836,7 +7813,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	//0x20F42C NetObj_GetInstance
@@ -7946,7 +7923,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7956,7 +7933,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 
 	/*
@@ -9101,7 +9078,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 		
-
+		
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
 		ret = DobbyHook(kgvmp_dy_dispatch_once_ptr, (void *)hooked_dispatch_once_kgvmp_dy, (void **)&original_dispatch_once_kgvmp_dy);
 		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
