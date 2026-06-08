@@ -4255,7 +4255,9 @@ static TssSDKFreeFunc original_TssSDKFree = NULL;
 typedef uint64_t (*TssheartFunc)();
 static TssheartFunc original_Tssheart1 = NULL;
 static TssheartFunc original_Tssheart2 = NULL;
-static TssheartFunc original_Tssheart3 = NULL;
+
+typedef uint64_t (*TssheartFunc2)(uint64_t，uint64_t);
+static TssheartFunc2 original_Tssheart3 = NULL;
 
 static void ensurereporter()
 {
@@ -4468,7 +4470,7 @@ static void ensurereporter()
 	}
 	*/
 
-	uint64_t Tssheartdiaoyongptr3 = tersafeadd+0xF9A6C;
+	uint64_t Tssheartdiaoyongptr3 = tersafeadd+0x3F744;//TssSDKDispatchMonitorEvent
 	if(Read_Long(Tssheartdiaoyongptr3)!= 0)
 	{
 		if(!original_Tssheart3)
@@ -4476,14 +4478,14 @@ static void ensurereporter()
 			NSLog(@"小罪ADD: ensurereporter: Tssheartdiaoyongptr3: 0x%llx", Tssheartdiaoyongptr3);
 			original_Tssheart3 = (TssheartFunc)(Tssheartdiaoyongptr3);
 			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 准备调用", original_Tssheart3);
-			//uint64_t retadd3 = original_Tssheart3();
-			original_Tssheart3();
+			//uint64_t retadd3 = original_Tssheart3(1,3);
+			original_Tssheart3(1,3);
 			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 调用成功", original_Tssheart3);
 		}
 		else
 		{
 			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 准备调用", original_Tssheart3);
-			original_Tssheart3();
+			original_Tssheart3(1,3);
 			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 调用成功", original_Tssheart3);
 		}
 
