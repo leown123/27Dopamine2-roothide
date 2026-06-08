@@ -4475,13 +4475,16 @@ static void ensurereporter()
 		{
 			NSLog(@"小罪ADD: ensurereporter: Tssheartdiaoyongptr3: 0x%llx", Tssheartdiaoyongptr3);
 			original_Tssheart3 = (TssheartFunc)(Tssheartdiaoyongptr3);
-			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx", original_Tssheart3);
-			uint64_t retadd3 = original_Tssheart3();
-			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart3,retadd3);
+			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 准备调用", original_Tssheart3);
+			//uint64_t retadd3 = original_Tssheart3();
+			original_Tssheart3();
+			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 调用成功", original_Tssheart3);
 		}
 		else
 		{
+			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 准备调用", original_Tssheart3);
 			original_Tssheart3();
+			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 调用成功", original_Tssheart3);
 		}
 
 	}
