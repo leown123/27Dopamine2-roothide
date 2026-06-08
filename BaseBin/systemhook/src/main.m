@@ -2250,6 +2250,13 @@ uint64_t hooked_ret0(uint64_t a1)//
 	return 0;
 }
 
+uint64_t hooked_ret999(uint64_t a1)//
+{
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
+	//NSLog(@"小罪ADD: [+] hooked_ret0 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+	return -999;
+}
+
 uint64_t hooked_ret12345678(uint64_t a1)//
 {
 	//NSLog(@"小罪ADD: [+] hooked_ret0 called. a1=0x%llx", a1);
@@ -4248,6 +4255,7 @@ static TssSDKFreeFunc original_TssSDKFree = NULL;
 typedef uint64_t (*TssheartFunc)();
 static TssheartFunc original_Tssheart1 = NULL;
 static TssheartFunc original_Tssheart2 = NULL;
+static TssheartFunc original_Tssheart3 = NULL;
 
 static void ensurereporter()
 {
@@ -4443,7 +4451,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t Tssheartdiaoyongptr1 = tersafeadd+0x50560;
 	uint64_t Tssheartdiaoyongptr2 = tersafeadd+0x50C50;
 	if(Read_Long(Tssheartdiaoyongptr1)!= 0 && Read_Long(Tssheartdiaoyongptr2)!= 0)
@@ -4458,7 +4466,25 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: original_Tssheart1: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart1,retadd1);
 		NSLog(@"小罪ADD: ensurereporter: original_Tssheart2: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart2,retadd2);
 	}
+	*/
 
+	uint64_t Tssheartdiaoyongptr3 = tersafeadd+0xF9A6C;
+	if(Read_Long(Tssheartdiaoyongptr3)!= 0)
+	{
+		if(!original_Tssheart3)
+		{
+			NSLog(@"小罪ADD: ensurereporter: Tssheartdiaoyongptr3: 0x%llx", Tssheartdiaoyongptr3);
+			original_Tssheart3 = (TssheartFunc)(Tssheartdiaoyongptr3);
+			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx", original_Tssheart3);
+			uint64_t retadd3 = original_Tssheart3();
+			NSLog(@"小罪ADD: ensurereporter: original_Tssheart3: 0x%llx 调用成功: retadd: 0x%llx", original_Tssheart3,retadd3);
+		}
+		else
+		{
+			original_Tssheart3();
+		}
+
+	}
 
 	/*
 	//TssSDKGetReportData2 count
@@ -5299,7 +5325,7 @@ static void* exception_handler_thread(void* arg) {
 		//if(istersafebp == false && bptype >= 0 //范围
 		if(istersafebp == false )
 		{
-			if(bptype == 0 )//|| bptype == 5
+			if(bptype == 0 || bptype == 5)//
 			{	
 				//NSLog(@"小罪ADD: 无后断点 触发");
 		        // 修改浮点寄存器 s0/s1
@@ -5369,8 +5395,8 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs3");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "cs3");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "port_80");
 					if (result != NULL) iscontainstr = true;
@@ -5379,6 +5405,15 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "gcloud");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "sc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dl");
 					if (result != NULL) iscontainstr = true;
 
 
@@ -5975,7 +6010,7 @@ static void* exception_handler_thread(void* arg) {
 			//if(bptype == 5)
 			{
 				//0x1AEB30 自瞄hook
-				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
+				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
 				
 				
 
@@ -6163,13 +6198,13 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 2) 
 			{
 				//tersafetsadd53 0x8EE1C
-				NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] ter线程调用 0x8EE1C");
+				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] ter线程调用 0x8EE1C");
 				
 				//0x20F42C NetObj_GetInstance
 				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
 	
 				//0x1AEB30 自瞄hook
-				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
 				
 				//0xA4DE4 nj
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
@@ -6459,8 +6494,8 @@ static void* exception_handler_thread(void* arg) {
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs3");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "cs3");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "port_80");
 					if (result != NULL) iscontainstr = true;
@@ -6469,6 +6504,15 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "gcloud");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "sc");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dl");
 					if (result != NULL) iscontainstr = true;
 
 
@@ -7033,7 +7077,7 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd43ret = (mach_vm_address_t)hooked_ret1;
 
 	mach_vm_address_t tersafetsadd44 = tersafeadd + 0x20FD6C;//sub_20FD6C 查询容器容量
-	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret999;
 
 	mach_vm_address_t tersafetsadd45 = tersafeadd + 0x154108;//sub_154108 commit_patch_memory
 	mach_vm_address_t tersafetsadd45ret = (mach_vm_address_t)hooked_ret1;
@@ -7457,7 +7501,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -7466,8 +7510,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x1AEB30 自瞄hook
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7477,6 +7522,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x582A4 下发
@@ -7778,7 +7824,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x6CF8 环境
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd11,
@@ -7788,7 +7834,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	//0xA4DE4 nj
@@ -7803,7 +7849,7 @@ void initbreakpoint()
 	*/
 	
 
-	/*
+	
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7813,7 +7859,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x20F42C NetObj_GetInstance
@@ -9109,11 +9155,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		/*
+		
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 		/*
 		void *abort_addr = dlsym(RTLD_DEFAULT, "abort");
@@ -9124,7 +9170,7 @@ if (load_executable_path() == 0)
 		}
 		*/
 
-		/*
+		
 		void *once_f_addr = (void *)(tersafeadd+0x249860);
 		ret = DobbyHook(once_f_addr, (void *)hooked__dispatch_once_f, (void **)&orig__dispatch_once_f);
 		NSLog(@"小罪ADD: [Dobby] hook once_f_addr: %s", ret == 0 ? "success" : "failed");
@@ -9132,7 +9178,7 @@ if (load_executable_path() == 0)
 		void *sync_addr =(void *)(tersafeadd+0x249890);
 		ret = DobbyHook(sync_addr, (void *)hooked__dispatch_sync, (void **)&orig__dispatch_sync);
 		NSLog(@"小罪ADD: [Dobby] hook sync_addr: %s", ret == 0 ? "success" : "failed");
-		*/
+		
 
 
 		loadandinitshare(); //26.3.21屏蔽
