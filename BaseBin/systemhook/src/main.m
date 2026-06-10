@@ -4365,7 +4365,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4399,9 +4399,18 @@ static void ensurereporter()
 		
 		
 	}
-	
+	*/
 
 	
+	
+	//新写法
+	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
+	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
+	if( mainyouxizhuangtai2count != (char)6)
+	{
+		forcewritenewchar(mainyouxizhuangtai2,(char)6);
+		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
+	}
 
 	/*
 	//新写法
@@ -4413,15 +4422,6 @@ static void ensurereporter()
 		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai1: 0x%llx ,mainyouxizhuangtai1count: %d", mainyouxizhuangtai1,mainyouxizhuangtai1count);
 	}
 
-	
-	//新写法
-	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
-	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
-	if( mainyouxizhuangtai2count != (char)10)
-	{
-		forcewritenewchar(mainyouxizhuangtai2,(char)10);
-		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
-	}
 	
 
 	//新写法
@@ -4470,6 +4470,7 @@ static void ensurereporter()
 	}
 	*/
 
+	/*
 	uint64_t Tssheartdiaoyongptr3 = tersafeadd+0x3F744;//TssSDKDispatchMonitorEvent
 	if(Read_Long(Tssheartdiaoyongptr3)!= 0)
 	{
@@ -4490,6 +4491,7 @@ static void ensurereporter()
 		}
 
 	}
+	*/
 
 	/*
 	//TssSDKGetReportData2 count
@@ -8629,6 +8631,28 @@ uint64_t hooked_InitTGPA()
     return 0;
 }
 
+typedef uint64_t (*TssSDKGetReportData3Func)();
+typedef uint64_t (*TssSDKDelReportData3Func)();
+
+static TssSDKGetReportData3Func original_TssSDKGetReportData3 = NULL;
+static TssSDKDelReportData3Func original_TssSDKDelReportData3 = NULL;
+
+uint64_t hooked_TssSDKGetReportData3() 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程 hooked_TssSDKGetReportData3 called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_TssSDKGetReportData3 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    return 0;
+}
+
+uint64_t hooked_TssSDKDelReportData3() 
+{
+    NSLog(@"小罪ADD: systemhook: 主线程 hooked_TssSDKDelReportData3 called");
+	NSLog(@"小罪ADD: [+] Hooked hooked_TssSDKDelReportData3 called. Stack trace:\n%@", [NSThread callStackSymbols]);
+
+    return 0;
+}
+
 
 typedef id (*OriginalInitMainFlowFunc)(void *a1, const char *a2, ...);
 // 保存原始函数指针
@@ -8691,13 +8715,6 @@ uint64_t hooked_TssSDKGetReportData2()
     return 0;
 }
 
-uint64_t hooked_TssSDKGetReportData3() 
-{
-    NSLog(@"小罪ADD: systemhook: 主线程 hooked_TssSDKGetReportData called");
-	NSLog(@"小罪ADD: [+] Hooked hooked_TssSDKGetReportData called. Stack trace:\n%@", [NSThread callStackSymbols]);
-
-    return 0;
-}
 
 typedef uint64_t (*ReportQueueFunc)(uint64_t,uint64_t);
 static ReportQueueFunc original_ReportQueue = NULL;
@@ -9128,6 +9145,14 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(InitTGPA_ptr, (void *)hooked_InitTGPA, (void **)&original_InitTGPA);
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
+
+		void *TssSDKGetReportData3_ptr = (void *)(Imageaddress+0xE3B4D9C);
+		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
+		NSLog(@"小罪ADD: [Dobby] hook hooked_TssSDKGetReportData3: %s", ret == 0 ? "success" : "failed");
+
+		void *TssSDKDelReportData3_ptr = (void *)(Imageaddress+0xE3B4D6C);
+		ret = DobbyHook(TssSDKDelReportData3_ptr, (void *)hooked_TssSDKDelReportData3, (void **)&original_TssSDKDelReportData3);
+		NSLog(@"小罪ADD: [Dobby] hook hooked_TssSDKDelReportData3: %s", ret == 0 ? "success" : "failed");
 		
 		
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
