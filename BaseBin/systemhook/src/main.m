@@ -8696,7 +8696,6 @@ int hooked_proc_regionfilename(int pid, uint64_t address, char *buf, uint32_t bu
 typedef uint64_t (*TssSDKGetReportDataFunc)();
 static TssSDKGetReportDataFunc original_TssSDKGetReportData = NULL;
 static TssSDKGetReportDataFunc original_TssSDKGetReportData2 = NULL;
-static TssSDKGetReportDataFunc original_TssSDKGetReportData3 = NULL;
 
 // 替换函数实现
 uint64_t hooked_TssSDKGetReportData() 
