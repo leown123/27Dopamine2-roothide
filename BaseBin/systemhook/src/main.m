@@ -9209,6 +9209,7 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook GetDataFromTGPA_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
+		/*
 		void *TssSDKGetReportData3_ptr = (void *)(Imageaddress+0xE3B4D9C);
 		ret = DobbyHook(TssSDKGetReportData3_ptr, (void *)hooked_TssSDKGetReportData3, (void **)&original_TssSDKGetReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook hooked_TssSDKGetReportData3: %s", ret == 0 ? "success" : "failed");
@@ -9216,7 +9217,7 @@ if (load_executable_path() == 0)
 		void *TssSDKDelReportData3_ptr = (void *)(Imageaddress+0xE3B4D6C);
 		ret = DobbyHook(TssSDKDelReportData3_ptr, (void *)hooked_TssSDKDelReportData3, (void **)&original_TssSDKDelReportData3);
 		NSLog(@"小罪ADD: [Dobby] hook hooked_TssSDKDelReportData3: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 		
 		void * kgvmp_dy_dispatch_once_ptr = (void *)(kgvmp_dyadd+0xCFCE0);
 		ret = DobbyHook(kgvmp_dy_dispatch_once_ptr, (void *)hooked_dispatch_once_kgvmp_dy, (void **)&original_dispatch_once_kgvmp_dy);
