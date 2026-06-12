@@ -5956,6 +5956,7 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{	
 				// 0x96558
+				thread_state2.__x[0] = 0;
 				NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
 				
 				/*
@@ -6482,6 +6483,7 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 5)  
 			{	
 				// 0x96558
+				thread_state2.__x[0] = 0;
 				NSLog(@"小罪ADD: [tersafe 0x96558 hook] ter线程 0x96558 改nop");
 
 				/*
