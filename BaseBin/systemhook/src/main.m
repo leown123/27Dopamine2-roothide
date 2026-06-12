@@ -4365,7 +4365,7 @@ static void ensurereporter()
 	}
 	*/
 
-	/*
+	
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4399,18 +4399,8 @@ static void ensurereporter()
 		
 		
 	}
-	*/
+	
 
-	
-	
-	//新写法
-	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
-	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
-	if( mainyouxizhuangtai2count != (char)6)
-	{
-		forcewritenewchar(mainyouxizhuangtai2,(char)6);
-		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
-	}
 
 	/*
 	//新写法
@@ -4423,6 +4413,14 @@ static void ensurereporter()
 	}
 
 	
+	//新写法
+	uint64_t mainyouxizhuangtai2 =  (uint64_t)(Imageaddress + 0x14240830);
+	char mainyouxizhuangtai2count = Read_Char(mainyouxizhuangtai2);
+	if( mainyouxizhuangtai2count != (char)6)
+	{
+		forcewritenewchar(mainyouxizhuangtai2,(char)6);
+		NSLog(@"小罪ADD: ensurereporter: mainyouxizhuangtai2: 0x%llx ,mainyouxizhuangtai2count: %d", mainyouxizhuangtai2,mainyouxizhuangtai2count);
+	}
 
 	//新写法
 	uint64_t mainyouxizhuangtai3 =  (uint64_t)(Imageaddress + 0x146F1130);
@@ -5349,6 +5347,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				//0x29FC0
+				thread_state2.__x[0] = 0;
+				NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] 主线程 调用 0x29FC0 返回0");
+				
 				//0x8A400
 				//NSLog(@"小罪ADD: [tersafe 0x8A400 hook] 主线程 调用0x8A400 返回0");
 
@@ -5371,7 +5373,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
-				
+				/*
 				//0xAA880 检测控制开关
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
@@ -5425,7 +5427,7 @@ static void* exception_handler_thread(void* arg) {
 
 
 
-					/*
+					
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5600,7 +5602,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 					
 
 					
@@ -5627,7 +5629,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -5952,7 +5954,11 @@ static void* exception_handler_thread(void* arg) {
 			}
 
 			if(bptype== 4)
-			{
+			{	
+				// 0x96558
+				NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
+				
+				/*
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 				forcewritenewfloat(judian_ptr + 0x714 ,0.01f);
@@ -5973,6 +5979,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
+				*/
 				
 				
 				//0x20FD6C 查询容器容量
@@ -6038,6 +6045,10 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				//0x29FC0
+				thread_state2.__x[0] = 0;
+				NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] ter线程 调用 0x29FC0 返回0");
+				
 				//0x3F674
 				//NSLog(@"小罪ADD: [ter线程 0x3F674 hook] ter线程 0x3F674 跳转到0x3F6BC");
 				
@@ -6057,7 +6068,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -6470,6 +6481,10 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				// 0x96558
+				NSLog(@"小罪ADD: [tersafe 0x96558 hook] ter线程 0x96558 改nop");
+
+				/*
 				//0xAA880 检测控制开关
 
 				bool iscontainstr = false;
@@ -6524,7 +6539,7 @@ static void* exception_handler_thread(void* arg) {
 
 
 
-					/*
+					////
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -6680,7 +6695,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					
 
@@ -6706,6 +6721,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
+				*/
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -7146,6 +7162,13 @@ void initbreakpoint()
 	mach_vm_address_t judianaddnew = Imageaddress + 0x336AF00;
 	mach_vm_address_t judianaddnewret = Imageaddress + 0x336AF04;
 
+	//核心校验
+	mach_vm_address_t tersafetsadd58 = tersafeadd + 0x29FC0;//
+	mach_vm_address_t tersafetsadd58ret = tersafeadd + 0x29FC4;//
+
+	mach_vm_address_t tersafetsadd59 = tersafeadd + 0x96558;//
+	mach_vm_address_t tersafetsadd59ret = tersafeadd + 0x9655C;//
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -7210,7 +7233,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7220,8 +7243,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
-	
+	*/
+
+	// 0x29FC0
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd58,
+        .target = tersafetsadd58ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0xF2D45C tssinit
@@ -7470,11 +7502,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
         .source = judianaddnew,
         .target = judianaddnewret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	// 0x96558
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd59,
+        .target = tersafetsadd59ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7670,11 +7713,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
         .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	// 0x29FC0
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd58,
+        .target = tersafetsadd58ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -7976,7 +8030,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7986,7 +8040,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	// 0x96558
+	ter_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd59,
+        .target = tersafetsadd59ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 
 	/*
