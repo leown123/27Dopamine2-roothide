@@ -5962,13 +5962,13 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{	
-				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
 				
 				// 0x96558
 				//thread_state2.__x[0] = 0;
 				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
 				
-				/*
+				
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 
@@ -6005,7 +6005,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
-				*/
+				
 
 
 				
@@ -7533,7 +7533,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
         .source = judianaddnew,
@@ -7543,8 +7543,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	//0x6CF8 环境
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd11,
@@ -7554,6 +7555,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	// 0x96558
