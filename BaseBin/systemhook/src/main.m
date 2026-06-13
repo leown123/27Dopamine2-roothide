@@ -5967,7 +5967,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 					uint64_t shujuptr = judian_ptr + 0x300 + i*4 ;
 					float myfloat = Read_Float(shujuptr);
-					if(myfloat >= -10000.0f && myfloat <= 10000.0f)
+					if(myfloat >= -1000.0f && myfloat <= 1000.0f && myfloat != 0.0f)
 					{
 						forcewritenewfloat(shujuptr, 0.01f);
 					}
@@ -5978,7 +5978,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 					uint64_t shujuptr = judian_ptr + 0x600 + i*4 ;
 					float myfloat = Read_Float(shujuptr);
-					if(myfloat >= -10000.0f && myfloat <= 10000.0f)
+					if(myfloat >= -1000.0f && myfloat <= 1000.0f && myfloat != 0.0f)
 					{
 						forcewritenewfloat(shujuptr, 0.01f);
 					}
