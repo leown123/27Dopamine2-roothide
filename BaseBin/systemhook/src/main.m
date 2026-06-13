@@ -6225,10 +6225,10 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] ter线程调用 0x8EE1C");
 				
 				//0x20F42C NetObj_GetInstance
-				NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
+				//NSLog(@"小罪ADD: [tersafe 0x20F42C hook] ter线程调用 NetObj_GetInstance");
 	
 				//0x1AEB30 自瞄hook
-				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
+				NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] tersafe触发 自瞄hook检测"); 
 				
 				//0xA4DE4 nj
 				//NSLog(@"小罪ADD: [tersafe 0xA4DE4 hook] tersafe触发 nj检测"); //0xA4DE4 nj检测
@@ -7936,7 +7936,7 @@ void initbreakpoint()
 	*/
 	
 
-	/*
+	
 	//0x1AEB30 自瞄hook
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd51,
@@ -7946,9 +7946,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-
 	
+
+	/*
 	//0x20F42C NetObj_GetInstance
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd37,
@@ -7958,6 +7958,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
