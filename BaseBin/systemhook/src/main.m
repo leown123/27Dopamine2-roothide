@@ -5963,6 +5963,7 @@ static void* exception_handler_thread(void* arg) {
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 
+				/*
 				for(int i = 0;i < 256; i++ )	
 				{
 					uint64_t shujuptr = judian_ptr + 0x300 + i*4 ;
@@ -5983,10 +5984,30 @@ static void* exception_handler_thread(void* arg) {
 						forcewritenewfloat(shujuptr, 0.01f);
 					}
 				}
+				*/
 
-				/*
-				forcewritenewfloat(judian_ptr + 0x714 ,0.01f);
-				forcewritenewfloat(judian_ptr + 0x718,0.01f);
+				forcewritenewfloat(judian_ptr + 0x700 ,0.01f);
+				forcewritenewfloat(judian_ptr + 0x704,0.01f);
+				forcewritenewfloat(judian_ptr + 0x708,0.01f);
+				forcewritenewfloat(judian_ptr + 0x70C,0.01f);
+				forcewritenewfloat(judian_ptr + 0x710,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x714 ,0.01f); //
+				forcewritenewfloat(judian_ptr + 0x718,0.01f);  //
+
+				forcewritenewfloat(judian_ptr + 0x71C,0.01f);
+				forcewritenewfloat(judian_ptr + 0x720,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x390,0.01f);
+				forcewritenewfloat(judian_ptr + 0x394,0.01f);
+				forcewritenewfloat(judian_ptr + 0x398,0.01f);
+				forcewritenewfloat(judian_ptr + 0x39C,0.01f);
+
+				//
+				forcewritenewfloat(judian_ptr + 0x3A0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3A4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3A8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3AC,0.01f);
 
 				forcewritenewfloat(judian_ptr + 0x3B0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3B4,0.01f);
@@ -6003,7 +6024,18 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
-				*/
+				//
+
+				forcewritenewfloat(judian_ptr + 0x3E0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3E4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3E8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3EC,0.01f);
+
+				forcewritenewfloat(judian_ptr + 0x3F0,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3F4,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3F8,0.01f);
+				forcewritenewfloat(judian_ptr + 0x3FC,0.01f);
+
 				
 				
 				//0x20FD6C 查询容器容量
