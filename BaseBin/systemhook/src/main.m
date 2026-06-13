@@ -5963,9 +5963,14 @@ static void* exception_handler_thread(void* arg) {
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 
-				for(int i = 0;i < 0x200; i++ )	
+				for(int i = 0;i < 128; i++ )	
 				{
-					forcewritenewfloat(judian_ptr + 0x100 + i*4 , 0.01f);
+					forcewritenewfloat(judian_ptr + 0x300 + i*4 , 0.01f);
+				}
+
+				for(int i = 0;i < 256; i++ )	
+				{
+					forcewritenewfloat(judian_ptr + 0x600 + i*4 , 0.01f);
 				}
 
 				/*
