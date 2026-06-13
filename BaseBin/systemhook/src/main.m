@@ -5965,7 +5965,7 @@ static void* exception_handler_thread(void* arg) {
 
 				for(int i = 0;i < 0x200; i++ )	
 				{
-					forcewritenewfloat(judian_ptr + 0x30 + i*4 , 0.01f);
+					forcewritenewfloat(judian_ptr + 0x100 + i*4 , 0.01f);
 				}
 
 				/*
