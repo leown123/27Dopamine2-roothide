@@ -5998,10 +5998,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x71C,0.01f);
 				forcewritenewfloat(judian_ptr + 0x720,0.01f);
 
-				forcewritenewfloat(judian_ptr + 0x390,0.01f);
-				forcewritenewfloat(judian_ptr + 0x394,0.01f);
-				forcewritenewfloat(judian_ptr + 0x398,0.01f);
-				forcewritenewfloat(judian_ptr + 0x39C,0.01f);
+				
 
 				//
 				forcewritenewfloat(judian_ptr + 0x3A0,0.01f);
@@ -6026,6 +6023,13 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
 				//
 
+				/*
+				forcewritenewfloat(judian_ptr + 0x390,0.01f);
+				forcewritenewfloat(judian_ptr + 0x394,0.01f);
+				forcewritenewfloat(judian_ptr + 0x398,0.01f);
+				forcewritenewfloat(judian_ptr + 0x39C,0.01f);
+				
+
 				forcewritenewfloat(judian_ptr + 0x3E0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3E4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3E8,0.01f);
@@ -6035,6 +6039,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3F4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3F8,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3FC,0.01f);
+				*/
 
 				
 				
