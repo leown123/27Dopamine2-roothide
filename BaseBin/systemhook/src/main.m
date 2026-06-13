@@ -5348,8 +5348,8 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 1)
 			{	
 				//0x29FC0
-				thread_state2.__x[0] = 0;
-				NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] 主线程 调用 0x29FC0 返回0");
+				//thread_state2.__x[0] = 0;
+				//NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] 主线程 调用 0x29FC0 返回0");
 				
 				//0x8A400
 				//NSLog(@"小罪ADD: [tersafe 0x8A400 hook] 主线程 调用0x8A400 返回0");
@@ -5373,7 +5373,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
-				/*
+				
 				//0xAA880 检测控制开关
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
@@ -5427,7 +5427,7 @@ static void* exception_handler_thread(void* arg) {
 
 
 
-					
+					/*
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5602,7 +5602,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 					
 
 					
@@ -5629,7 +5629,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -5956,12 +5956,19 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{	
 				// 0x96558
-				thread_state2.__x[0] = 0;
-				NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
+				//thread_state2.__x[0] = 0;
+				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
 				
-				/*
+				
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
+
+				for(int i = 0;i < 0x200; i++ )	
+				{
+					forcewritenewfloat(judian_ptr + 0x30 + i*4 , 0.01f);
+				}
+
+				/*
 				forcewritenewfloat(judian_ptr + 0x714 ,0.01f);
 				forcewritenewfloat(judian_ptr + 0x718,0.01f);
 
@@ -6047,8 +6054,8 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 0) 
 			{	
 				//0x29FC0
-				thread_state2.__x[0] = 0;
-				NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] ter线程 调用 0x29FC0 返回0");
+				//thread_state2.__x[0] = 0;
+				//NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] ter线程 调用 0x29FC0 返回0");
 				
 				//0x3F674
 				//NSLog(@"小罪ADD: [ter线程 0x3F674 hook] ter线程 0x3F674 跳转到0x3F6BC");
@@ -6069,7 +6076,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20FD6C 查询容器容量
-				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -6483,10 +6490,10 @@ static void* exception_handler_thread(void* arg) {
 			if(terbptype == 5)  
 			{	
 				// 0x96558
-				thread_state2.__x[0] = 0;
-				NSLog(@"小罪ADD: [tersafe 0x96558 hook] ter线程 0x96558 改nop");
+				//thread_state2.__x[0] = 0;
+				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] ter线程 0x96558 改nop");
 
-				/*
+				
 				//0xAA880 检测控制开关
 
 				bool iscontainstr = false;
@@ -6541,7 +6548,7 @@ static void* exception_handler_thread(void* arg) {
 
 
 
-					////
+					/*
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -6697,7 +6704,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					
 
@@ -6723,7 +6730,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -7235,7 +7242,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7245,8 +7252,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	// 0x29FC0
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd58,
@@ -7256,6 +7264,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0xF2D45C tssinit
@@ -7504,7 +7513,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
         .source = judianaddnew,
@@ -7514,8 +7523,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	// 0x96558
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd59,
@@ -7525,7 +7535,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	/*
 	//0x822E0B8 shantuiadd2
@@ -7715,7 +7725,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
@@ -7725,8 +7735,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	// 0x29FC0
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd58,
@@ -7736,7 +7747,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -8032,7 +8043,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -8042,8 +8053,8 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
-
+	
+	/*
 	// 0x96558
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd59,
@@ -8053,7 +8064,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
+	*/
 
 	/*
 	//0x33DA4 tp2_setgamestatus
