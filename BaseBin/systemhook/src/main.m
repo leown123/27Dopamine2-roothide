@@ -3614,7 +3614,7 @@ void* duquthread_smoba(void* aa)
 			selfdylibadd = Getselfdylibadd();
 		}
 
-		/*
+		
 		int huomiansize = 0;//sizeof(struct mach_header_64);
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd前：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
@@ -3627,7 +3627,7 @@ void* duquthread_smoba(void* aa)
 		
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
-		*/
+		
 		
 		initbreakpoint_smoba();
 
@@ -5004,17 +5004,8 @@ static void* exception_handler_thread_smoba(void* arg)
 			if(bptype == 5)
 			{
 				//NSLog(@"小罪ADD: [tersafe 0x93C10 hook] 主线程调用");
-				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 返回0");
-				
-			}
-			
+				//NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 返回0");
 
-		}
-
-		if(istersafebp == true)
-		{	
-			if(terbptype == 0)
-			{
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
 				uint64_t path_ptr = thread_state2.__x[1];
@@ -5029,6 +5020,16 @@ static void* exception_handler_thread_smoba(void* arg)
 
 					const char* result = "";
 
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+					
+					/*
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5080,7 +5081,117 @@ static void* exception_handler_thread_smoba(void* arg)
 
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
+					*/
 
+					if(iscontainstr == true)
+					{
+						NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 准备干掉字符串并返回0: %s", path);
+						bp->target = (uint64_t)(hooked_ret0);
+						//thread_state2.__sp -= 0x40;
+						//bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+					else
+					{
+						//NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 暂时不干掉的检测类型: %s", path);
+						thread_state2.__sp -= 0x40;
+						bp->target = (uint64_t)(thread_state2.__pc + 4);
+					}
+
+					
+			    } else 
+				{
+			        NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 主线程 Failed to read 检测类型 at 0x%llx", path_ptr);
+					// 模拟 SUB SP, SP, #0x40
+					thread_state2.__sp -= 0x40;
+					bp->target = (uint64_t)(thread_state2.__pc + 4);
+			    }
+				
+				
+			}
+			
+
+		}
+
+		if(istersafebp == true)
+		{	
+			if(terbptype == 0)
+			{
+				bool iscontainstr = false;
+				//全局检测开关hook sub_AA880
+				uint64_t path_ptr = thread_state2.__x[1];
+			    char path[1024] = {0};
+			    mach_vm_size_t bytes_read = 0;
+			    kern_return_t kr = mach_vm_read_overwrite(mach_task_self(), path_ptr, sizeof(path)-1,
+			                                              (mach_vm_address_t)path, &bytes_read);
+			    if (kr == KERN_SUCCESS && bytes_read > 0) 
+				{
+			        path[bytes_read] = '\0';
+			        //NSLog(@"小罪ADD: [tersafe 全局检测开关 sub_AA880 hook] 检测类型: %s", path);
+
+					const char* result = "";
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, ".img");
+					if (result != NULL) iscontainstr = true;
+					
+					/*
+					result = strstr(path, "force");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "enc");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "hb");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					//result = strstr(path, "cs3");
+					//if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+					//
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "check");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cert");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "IDFV");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "device");
+					if (result != NULL) iscontainstr = true;
+					*/
 
 					if(iscontainstr == true)
 					{
@@ -8397,6 +8508,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	
 	//0x2132C8 VM_DispatchPendingCallbacks
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8406,6 +8518,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	
 
 	/*
 	//0x93C10 闪退 王
@@ -8419,8 +8532,18 @@ void initbreakpoint_smoba()
     };
 	*/
 
+	//0xAA880 控制检测开关
+	g_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd1,
+        .target = tersafetsadd1ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
 	//0xA0E68
-	g_breakpoints[4] = (Breakpoint){
+	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd60,
         .target = tersafetsadd60ret,
         .s0_val = 0.0f,
@@ -8462,7 +8585,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	/*
+	
 	//0x582A4 下发
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd4,
@@ -8472,7 +8595,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[4] = (Breakpoint){
@@ -9120,7 +9243,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		/*
+		
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -9165,7 +9288,7 @@ if (load_executable_path() == 0)
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-		*/
+		
 
 		//smobainit();
 		pthread_t thread3;
