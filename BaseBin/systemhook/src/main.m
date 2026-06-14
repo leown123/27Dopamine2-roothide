@@ -5771,8 +5771,7 @@ static void* exception_handler_thread(void* arg) {
 			{	
 				
 				
-				//tersafetsadd53 0x8EE1C
-				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
+				
 
 				//0x210330 范围上报检测
 				//NSLog(@"小罪ADD: [tersafe 0x210330 hook] 主线程触发 范围上报检测");
@@ -5962,13 +5961,16 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{	
+				//tersafetsadd53 0x8EE1C
+				NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
+				
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
 				
 				// 0x96558
 				//thread_state2.__x[0] = 0;
 				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
 				
-				
+				/*
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 
@@ -6005,7 +6007,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
-				
+				*/
 
 
 				
@@ -7196,7 +7198,7 @@ void initbreakpoint()
 	g_breakpoints[0] = (Breakpoint){
         .source = wuhouadd,          // 源地址
         .target = wuhouadd + 4,          // 目标地址
-        .s0_val = -0.02f,             // 要写入 s0 的值
+        .s0_val = -0.03f,             // 要写入 s0 的值
         .s1_val = -0.02f,             // 要写入 s1 的值
         .used = 1,
         .hw_index = -1
@@ -7409,20 +7411,6 @@ void initbreakpoint()
     };
 	
 
-	/*
-	//tersafetsadd53 0x8EE1C
-	g_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd53,
-        .target = tersafetsadd53ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-
-	
 	
 	/*
 	//0x210330 范围上报检测
@@ -7533,7 +7521,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
         .source = judianaddnew,
@@ -7543,7 +7531,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	//tersafetsadd53 0x8EE1C
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd53,
+        .target = tersafetsadd53ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0x6CF8 环境
