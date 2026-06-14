@@ -8542,6 +8542,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	/*
 	//0xA0E68
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd60,
@@ -8551,6 +8552,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
     g_breakpoint_count = 6;
 
