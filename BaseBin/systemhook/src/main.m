@@ -8671,7 +8671,7 @@ void initbreakpoint_smoba()
 	//while(!isover100)
 	while(true)
 	{
-    	ensurereporter_smoba();
+    	//ensurereporter_smoba();
 		setup_all_breakpoints();
 	}
 
