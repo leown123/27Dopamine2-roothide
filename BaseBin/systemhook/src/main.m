@@ -5859,7 +5859,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
