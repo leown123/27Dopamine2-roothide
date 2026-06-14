@@ -5552,7 +5552,7 @@ static void* exception_handler_thread(void* arg) {
 			{	
 					
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
 
 				//0x1AEB30 自瞄hook
 				//NSLog(@"小罪ADD: [tersafe 0x1AEB30 hook] 主线程触发 自瞄hook检测"); 
@@ -5583,7 +5583,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
-				/*
+				
 				//0xAA880 检测控制开关
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
@@ -5599,6 +5599,26 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+
+					/*
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5812,7 +5832,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 					
 
 					
@@ -7488,7 +7508,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
@@ -7498,7 +7518,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x1AEB30 自瞄hook
@@ -7512,6 +7532,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd44,
@@ -7521,6 +7542,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	// 0x29FC0
@@ -8267,7 +8289,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xA0E68
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd60,
@@ -8277,7 +8299,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-
+	*/
 
 
 	/*
