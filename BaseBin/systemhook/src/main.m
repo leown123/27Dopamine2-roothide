@@ -5062,6 +5062,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
+					/*
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
 					
@@ -5117,7 +5118,7 @@ static void* exception_handler_thread_smoba(void* arg)
 
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					if(iscontainstr == true)
 					{
@@ -5172,6 +5173,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
+					/*
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
 					
@@ -5227,7 +5229,7 @@ static void* exception_handler_thread_smoba(void* arg)
 
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					if(iscontainstr == true)
 					{
@@ -8544,7 +8546,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	
+	/*
 	//0x2132C8 VM_DispatchPendingCallbacks
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8557,7 +8559,7 @@ void initbreakpoint_smoba()
 	
 	
 
-	/*
+	
 	//0x93C10 闪退 王
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd6,
@@ -8613,7 +8615,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	/*
+	
 	//0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd3,
@@ -8624,7 +8626,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 	//0x582A4 下发
 	ter_breakpoints[3] = (Breakpoint){
@@ -8636,7 +8638,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 	
-	
+	/*
 	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8647,7 +8649,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	/*
+	
 	//0x93C10 闪退
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd6,
