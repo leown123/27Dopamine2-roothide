@@ -4562,6 +4562,42 @@ static void ensurereporter()
 
 }
 
+
+static void ensurereporter_smoba()
+{
+	while(!Imageaddress)
+	{
+		Imageaddress = Get_Imageaddress_base_smoba();
+	}
+
+	while(!tersafeadd)
+	{
+		tersafeadd = Get_tersafe_base();
+	}
+
+	uint64_t TssSDKOnPauseptr = Imageaddress + 0x10EDD5B0;
+	uint64_t TssSDKOnResumeptr = Imageaddress + 0x10EDD5C8;
+
+	uint64_t TssSDKOnPauselong  = (uint64_t)Read_Long(TssSDKOnPauseptr);
+	uint64_t TssSDKOnResumelong = (uint64_t)Read_Long(TssSDKOnResumeptr);
+
+	if(TssSDKOnResumelong != 0 && TssSDKOnResumelong != TssSDKOnPauselong)
+	{
+		forcewritenewlong(TssSDKOnResumeptr,(uint64_t)TssSDKOnPauselong);
+
+		if(Read_Long(TssSDKOnResumeptr) == TssSDKOnPauselong)
+		{
+			
+			NSLog(@"小罪ADD: ensurereporter_smoba: TssSDKOnResumelong: 0x%llx ,TssSDKOnPauselong: 0x%llx,Read_Long(TssSDKOnResumeptr): 0x%llx", TssSDKOnResumelong, TssSDKOnPauselong,Read_Long(TssSDKOnResumeptr));
+			
+		}
+		
+		
+	}
+	
+
+}
+
 // =============================================================================
 // 设置所有断点
 // =============================================================================
@@ -8635,7 +8671,8 @@ void initbreakpoint_smoba()
 	//while(!isover100)
 	while(true)
 	{
-    	setup_all_breakpoints();
+    	ensurereporter_smoba();
+		setup_all_breakpoints();
 	}
 
 
