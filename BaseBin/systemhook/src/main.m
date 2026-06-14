@@ -5062,6 +5062,17 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
 					/*
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
@@ -5173,6 +5184,17 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
 					/*
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
@@ -6143,18 +6165,17 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype== 4)
 			{	
 				//0xA0E68
-				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 0xA0E68 返回0");
+				//NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 0xA0E68 返回0");
 				
 				//tersafetsadd53 0x8EE1C
 				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
 				
-				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
 				
 				// 0x96558
 				//thread_state2.__x[0] = 0;
 				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
 				
-				/*
+				
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 
@@ -6191,7 +6212,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
-				*/
+				
 
 
 				
@@ -6314,6 +6335,10 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 1) 
 			{
+				//0x6CF8 环境
+				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] ter线程触发"); //sub_6CF8 环境检测hook
+				
+				
 				//NSLog(@"小罪ADD: [tersafe 0x2132C8 hook] ter调用 VM_DispatchPendingCallbacks");
 				
 				//NSLog(@"小罪ADD: [tersafe sub_24B47C(VM_DebugDetect_Dispatch) hook] tersafe触发"); 
@@ -6710,6 +6735,25 @@ static void* exception_handler_thread(void* arg) {
 
 					const char* result = "";
 
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jail");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "hook");
+					if (result != NULL) iscontainstr = true;
+
+					/*
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -6742,7 +6786,7 @@ static void* exception_handler_thread(void* arg) {
 
 					result = strstr(path, "dl");
 					if (result != NULL) iscontainstr = true;
-
+					*/
 
 
 					/*
@@ -7711,7 +7755,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
         .source = judianaddnew,
@@ -7721,7 +7765,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//tersafetsadd53 0x8EE1C
@@ -7735,6 +7779,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0xA0E68
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd60,
@@ -7744,6 +7789,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x6CF8 环境
@@ -8089,10 +8135,22 @@ void initbreakpoint()
     };
 	*/
 	
+	/*
 	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd38,
         .target = tersafetsadd38ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x6CF8 环境
+	ter_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd11,
+        .target = tersafetsadd11ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -8104,18 +8162,6 @@ void initbreakpoint()
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
         .target = tersafetsadd24ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-	/*
-	//0x6CF8 环境
-	ter_breakpoints[2] = (Breakpoint){
-        .source = tersafetsadd11,
-        .target = tersafetsadd11ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
