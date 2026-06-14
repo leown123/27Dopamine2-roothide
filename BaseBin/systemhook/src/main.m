@@ -3614,6 +3614,7 @@ void* duquthread_smoba(void* aa)
 			selfdylibadd = Getselfdylibadd();
 		}
 
+		/*
 		int huomiansize = 0;//sizeof(struct mach_header_64);
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd前：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
@@ -3626,7 +3627,8 @@ void* duquthread_smoba(void* aa)
 		
 
 		NSLog(@"小罪ADD: systemhook: hooked_launch_method: 抹除selfdylibadd：%lx succedd！Read_Long(selfdylibadd+0x10):%lx",selfdylibadd,Read_Long(selfdylibadd+0x10));
-
+		*/
+		
 		initbreakpoint_smoba();
 
 	
@@ -8460,6 +8462,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	/*
 	//0x582A4 下发
 	ter_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd4,
@@ -8469,6 +8472,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[4] = (Breakpoint){
@@ -9116,7 +9120,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -9161,7 +9165,7 @@ if (load_executable_path() == 0)
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-		
+		*/
 
 		//smobainit();
 		pthread_t thread3;
