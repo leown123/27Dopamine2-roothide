@@ -8544,7 +8544,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	/*
+	
 	//0x2132C8 VM_DispatchPendingCallbacks
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8554,7 +8554,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 	
 
 	/*
@@ -8636,7 +8636,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 	
-	/*
+	
 	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8647,6 +8647,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	/*
 	//0x93C10 闪退
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd6,
