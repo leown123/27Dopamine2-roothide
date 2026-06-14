@@ -5065,7 +5065,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
 					
-					/*
+					
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5117,7 +5117,7 @@ static void* exception_handler_thread_smoba(void* arg)
 
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					if(iscontainstr == true)
 					{
@@ -5175,7 +5175,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
 					
-					/*
+					
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5227,7 +5227,7 @@ static void* exception_handler_thread_smoba(void* arg)
 
 					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 
 					if(iscontainstr == true)
 					{
