@@ -6640,9 +6640,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4) 
 			{	
-				NSLog(@"小罪ADD: [tersafe 0x93C10 hook] ter线程调用");
+				//0xA0E68
+				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] ter线程调用 0xA0E68 返回0");
 				
-
+				//NSLog(@"小罪ADD: [tersafe 0x93C10 hook] ter线程调用");
 				//0x1E1E28
 				//NSLog(@"小罪ADD: [tersafe 0x1E1E28 hook] tersafe线程 自瞄hook触发");
 
@@ -6669,8 +6670,7 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
-				//0xA0E68
-				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 0xA0E68 返回0");
+			
 				/*
 				//sub_582A4 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
@@ -6691,7 +6691,7 @@ static void* exception_handler_thread(void* arg) {
 				//thread_state2.__x[0] = 0;
 				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] ter线程 0x96558 改nop");
 
-				/*
+				
 				//0xAA880 检测控制开关
 
 				bool iscontainstr = false;
@@ -6726,9 +6726,6 @@ static void* exception_handler_thread(void* arg) {
 					//result = strstr(path, "cs3");
 					//if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "port_80");
-					if (result != NULL) iscontainstr = true;
-
 					result = strstr(path, ".img");
 					if (result != NULL) iscontainstr = true;
 
@@ -6746,7 +6743,7 @@ static void* exception_handler_thread(void* arg) {
 
 
 
-					////
+					/*
 					result = strstr(path, "scan");
 					if (result != NULL) iscontainstr = true;
 
@@ -6902,7 +6899,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					
+					*/
 
 					
 
@@ -6928,7 +6925,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				*/
+				
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -8210,11 +8207,24 @@ void initbreakpoint()
     };
 	*/
 	
+	/*
 	// 0x93C10 闪退
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd34,
         .target = tersafetsadd34ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	
+	//0xA0E68
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd60,
+        .target = tersafetsadd60ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
@@ -8258,7 +8268,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0xAA880 检测控制开关
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd18,
@@ -8268,7 +8278,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	//0x582A4 下发
@@ -8281,16 +8291,6 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-
-	//0xA0E68
-	g_breakpoints[5] = (Breakpoint){
-        .source = tersafetsadd60,
-        .target = tersafetsadd60ret,
-        .s0_val = 0.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
 
 	
 	/*
