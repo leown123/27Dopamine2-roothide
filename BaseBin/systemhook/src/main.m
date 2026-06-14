@@ -5961,8 +5961,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{	
+				//0xA0E68
+				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 0xA0E68 返回0");
+				
 				//tersafetsadd53 0x8EE1C
-				NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
+				//NSLog(@"小罪ADD: [tersafe 0x8EE1C hook] 主线程调用 0x8EE1C");
 				
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
 				
@@ -6487,6 +6490,9 @@ static void* exception_handler_thread(void* arg) {
  
 			if(terbptype == 5)  
 			{	
+				//0xA0E68
+				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 0xA0E68 返回0");
+				/*
 				//sub_582A4 下发文件hook				
 				uint64_t path_ptr = thread_state2.__x[0];
 			    char path[1024] = {0};
@@ -6500,6 +6506,7 @@ static void* exception_handler_thread(void* arg) {
 				{
 			        //NSLog(@"小罪ADD: [tersafe 三角 sub_582A4 或王者0x57B58 hook] tersafe线程 Failed to read path at 0x%llx", path_ptr);
 			    }
+				*/
 				
 				// 0x96558
 				//thread_state2.__x[0] = 0;
@@ -7190,6 +7197,11 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd59 = tersafeadd + 0x96558;//
 	mach_vm_address_t tersafetsadd59ret = tersafeadd + 0x9655C;//
 
+	mach_vm_address_t tersafetsadd60 = tersafeadd + 0xA0E68;//
+	mach_vm_address_t tersafetsadd60ret = (mach_vm_address_t)hooked_ret0;
+
+	
+
 	g_source_addr = wuhouadd;
 	g_target_addr = wuhouadd + 4;
 	
@@ -7533,10 +7545,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//tersafetsadd53 0x8EE1C
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd53,
         .target = tersafetsadd53ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xA0E68
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd60,
+        .target = tersafetsadd60ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -8067,11 +8091,23 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	//0x582A4 下发
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd1,
         .target = tersafetsadd1ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xA0E68
+	g_breakpoints[5] = (Breakpoint){
+        .source = tersafetsadd60,
+        .target = tersafetsadd60ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
