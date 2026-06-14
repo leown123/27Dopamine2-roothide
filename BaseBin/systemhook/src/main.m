@@ -5001,7 +5001,9 @@ static void* exception_handler_thread_smoba(void* arg)
 
 			if(bptype == 5)
 			{
-				NSLog(@"小罪ADD: [tersafe 0x93C10 hook] 主线程调用");
+				//NSLog(@"小罪ADD: [tersafe 0x93C10 hook] 主线程调用");
+				NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 返回0");
+				
 			}
 			
 
@@ -5031,8 +5033,8 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "enc");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "hb");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "hb");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "jb");
 					if (result != NULL) iscontainstr = true;
@@ -5040,13 +5042,41 @@ static void* exception_handler_thread_smoba(void* arg)
 					result = strstr(path, "jail");
 					if (result != NULL) iscontainstr = true;
 
-					result = strstr(path, "cs3");
-					if (result != NULL) iscontainstr = true;
+					//result = strstr(path, "cs3");
+					//if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "hook");
 					if (result != NULL) iscontainstr = true;
 
 					result = strstr(path, "scan");
+					if (result != NULL) iscontainstr = true;
+
+					//
+					result = strstr(path, "process");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "dylib");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "module");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "check");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "cert");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "IDFV");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "chk");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "jb");
+					if (result != NULL) iscontainstr = true;
+
+					result = strstr(path, "device");
 					if (result != NULL) iscontainstr = true;
 
 
@@ -8313,6 +8343,9 @@ void initbreakpoint_smoba()
 	mach_vm_address_t tersafetsadd6 = tersafeadd + 0x93C10;//闪退
 	mach_vm_address_t tersafetsadd6ret = tersafeadd + 0x93C30;
 
+	mach_vm_address_t tersafetsadd60 = tersafeadd + 0xA0E68;//
+	mach_vm_address_t tersafetsadd60ret = (mach_vm_address_t)hooked_ret0;
+
 	g_breakpoints[0] = (Breakpoint){
         .source = kaijuxieruadd,
         .target = kaijuxieruaddret,
@@ -8372,11 +8405,23 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	//0x93C10 闪退
+	/*
+	//0x93C10 闪退 王
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd6,
         .target = tersafetsadd6ret,
         .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0xA0E68
+	g_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd60,
+        .target = tersafetsadd60ret,
+        .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
