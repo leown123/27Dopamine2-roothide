@@ -5011,6 +5011,10 @@ static void* exception_handler_thread_smoba(void* arg)
 
 			if(bptype == 3)
 			{
+					//0x20FD6C 查询容器容量
+					NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
+					
+					/*
 					//sub_210EAC ReportQueue_Enqueue
 	
 					uint64_t myptr = thread_state2.__x[1];
@@ -5029,7 +5033,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					if(opcode >= 0x800) result = @"超过0x800的未知异常";
 	
 					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue 主线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-					
+					*/
 			}
 
 			if(bptype == 4)
@@ -5285,6 +5289,10 @@ static void* exception_handler_thread_smoba(void* arg)
 
 			if(terbptype == 2)
 			{
+				//0x20FD6C 查询容器容量
+				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+
+				/*
 				//0x210EAC ReportQueue_Enqueue
 	
 					uint64_t myptr = thread_state2.__x[1];
@@ -5303,7 +5311,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					if(opcode >= 0x800) result = @"超过0x800的未知异常";
 	
 					NSLog(@"小罪ADD: [tersafe sub_210EAC hook] ReportQueue_Enqueue ter线程 通道异常上报触发,opcode:%d,异常状态：%@",opcode,result);
-				
+				*/
 			}
 
 			if(terbptype == 3)
@@ -8565,6 +8573,9 @@ void initbreakpoint_smoba()
 	mach_vm_address_t tersafetsadd60 = tersafeadd + 0xA0E68;//
 	mach_vm_address_t tersafetsadd60ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t tersafetsadd44 = tersafeadd + 0x20FD6C;//sub_20FD6C 查询容器容量
+	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret999;
+
 	g_breakpoints[0] = (Breakpoint){
         .source = kaijuxieruadd,
         .target = kaijuxieruaddret,
@@ -8604,6 +8615,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
+	/* 王者
 	//0x210EAC ReportQueue_Enqueue
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd3,
@@ -8613,8 +8625,19 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
-	/*
+	//0x20FD6C 查询容器容量
+	g_breakpoints[3] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+
+	
 	//0x2132C8 VM_DispatchPendingCallbacks
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8627,7 +8650,7 @@ void initbreakpoint_smoba()
 	
 	
 
-	
+	/*
 	//0x93C10 闪退 王
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd6,
@@ -8683,7 +8706,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	
+	/*
 	//0x210EAC ReportQueue_Enqueue
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd3,
@@ -8691,6 +8714,17 @@ void initbreakpoint_smoba()
         .s0_val = 0.0f,
         .s1_val = 0.0f,
 		.d0_val = (double)1.0,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	//0x20FD6C 查询容器容量
+	ter_breakpoints[2] = (Breakpoint){
+        .source = tersafetsadd44,
+        .target = tersafetsadd44ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
         .used = 1,
         .hw_index = -1
     };
@@ -8706,7 +8740,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 	
-	/*
+	
 	//0x2132C8 VM_DispatchPendingCallbacks
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd5,
@@ -8717,7 +8751,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-	
+	/*
 	//0x93C10 闪退
 	ter_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd6,
