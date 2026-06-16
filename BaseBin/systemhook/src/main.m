@@ -4983,9 +4983,17 @@ static void* exception_handler_thread_smoba(void* arg)
 			if(bptype == 0)
 			{
 				int myw8 = Read_Int((long)thread_state2.__x[19]);
+				
+				/*
 				if(myw8 == 1)
 				{
 					thread_state2.__x[8] = 0;
+					NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，myw8:%d准备修改为0",myw8);
+				}
+				*/
+				if(myw8 == 2)
+				{
+					thread_state2.__x[8] = 1;
 					NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，myw8:%d准备修改为0",myw8);
 				}
 				else
@@ -8776,7 +8784,7 @@ void initbreakpoint_smoba()
 	//while(!isover100)
 	while(true)
 	{
-    	//ensurereporter_smoba();
+    	ensurereporter_smoba();
 		setup_all_breakpoints();
 	}
 
