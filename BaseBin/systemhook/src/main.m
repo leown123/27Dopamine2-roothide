@@ -4273,13 +4273,14 @@ static void ensurereporter()
 		Imageaddress = Get_Imageaddress_base();
 	}
 
-	
+	/*
 	uint64_t ownreporter =  (uint64_t)(tersafeadd + 0x24AEC0);
 	char ownreporterrd = (char)Read_Char(ownreporter);
 	if(ownreporterrd != 0)
 	{
 		forcewritenewchar(ownreporter,(char)0);
 	}
+	*/
 
 	/*
 	uint64_t ownreporter2 =  (uint64_t)(tersafeadd + 0x24AED0);
@@ -7671,7 +7672,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -7681,7 +7682,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 
 	
 	/*
@@ -7879,7 +7880,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -7888,6 +7889,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -9555,13 +9557,13 @@ if (load_executable_path() == 0)
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
 		NSLog(@"小罪ADD: [Dobby] hook proc_regionfilename: %s", ret == 0 ? "success" : "failed");
 		
-		
+		/*
 		// ---------- 使用 runtime Hook Objective-C 方法 ----------
 		// NSFileManager fileExistsAtPath
         Method m1 = class_getInstanceMethod([NSFileManager class], @selector(fileExistsAtPath:));
         orig_fileExistsAtPath = method_getImplementation(m1);
         method_setImplementation(m1, (IMP)hooked_fileExistsAtPath);
-		
+		*/
 		
 		/*
 		//NSFileManager fileExistsAtPath:isDirectory
@@ -9623,9 +9625,9 @@ if (load_executable_path() == 0)
 		ret = DobbyHook(kgvmp_dy_dispatch_once_ptr, (void *)hooked_dispatch_once_kgvmp_dy, (void **)&original_dispatch_once_kgvmp_dy);
 		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_once_ptr: %s", ret == 0 ? "success" : "failed");
 
-		void * kgvmp_dy_dispatch_async_ptr = (void *)(kgvmp_dyadd+0xCFCC8);
-		ret = DobbyHook(kgvmp_dy_dispatch_async_ptr, (void *)hooked__dispatch_async, (void **)&orig__dispatch_async);
-		NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_async_ptr: %s", ret == 0 ? "success" : "failed");
+		//void * kgvmp_dy_dispatch_async_ptr = (void *)(kgvmp_dyadd+0xCFCC8);
+		//ret = DobbyHook(kgvmp_dy_dispatch_async_ptr, (void *)hooked__dispatch_async, (void **)&orig__dispatch_async);
+		//NSLog(@"小罪ADD: [Dobby] hook kgvmp_dy_dispatch_async_ptr: %s", ret == 0 ? "success" : "failed");
 
 		/*
 		void *TssSDKGetReportData2_ptr = (void *)(Imageaddress+0xE3B4D90);
@@ -9649,11 +9651,11 @@ if (load_executable_path() == 0)
 		NSLog(@"小罪ADD: [Dobby] hook ReportQueue_ptr: %s", ret == 0 ? "success" : "failed");
 		*/
 
-		
+		/*
 		void *sleep_ptr = (void *)(tersafeadd+0x249E90);
 		ret = DobbyHook(sleep_ptr, (void *)hooked_sleep, (void **)&orig_sleep);
 		NSLog(@"小罪ADD: [Dobby] hook sleep_ptr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 
 		/*
 		void *abort_addr = dlsym(RTLD_DEFAULT, "abort");
@@ -9664,7 +9666,7 @@ if (load_executable_path() == 0)
 		}
 		*/
 
-		
+		/*
 		void *once_f_addr = (void *)(tersafeadd+0x249860);
 		ret = DobbyHook(once_f_addr, (void *)hooked__dispatch_once_f, (void **)&orig__dispatch_once_f);
 		NSLog(@"小罪ADD: [Dobby] hook once_f_addr: %s", ret == 0 ? "success" : "failed");
@@ -9672,7 +9674,7 @@ if (load_executable_path() == 0)
 		void *sync_addr =(void *)(tersafeadd+0x249890);
 		ret = DobbyHook(sync_addr, (void *)hooked__dispatch_sync, (void **)&orig__dispatch_sync);
 		NSLog(@"小罪ADD: [Dobby] hook sync_addr: %s", ret == 0 ? "success" : "failed");
-		
+		*/
 
 
 		loadandinitshare(); //26.3.21屏蔽
