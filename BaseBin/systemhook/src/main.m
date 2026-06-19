@@ -4983,7 +4983,10 @@ static void* exception_handler_thread_smoba(void* arg)
 		{
 			if(bptype == 0)
 			{
-				NSLog(@"小罪ADD: [sub_A710CBC hook] 主线程触发 开局判断 返回0");
+				// 0x8DCFFA8
+				NSLog(@"小罪ADD: [0x8DCFFA8 hook] 主线程触发 开局判断 返回1");
+				
+				//NSLog(@"小罪ADD: [sub_A710CBC hook] 主线程触发 开局判断 返回0");
 				
 				/*
 				int myw8 = Read_Int((long)thread_state2.__x[19]);
@@ -8617,6 +8620,9 @@ void initbreakpoint_smoba()
 	mach_vm_address_t kaijuxieruadd2   = Imageaddress + 0xA710CBC;
 	mach_vm_address_t kaijuxieruadd2ret = (mach_vm_address_t)hooked_ret0;
 
+	mach_vm_address_t kaijuxieruadd3   = Imageaddress + 0x8DCFFA8;
+	mach_vm_address_t kaijuxieruadd3ret = (mach_vm_address_t)hooked_ret1;
+
 	/*
 	//0xA4E0FE0
 	g_breakpoints[0] = (Breakpoint){
@@ -8627,12 +8633,23 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	*/
+
 
 	// 0xA710CBC
 	g_breakpoints[0] = (Breakpoint){
         .source = kaijuxieruadd2,
         .target = kaijuxieruadd2ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	// 0x8DCFFA8
+	g_breakpoints[0] = (Breakpoint){
+        .source = kaijuxieruadd3,
+        .target = kaijuxieruadd3ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -8830,7 +8847,7 @@ void initbreakpoint_smoba()
 	//while(!isover100)
 	while(true)
 	{
-    	ensurereporter_smoba();
+    	//ensurereporter_smoba();
 		setup_all_breakpoints();
 	}
 
