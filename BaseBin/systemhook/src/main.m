@@ -4983,18 +4983,13 @@ static void* exception_handler_thread_smoba(void* arg)
 		{
 			if(bptype == 0)
 			{
-				int myw8 = Read_Int((long)thread_state2.__x[19]);
+				NSLog(@"小罪ADD: [sub_A710CBC hook] 主线程触发 开局判断 返回0");
 				
 				/*
+				int myw8 = Read_Int((long)thread_state2.__x[19]);
 				if(myw8 == 1)
 				{
 					thread_state2.__x[8] = 0;
-					NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，myw8:%d准备修改为0",myw8);
-				}
-				*/
-				if(myw8 == 2)
-				{
-					//thread_state2.__x[8] = 3;
 					NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，myw8:%d准备修改为0",myw8);
 				}
 				else
@@ -5002,6 +4997,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					//thread_state2.__x[8] = myw8;
 					NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，myw8:%d 不修改");
 				}
+				*/
 				
 				
 
@@ -8617,9 +8613,26 @@ void initbreakpoint_smoba()
 	mach_vm_address_t tersafetsadd44 = tersafeadd + 0x20FD6C;//sub_20FD6C 查询容器容量
 	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret999;
 
+	
+	mach_vm_address_t kaijuxieruadd2   = Imageaddress + 0xA710CBC;
+	mach_vm_address_t kaijuxieruadd2ret = (mach_vm_address_t)hooked_ret0;
+
+	/*
+	//0xA4E0FE0
 	g_breakpoints[0] = (Breakpoint){
         .source = kaijuxieruadd,
         .target = kaijuxieruaddret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	// 0xA710CBC
+	g_breakpoints[0] = (Breakpoint){
+        .source = kaijuxieruadd2,
+        .target = kaijuxieruadd2ret,
         .s0_val = 29.0f,
         .s1_val = 0.0f,
         .used = 1,
