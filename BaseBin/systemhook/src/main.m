@@ -8698,6 +8698,7 @@ void initbreakpoint_smoba()
     };
 	*/
 
+	/*
 	//0x20FD6C 查询容器容量
 	g_breakpoints[3] = (Breakpoint){
         .source = tersafetsadd44,
@@ -8718,7 +8719,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
 	
 
 	/*
@@ -8733,6 +8734,7 @@ void initbreakpoint_smoba()
     };
 	*/
 
+	
 	//0xAA880 控制检测开关
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd1,
@@ -8742,6 +8744,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	
 
 	/*
 	//0xA0E68
@@ -8757,6 +8760,7 @@ void initbreakpoint_smoba()
 
     g_breakpoint_count = 6;
 
+	/*
 	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -8790,6 +8794,7 @@ void initbreakpoint_smoba()
     };
 	*/
 
+	/*
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd44,
@@ -8821,6 +8826,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x93C10 闪退
