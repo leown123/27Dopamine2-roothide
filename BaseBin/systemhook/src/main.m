@@ -4984,11 +4984,11 @@ static void* exception_handler_thread_smoba(void* arg)
 			if(bptype == 0)
 			{
 				// 0x8DCFFA8
-				NSLog(@"小罪ADD: [0x8DCFFA8 hook] 主线程触发 开局判断 返回1");
+				//NSLog(@"小罪ADD: [0x8DCFFA8 hook] 主线程触发 开局判断 返回1");
 				
 				//NSLog(@"小罪ADD: [sub_A710CBC hook] 主线程触发 开局判断 返回0");
 				
-				/*
+				
 				int myw8 = Read_Int((long)thread_state2.__x[19]);
 				if(myw8 == 1)
 				{
@@ -5000,7 +5000,7 @@ static void* exception_handler_thread_smoba(void* arg)
 					//thread_state2.__x[8] = myw8;
 					NSLog(@"小罪ADD: [开局写入add 0xA4E0FE0 hook] 主线程触发，myw8:%d 不修改");
 				}
-				*/
+				
 				
 				
 
@@ -8583,8 +8583,8 @@ void initbreakpoint_smoba()
 	NSLog(@"小罪ADD: initbreinitbreakpoint_smobaakpoint: jump_hook dylib loaded");
 
 	mach_vm_address_t kaijuxieruadd   = Imageaddress + 0xA4E0FE0;
-	//mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE4;
-	mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE8;
+	mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE4;
+	//mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE8;
 
 	mach_vm_address_t shijujianceadd   = Imageaddress + 0x9AE9EF8;
 	mach_vm_address_t shijujianceaddret = (mach_vm_address_t)hooked_ret0;
@@ -8621,9 +8621,9 @@ void initbreakpoint_smoba()
 	mach_vm_address_t kaijuxieruadd2ret = (mach_vm_address_t)hooked_ret0;
 
 	mach_vm_address_t kaijuxieruadd3   = Imageaddress + 0x8DCFFA8;
-	mach_vm_address_t kaijuxieruadd3ret = (mach_vm_address_t)hooked_ret1;
+	mach_vm_address_t kaijuxieruadd3ret = (mach_vm_address_t)hooked_ret0;
 
-	/*
+	
 	//0xA4E0FE0
 	g_breakpoints[0] = (Breakpoint){
         .source = kaijuxieruadd,
@@ -8634,7 +8634,7 @@ void initbreakpoint_smoba()
         .hw_index = -1
     };
 
-
+    /*
 	// 0xA710CBC
 	g_breakpoints[0] = (Breakpoint){
         .source = kaijuxieruadd2,
@@ -8644,7 +8644,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	// 0x8DCFFA8
 	g_breakpoints[0] = (Breakpoint){
@@ -8655,6 +8655,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	g_breakpoints[1] = (Breakpoint){
