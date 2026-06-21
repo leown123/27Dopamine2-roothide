@@ -5549,7 +5549,7 @@ static void* exception_handler_thread(void* arg) {
 		//if(istersafebp == false && bptype >= 0 //范围
 		if(istersafebp == false )
 		{
-			if(bptype == 0 ) //|| bptype == 5
+			if(bptype == 0 || bptype == 5) //
 			{	
 				//NSLog(@"小罪ADD: 无后断点 触发");
 		        // 修改浮点寄存器 s0/s1
@@ -6200,6 +6200,10 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype== 4)
 			{	
+				//0x6CF8 环境
+				NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发"); //sub_6CF8 环境检测hook
+				
+				
 				//0xA0E68
 				//NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] 主线程调用 0xA0E68 返回0");
 				
@@ -6211,7 +6215,7 @@ static void* exception_handler_thread(void* arg) {
 				//thread_state2.__x[0] = 0;
 				//NSLog(@"小罪ADD: [tersafe 0x96558 hook] 主线程 0x96558 改nop");
 				
-				
+				/*
 				//0x336AEFC judianaddnew
 				uint64_t judian_ptr = thread_state2.__x[19];
 
@@ -6248,7 +6252,7 @@ static void* exception_handler_thread(void* arg) {
 				forcewritenewfloat(judian_ptr + 0x3D0,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C4,0.01f);
 				forcewritenewfloat(judian_ptr + 0x3C8,0.01f);
-				
+				*/
 
 
 				
@@ -6292,7 +6296,7 @@ static void* exception_handler_thread(void* arg) {
 			if(bptype == 5)
 			{
 				//0x159DE0
-				NSLog(@"小罪ADD: [tersafe 0x159DE0  hook] 主线程触发 0x159DE0 返回1");
+				//NSLog(@"小罪ADD: [tersafe 0x159DE0  hook] 主线程触发 0x159DE0 返回1");
 				
 
 				//uint64_t a2 = thread_state2.__x[1];
@@ -7681,7 +7685,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x218D58 RingBuf_Tick
 	g_breakpoints[2] = (Breakpoint){
         .source = tersafetsadd24,
@@ -7691,7 +7695,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	
 	/*
@@ -7803,7 +7807,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x336AEFC judianaddnew
 	g_breakpoints[4] = (Breakpoint){
         .source = judianaddnew,
@@ -7813,6 +7817,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -7839,7 +7844,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	//0x6CF8 环境
 	g_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd11,
@@ -7849,7 +7854,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
 	/*
 	// 0x96558
@@ -7889,7 +7894,7 @@ void initbreakpoint()
     };
 	*/
 
-	/*
+	
 	g_breakpoints[5] = (Breakpoint){
         .source = fanweiadd3,
         .target = fanweiadd3 + 4,
@@ -7898,8 +7903,9 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	*/
+	
 
+	/*
 	// 0x159DE0
 	g_breakpoints[5] = (Breakpoint){
         .source = tersafetsadd62,
@@ -7909,6 +7915,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -8054,7 +8061,7 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0x20FD6C 查询容器容量
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd44,
@@ -8064,6 +8071,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 	
 
 	/*
@@ -9586,7 +9594,7 @@ if (load_executable_path() == 0)
     	ret = DobbyHook((void *)thread_get_state, (void *)replaced_thread_get_state,(void **)&original_thread_get_state);
 		NSLog(@"小罪ADD: [Dobby] hook thread_get_state: %s", ret == 0 ? "success" : "failed");
 
-		
+		/*
 		ret = DobbyHook((void *)stat, (void *)hooked_stat, (void **)&orig_stat);
         NSLog(@"小罪ADD: [Dobby] hook stat: %s", ret == 0 ? "success" : "failed");
 
@@ -9620,6 +9628,8 @@ if (load_executable_path() == 0)
 
 		//ret = DobbyHook((void *)dladdr, (void *)hooked_dladdr, (void **)&orig_dladdr); //这个好像也会直接三方
 		//NSLog(@"小罪ADD: [Dobby] hook dladdr: %s", ret == 0 ? "success" : "failed");
+		
+		*/
 		
 
 		ret = DobbyHook((void *)proc_regionfilename, (void *)hooked_proc_regionfilename, (void **)&orig_proc_regionfilename);
