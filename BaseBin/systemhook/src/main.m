@@ -4273,6 +4273,15 @@ static void ensurereporter()
 		Imageaddress = Get_Imageaddress_base();
 	}
 
+	uint64_t F8C3Cptr =  (uint64_t)(tersafeadd + 0x2B8080);
+	uint64_t F8C3Cptrrd = (uint64_t)Read_Long(F8C3Cptr);
+	if( F8C3Cptrrd != 0x112345678)
+	{
+		forcewritenewlong(F8C3Cptr,0x112345678);
+		NSLog(@"小罪ADD: ensurereporter: F8C3Cptr: 0x%llx ,F8C3Cptrrd: 0x%llx", F8C3Cptr,Read_Long(F8C3Cptr));
+
+	}
+
 	/*
 	uint64_t ownreporter =  (uint64_t)(tersafeadd + 0x24AEC0);
 	char ownreporterrd = (char)Read_Char(ownreporter);
@@ -5567,6 +5576,8 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				// 0xF9910
+				NSLog(@"小罪ADD: [tersafe 0xF9910 hook] 主线程 TssSDKGetReportData校验触发 返回1");
 					
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -5600,7 +5611,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] 主线程调用 dwon检测");
 				//NSLog(@"小罪ADD: [tersafe sub_6CF8 hook] 主线程触发");
 			
-				
+				/*
 				//0xAA880 检测控制开关
 				bool iscontainstr = false;
 				//全局检测开关hook sub_AA880
@@ -5635,7 +5646,7 @@ static void* exception_handler_thread(void* arg) {
 					if (result != NULL) iscontainstr = true;
 
 
-					/*
+					//////
 					result = strstr(path, "force");
 					if (result != NULL) iscontainstr = true;
 
@@ -5849,7 +5860,7 @@ static void* exception_handler_thread(void* arg) {
 					
 					result = strstr(path, "port");
 					if (result != NULL) iscontainstr = true;
-					*/
+					
 					
 
 					
@@ -5876,7 +5887,7 @@ static void* exception_handler_thread(void* arg) {
 					thread_state2.__sp -= 0x40;
 					bp->target = (uint64_t)(thread_state2.__pc + 4);
 			    }
-				
+				*/
 			
 				/*
 				//0x2A2B0 _tp2_setuserinfo
@@ -6317,6 +6328,9 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				// 0xF9910
+				NSLog(@"小罪ADD: [tersafe 0xF9910 hook] 主线程 TssSDKGetReportData校验触发 返回1");
+				
 				//0x29FC0
 				//thread_state2.__x[0] = 0;
 				//NSLog(@"小罪ADD: [tersafe 0x29FC0 hook] ter线程 调用 0x29FC0 返回0");
@@ -6340,7 +6354,7 @@ static void* exception_handler_thread(void* arg) {
 				//NSLog(@"小罪ADD: [tersafe 0xF6260 hook] ter线程调用 dwon检测");
 
 				//0x20FD6C 查询容器容量
-				NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
+				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] ter线程 查询容器容量，返回0");
 			
 				//NSLog(@"小罪ADD: [tersafe 0x2103B8 hook] 新写法防闪退");
 
@@ -7473,6 +7487,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd62 = tersafeadd + 0x159DE0;//
 	mach_vm_address_t tersafetsadd62ret = (mach_vm_address_t)hooked_ret1;
 
+	mach_vm_address_t tersafetsadd63 = tersafeadd + 0xF9910;//
+	mach_vm_address_t tersafetsadd63ret = (mach_vm_address_t)hooked_ret1;
+
 	
 
 	g_source_addr = wuhouadd;
@@ -7539,11 +7556,22 @@ void initbreakpoint()
     };
 	*/
 
-	
+	/*
 	//0xAA880 检测控制开关
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd18,
         .target = tersafetsadd18ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	// 0xF9910
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd63,
+        .target = tersafetsadd63ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -8073,7 +8101,16 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
-	
+
+	// 0xF9910
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd63,
+        .target = tersafetsadd63ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	// 0x29FC0
