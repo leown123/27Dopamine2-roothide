@@ -4368,7 +4368,7 @@ static void ensurereporter()
 	}
 	*/
 
-	
+	/*
 	uint64_t TssSDKOnPauseptr = Imageaddress + 0x103DE638;
 	uint64_t TssSDKOnResumeptr = Imageaddress + 0x103DE650;
 
@@ -4402,6 +4402,7 @@ static void ensurereporter()
 		
 		
 	}
+	*/
 	
 
 
