@@ -4302,7 +4302,7 @@ static void ensurereporter()
 			if(F8C3Cptrrdchar != (char)0x39)
 			{
 				forcewritenewchar(F8C3Cptrrd + i,(char)0x39);
-				NSLog(@"小罪ADD: ensurereporter: F8C3Cptr write 0x39 ,ptr:%llx , i:%d" ,F8C3Cptrrd + i,i)
+				NSLog(@"小罪ADD: ensurereporter: F8C3Cptr write 0x39 ,ptr:%llx , i:%d" ,F8C3Cptrrd + i,i);
 			}
 			
 		}
