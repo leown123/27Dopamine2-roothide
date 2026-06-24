@@ -4283,14 +4283,14 @@ static void ensurereporter()
 		uint64_t F8C3Cptrrd4 = (uint64_t)Read_Long(F8C3Cptrrd +0x60);
 		char F8C3Cptrrd5 = (char)Read_Char(F8C3Cptrrd +0x80);
 
-		if(F8C3Cptrrd1 != 0 || F8C3Cptrrd2 != 0 || F8C3Cptrrd3 != 0 || F8C3Cptrrd4 != 0 || F8C3Cptrrd5 != 0 ||)
+		if(F8C3Cptrrd1 != 0 || F8C3Cptrrd2 != 0 || F8C3Cptrrd3 != 0 || F8C3Cptrrd4 != 0 || F8C3Cptrrd5 != 0 )
 		{
 			forcewritenewlong(F8C3Cptrrd +0x0,0);
 			forcewritenewlong(F8C3Cptrrd +0x20,0);
 			forcewritenewlong(F8C3Cptrrd +0x40,0);
 			forcewritenewlong(F8C3Cptrrd +0x60,0);
 			forcewritenewchar(F8C3Cptrrd +0x80,0);
-			NSLog(@"小罪ADD: ensurereporter: F8C3Cptr write: F8C3Cptrrd1:0x%llx ,F8C3Cptrrd2:0x%llx ,F8C3Cptrrd3:0x%llx ,F8C3Cptrrd4:0x%llx ,F8C3Cptrrd5:%d", Read_Long(F8C3Cptrrd +0x0),Read_Long(F8C3Cptrrd +0x0),Read_Long(F8C3Cptrrd +0x20),Read_Long(F8C3Cptrrd +0x40),Read_Long(F8C3Cptrrd +0x60),Read_Char(F8C3Cptrrd +0x80));
+			NSLog(@"小罪ADD: ensurereporter: F8C3Cptr write: F8C3Cptrrd1:0x%llx ,F8C3Cptrrd2:0x%llx ,F8C3Cptrrd3:0x%llx ,F8C3Cptrrd4:0x%llx ,F8C3Cptrrd5:%d", Read_Long(F8C3Cptrrd +0x0),Read_Long(F8C3Cptrrd +0x20),Read_Long(F8C3Cptrrd +0x40),Read_Long(F8C3Cptrrd +0x60),Read_Char(F8C3Cptrrd +0x80));
 		}
 		
 		
