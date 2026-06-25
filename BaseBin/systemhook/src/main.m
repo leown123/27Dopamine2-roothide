@@ -8657,15 +8657,12 @@ void initbreakpoint_smoba()
 
 	NSLog(@"小罪ADD: initbreinitbreakpoint_smobaakpoint: jump_hook dylib loaded");
 
-	mach_vm_address_t kaijuxieruadd   = Imageaddress + 0xA4E0FE0;
-	mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE4;
-	//mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA4E0FE8;
+	mach_vm_address_t kaijuxieruadd   = Imageaddress + 0xA260FEC;
+	mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA260FF0;
+	//mach_vm_address_t kaijuxieruaddret   = Imageaddress + 0xA260FF4;
 
-	mach_vm_address_t shijujianceadd   = Imageaddress + 0x9AE9EF8;
-	mach_vm_address_t shijujianceaddret = (mach_vm_address_t)hooked_ret0;
-
-	mach_vm_address_t shijujianceadd2   = Imageaddress + 0x9AE9F98;
-	mach_vm_address_t shijujianceadd2ret = Imageaddress + 0x9AE9FA8;
+	mach_vm_address_t shijujianceadd2   = Imageaddress + 0x8C32A00;//"hackMark"
+	mach_vm_address_t shijujianceadd2ret = Imageaddress + 0x8C32A10;
 
 	mach_vm_address_t tersafetsadd1 = tersafeadd + 0xAA880;// 控制检测开关
 	mach_vm_address_t tersafetsadd1ret = tersafeadd + 0xAA884;//
@@ -8691,12 +8688,6 @@ void initbreakpoint_smoba()
 	mach_vm_address_t tersafetsadd44 = tersafeadd + 0x20FD6C;//sub_20FD6C 查询容器容量
 	mach_vm_address_t tersafetsadd44ret = (mach_vm_address_t)hooked_ret999;
 
-	
-	mach_vm_address_t kaijuxieruadd2   = Imageaddress + 0xA710CBC;
-	mach_vm_address_t kaijuxieruadd2ret = (mach_vm_address_t)hooked_ret0;
-
-	mach_vm_address_t kaijuxieruadd3   = Imageaddress + 0x8DCFFA8;
-	mach_vm_address_t kaijuxieruadd3ret = (mach_vm_address_t)hooked_ret0;
 
 	
 	//0xA4E0FE0
@@ -8708,40 +8699,6 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-
-    /*
-	// 0xA710CBC
-	g_breakpoints[0] = (Breakpoint){
-        .source = kaijuxieruadd2,
-        .target = kaijuxieruadd2ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	
-
-	// 0x8DCFFA8
-	g_breakpoints[0] = (Breakpoint){
-        .source = kaijuxieruadd3,
-        .target = kaijuxieruadd3ret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
-
-	/*
-	g_breakpoints[1] = (Breakpoint){
-        .source = shijujianceadd,
-        .target = shijujianceaddret,
-        .s0_val = 29.0f,
-        .s1_val = 0.0f,
-        .used = 1,
-        .hw_index = -1
-    };
-	*/
 
 	g_breakpoints[1] = (Breakpoint){
         .source = shijujianceadd2,
@@ -8836,7 +8793,7 @@ void initbreakpoint_smoba()
 
     g_breakpoint_count = 6;
 
-	/*
+	
 	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
