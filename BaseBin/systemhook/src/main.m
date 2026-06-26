@@ -8779,7 +8779,7 @@ void initbreakpoint_smoba()
 
     g_breakpoint_count = 6;
 
-	
+	/*
 	//0xAA880 控制检测开关
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd1,
@@ -8789,9 +8789,7 @@ void initbreakpoint_smoba()
         .used = 1,
         .hw_index = -1
     };
-	
 
-	/*
 	//0x6CF8 环境检测
 	ter_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd2,
