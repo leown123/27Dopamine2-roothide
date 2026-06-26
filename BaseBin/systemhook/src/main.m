@@ -7269,10 +7269,10 @@ void initbreakpoint()
           g_source_addr, g_target_addr);
 	*/
 
-	mach_vm_address_t wuhouadd   = Imageaddress + 0x3355BF0 ;
+	mach_vm_address_t wuhouadd   = Imageaddress + 0x3361320 ;
 	mach_vm_address_t fanweiadd1 = Imageaddress + 0x1828738 ;
     mach_vm_address_t fanweiadd2 = Imageaddress + 0x1828760 ;
-    mach_vm_address_t fanweiadd3 = Imageaddress + 0x1827FD8 ;
+    mach_vm_address_t fanweiadd3 = Imageaddress + 0x18F590C ;
     mach_vm_address_t fanweiadd4 = Imageaddress + 0x1828000 ;
 
 	mach_vm_address_t tersafetsadd1 = tersafeadd + 0x582A4;
