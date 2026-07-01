@@ -7511,8 +7511,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd63 = tersafeadd + 0xF9910;//
 	mach_vm_address_t tersafetsadd63ret = (mach_vm_address_t)hooked_ret1;
 
-	mach_vm_address_t tersafetsadd64 = tersafeadd + 0x18E68;//
-	mach_vm_address_t tersafetsadd64ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd64 = tersafeadd + 0x18E6C;//0x18E68
+	//mach_vm_address_t tersafetsadd64ret = (mach_vm_address_t)hooked_ret0;
+	mach_vm_address_t tersafetsadd64ret = tersafeadd + 0x18E8C;
 
 	
 
