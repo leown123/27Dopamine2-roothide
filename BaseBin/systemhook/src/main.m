@@ -6744,8 +6744,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(terbptype == 4) 
 			{	
+				// 0x21AA30
+				NSLog(@"小罪ADD: [tersafe 0x21AA30  hook] ter线程触发 0x21AA30 防闪退 返回原值");
+			
 				//0x159DE0
-				NSLog(@"小罪ADD: [tersafe 0x159DE0  hook] ter线程触发 0x159DE0 返回1");
+				//NSLog(@"小罪ADD: [tersafe 0x159DE0  hook] ter线程触发 0x159DE0 返回1");
 				
 				//0xA0E68
 				//NSLog(@"小罪ADD: [tersafe 0xA0E68 hook] ter线程调用 0xA0E68 返回0");
@@ -7515,6 +7518,8 @@ void initbreakpoint()
 	//mach_vm_address_t tersafetsadd64ret = (mach_vm_address_t)hooked_ret0;
 	mach_vm_address_t tersafetsadd64ret = tersafeadd + 0x18E8C;
 
+	mach_vm_address_t tersafetsadd65 = tersafeadd + 0x21AA30;//
+	mach_vm_address_t tersafetsadd65ret = tersafeadd + 0x21AAE8;
 	
 
 	g_source_addr = wuhouadd;
@@ -8419,6 +8424,16 @@ void initbreakpoint()
         .hw_index = -1
     };
 	*/
+
+	// 0x21AA30
+	ter_breakpoints[4] = (Breakpoint){
+        .source = tersafetsadd65,
+        .target = tersafetsadd65ret,
+        .s0_val = 29.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	// 0x159DE0
