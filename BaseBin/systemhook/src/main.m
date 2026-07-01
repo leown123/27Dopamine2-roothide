@@ -5591,8 +5591,11 @@ static void* exception_handler_thread(void* arg) {
 
 			if(bptype == 1)
 			{	
+				// 0x18E68
+				NSLog(@"小罪ADD: [tersafe 0x18E68 hook] 主线程 0x18E68 called! 返回0");
+				
 				// 0xF9910
-				NSLog(@"小罪ADD: [tersafe 0xF9910 hook] 主线程 TssSDKGetReportData校验触发 返回1");
+				//NSLog(@"小罪ADD: [tersafe 0xF9910 hook] 主线程 TssSDKGetReportData校验触发 返回1");
 					
 				//0x20FD6C 查询容器容量
 				//NSLog(@"小罪ADD: [tersafe 0x20FD6C hook] 主线程 查询容器容量，返回0");
@@ -6343,8 +6346,11 @@ static void* exception_handler_thread(void* arg) {
 			
 			if(terbptype == 0) 
 			{	
+				// 0x18E68
+				NSLog(@"小罪ADD: [tersafe 0x18E68 hook] ter线程 0x18E68 called! 返回0");
+				
 				// 0xF9910
-				NSLog(@"小罪ADD: [tersafe 0xF9910 hook] 主线程 TssSDKGetReportData校验触发 返回1");
+				//NSLog(@"小罪ADD: [tersafe 0xF9910 hook] ter线程 TssSDKGetReportData校验触发 返回1");
 				
 				//0x29FC0
 				//thread_state2.__x[0] = 0;
@@ -7505,6 +7511,9 @@ void initbreakpoint()
 	mach_vm_address_t tersafetsadd63 = tersafeadd + 0xF9910;//
 	mach_vm_address_t tersafetsadd63ret = (mach_vm_address_t)hooked_ret1;
 
+	mach_vm_address_t tersafetsadd64 = tersafeadd + 0x18E68;//
+	mach_vm_address_t tersafetsadd64ret = (mach_vm_address_t)hooked_ret0;
+
 	
 
 	g_source_addr = wuhouadd;
@@ -7583,6 +7592,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	// 0xF9910
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd63,
@@ -7592,7 +7602,17 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
-	
+	*/
+
+	// 0x18E68;
+	g_breakpoints[1] = (Breakpoint){
+        .source = tersafetsadd64,
+        .target = tersafetsadd64ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
 
 	/*
 	//0x1AEB30 自瞄hook
@@ -8117,10 +8137,22 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	// 0xF9910
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd63,
         .target = tersafetsadd63ret,
+        .s0_val = 0.0f,
+        .s1_val = 0.0f,
+        .used = 1,
+        .hw_index = -1
+    };
+	*/
+
+	// 0x18E68;
+	ter_breakpoints[0] = (Breakpoint){
+        .source = tersafetsadd64,
+        .target = tersafetsadd64ret,
         .s0_val = 0.0f,
         .s1_val = 0.0f,
         .used = 1,
@@ -8387,6 +8419,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	// 0x159DE0
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd62,
@@ -8396,6 +8429,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0xA0E68
