@@ -7610,6 +7610,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	// 0x18E68;
 	g_breakpoints[1] = (Breakpoint){
         .source = tersafetsadd64,
@@ -7619,6 +7620,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	//0x1AEB30 自瞄hook
@@ -8155,6 +8157,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	// 0x18E68;
 	ter_breakpoints[0] = (Breakpoint){
         .source = tersafetsadd64,
@@ -8164,6 +8167,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	// 0x29FC0
@@ -8425,6 +8429,7 @@ void initbreakpoint()
     };
 	*/
 
+	/*
 	// 0x21AA30
 	ter_breakpoints[4] = (Breakpoint){
         .source = tersafetsadd65,
@@ -8434,6 +8439,7 @@ void initbreakpoint()
         .used = 1,
         .hw_index = -1
     };
+	*/
 
 	/*
 	// 0x159DE0
